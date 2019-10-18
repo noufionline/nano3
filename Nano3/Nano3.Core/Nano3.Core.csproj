@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PostSharp.Patterns.Model" Version="6.3.8-rc" />
+  </ItemGroup>
+
 </Project>
