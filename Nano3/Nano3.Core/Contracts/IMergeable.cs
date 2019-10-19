@@ -12,6 +12,4 @@ namespace Nano3.Core.Contracts
         /// </summary>
         Guid EntityIdentifier { get; set; }
     }
-
-
 }
