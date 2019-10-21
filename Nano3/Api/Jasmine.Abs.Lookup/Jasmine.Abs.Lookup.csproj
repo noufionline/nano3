@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>CICON</Authors>
+    <Company>CICON</Company>
+    <Product>CICON</Product>
+    <Version>1.0.2</Version>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PostSharp.Patterns.Model" Version="6.2.7" />
+  </ItemGroup>
+
+</Project>

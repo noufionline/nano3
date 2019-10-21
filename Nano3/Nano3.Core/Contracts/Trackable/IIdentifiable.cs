@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nano3.Core.Contracts
+namespace Nano3.Core.Contracts.Trackable
 {
     /// <summary>
     /// Interface implemented by entities which perform MergeChanges

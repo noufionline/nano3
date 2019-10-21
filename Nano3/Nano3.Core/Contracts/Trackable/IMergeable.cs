@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nano3.Core.Contracts
+namespace Nano3.Core.Contracts.Trackable
 {
     /// <summary>
     /// Provides an EntityIdentifier for correlation when merging changes.

@@ -1,0 +1,25 @@
+﻿dotnet ef dbcontext scaffold "Data Source=192.168.30.26; Initial Catalog=AbsCore; User Id=sa;pwd=fkt" Microsoft.EntityFrameworkCore.SqlServer -o Models\Core -c AbsContext -d --force
+
+
+
+dotnet ef dbcontext scaffold "Data Source=192.168.30.31; Initial Catalog=NetSqlAzmanStorage; User Id=sa;pwd=fkt" Microsoft.EntityFrameworkCore.SqlServer -o Models\Azman -c NetSqlAzmanContext -f
+
+
+
+
+dotnet ef dbcontext scaffold "Data Source=192.168.30.31; Initial Catalog=ZEON; User Id=sa;pwd=fkt" Microsoft.EntityFrameworkCore.SqlServer -o Models\Zeon -c ZeonContext -f
+
+
+
+
+dotnet ef dbcontext scaffold "Data Source=192.168.30.31; Initial Catalog=Logistics; User Id=sa;pwd=fkt" Microsoft.EntityFrameworkCore.SqlServer -o Models\Lms -c LmsContext -d --force
+
+
+//To Add Migrations
+dotnet ef migrations add Initial --context AbsContext
+
+dotnet ef database update --context AbsContext
+
+dotnet ef migrations add SalesOrderLineAndAttachmentAdded --context AbsContext
+
+dotnet ef database update --context AbsContext

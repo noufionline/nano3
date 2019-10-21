@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Nano3.Core.Tracking
+﻿namespace Nano3.Core.Tracking
 {
-  /// <summary>
+    /// <summary>
     /// Change-tracking state of an entity.
     /// </summary>
     public enum TrackingState

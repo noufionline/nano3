@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using FluentValidation.Internal;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.JsonPatch;
 using Nano3.Core.Contracts;
+using Nano3.Core.Contracts.Trackable;
 using Nano3.Core.Events;
 using Nano3.Core.Tracking;
 using PostSharp.Patterns.Model;
@@ -10,25 +12,90 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace Nano3.Core
 {
     [NotifyPropertyChanged]
-    public abstract class EntityBase<T> : EntityBase,INotifyDataErrorInfo, ISupportPatchUpdate,ISupportFluentValidator<T>
+    public abstract class EntityBase<T> : EntityBase, INotifyDataErrorInfo, ISupportPatchUpdate, ISupportFluentValidator<T>
         where T : IEntity, IDirty
     {
+        public EntityBase()
+        {
+            // ErrorsContainer = new ErrorsContainer<ValidationFailure>(RaiseErrorsChanged);
+        }
 
-         /// <summary>
-        /// Gets the errors container.
-        /// </summary>
-        /// <value>The errors container.</value>
-        public ErrorsContainer<ValidationFailure> ErrorsContainer { get; }
-        public void SetValidators(IValidator<T> validator)
+        #region INotifyDataErrorInfo
+        public IEnumerable GetErrors(string propertyName)
         {
             throw new NotImplementedException();
         }
+
+        public bool HasErrors { get; }
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        #endregion
+
+
+        #region Patch Update
+        public JsonPatchDocument CreatePatchDocument()
+        {
+            var patchDoc = new JsonPatchDocument();
+            var properties = this.ModifiedProperties.Distinct().ToList();
+
+            foreach (var navProp in this.GetNavigationProperties())
+            {
+                foreach (EntityCollectionProperty<ITrackingCollection> colProp in navProp.AsCollectionProperty<ITrackingCollection>())
+                {
+                    if (colProp.EntityCollection.Count > 0 && !properties.Contains(colProp.Property.Name))
+                    {
+                        properties.Add(colProp.Property.Name);
+                    }
+                }
+            }
+
+            foreach (var property in properties)
+            {
+                if (TryGetPropValue(this, property, out var value))
+                {
+                    patchDoc.Replace(property, value);
+                }
+            }
+
+            patchDoc.Replace(nameof(ModifiedProperties), properties);
+            patchDoc.Replace(nameof(TrackingState), this.TrackingState);
+            patchDoc.Replace(nameof(EntityIdentifier), this.EntityIdentifier);
+
+
+            return patchDoc;
+
+
+            bool TryGetPropValue(object src, string propName, out object value)
+            {
+                var propertyInfo = src.GetType().GetProperty(propName);
+                if (propertyInfo.CanWrite)
+                {
+                    value = propertyInfo.GetValue(src, null);
+                    return true;
+                }
+                else
+                {
+                    value = null;
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region Fluent Validation Support
+
+
+        public IValidator<T> Validator { get; set; }
 
         public void ValidateSelf(string propertyName = null)
         {
@@ -46,20 +113,9 @@ namespace Nano3.Core
         }
 
         public List<ValidationFailure> ValidationSummary { get; }
+        #endregion
 
-        public JsonPatchDocument CreatePatchDocument()
-        {
-            throw new NotImplementedException();
-        }
 
-        public IEnumerable GetErrors(string propertyName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasErrors { get; }
-
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
     }
 
     [NotifyPropertyChanged]
