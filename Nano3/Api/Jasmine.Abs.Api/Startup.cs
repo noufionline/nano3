@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Autofac;
 using AutoMapper;
 using Jasmine.Abs.Api.PolicyServer;
 using Jasmine.Abs.Entities.Models.Azman;
@@ -163,7 +164,7 @@ namespace Jasmine.Abs.Api
                             Version = "1"
                         });
 
-                //  setupAction.AddFluentValidationRules();
+                    //  setupAction.AddFluentValidationRules();
 
                     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
@@ -175,6 +176,15 @@ namespace Jasmine.Abs.Api
 
 
             });
+        }
+
+        // ConfigureContainer is where you can register things directly
+        // with Autofac. This runs after ConfigureServices so the things
+        // here will override registrations made in ConfigureServices.
+        // Don't build the container; that gets done for you by the factory.
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new AutofacModule());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
