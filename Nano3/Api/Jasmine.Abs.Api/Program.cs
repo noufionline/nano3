@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PostSharp.Patterns.Caching;
 using PostSharp.Patterns.Caching.Backends.Redis;
+using Serilog;
 using StackExchange.Redis;
 
 namespace Jasmine.Abs.Api
@@ -20,9 +21,13 @@ namespace Jasmine.Abs.Api
 #if DEBUG
             HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 #endif
+            ConfigurePostSharpCache();
 
+            CreateHostBuilder(args).Build().Run();
+        }
 
-
+        private static void ConfigurePostSharpCache()
+        {
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("localhost");
             connection.ErrorMessage += (sender, eventArgs) => Console.Error.WriteLine(eventArgs.Message);
             connection.ConnectionFailed += (sender, eventArgs) => Console.Error.WriteLine(eventArgs.Exception);
@@ -36,16 +41,23 @@ namespace Jasmine.Abs.Api
             {
                 CachingServices.DefaultBackend = backend;
             }
-
-
-            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .UseUrls("http://localhost:5050", "https://localhost:5051")
+                .ConfigureAppConfiguration((context, builder) =>
+                    builder.AddJsonFile("LogifyAlert.json", optional: true, reloadOnChange: false))
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);
+                    logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Debug);
+                })
+                .UseSerilog()
+                .UseStartup<Startup>();
                 });
     }
 }

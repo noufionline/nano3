@@ -43,6 +43,10 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />
     <PackageReference Include="TrackableEntities.Common.Core" Version="3.0.0" />
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.9" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.14" />
@@ -57,6 +61,10 @@
     <Reference Include="Jasmine.Abs.Lookup">
       <HintPath>..\..\..\..\AbsEnterpriseCore\source\Api\Jasmine.Abs.Lookup\bin\Debug\netstandard2.0\Jasmine.Abs.Lookup.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
