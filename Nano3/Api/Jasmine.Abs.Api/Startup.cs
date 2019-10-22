@@ -60,14 +60,11 @@ namespace Jasmine.Abs.Api
             });
 
 
-            services.AddDbContext<AbsContext>(builder =>
-            {
-                builder.UseSqlServer(Configuration.GetConnectionString("CICONABS"));
-            }, ServiceLifetime.Transient);
+            services.AddDbContext<AbsContext>(builder =>  
+                builder.UseSqlServer(Configuration.GetConnectionString("CICONABS")),ServiceLifetime.Transient);
 
-
-            //services.AddDbContext<ZeonContext>(builder =>
-            //    builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
+            services.AddDbContext<ZeonContext>(builder =>
+                builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
 
             services.AddDbContext<NetSqlAzmanContext>(builder =>
                 builder.UseSqlServer(Configuration.GetConnectionString("NetSqlAzman")), ServiceLifetime.Transient);
@@ -114,10 +111,6 @@ namespace Jasmine.Abs.Api
                     services.AddAbsAuthorization()
                        .AddAuthorizationPermissionPolicies();
                 }
-
-
-
-
 
             });
 

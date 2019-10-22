@@ -4,5 +4,61 @@
         <name>Jasmine.Abs.Api</name>
     </assembly>
     <members>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.GetLcDocumentById(System.Int32)">
+            <summary>
+            Gets the LcDocument.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Task&lt;ActionResult&lt;LcDocumentDto&gt;&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.GetLcDocumentDetailById(System.Int32)">
+            <summary>
+            Gets the LcDocumentDetail.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Task&lt;ActionResult&lt;LcDocumentDetail&gt;&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.CreateLcDocument(Jasmine.Abs.Api.Dto.AccountReceivables.LcDocumentDto)">
+            <summary>
+            Creates the LcDocument.
+            </summary>
+            <param name="entity">The entity.</param>
+            <returns>Task&lt;ActionResult&lt;LcDocumentDto&gt;&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.UpdateLcDocument(Jasmine.Abs.Api.Dto.AccountReceivables.LcDocumentDto)">
+            <summary>
+            Updates the LcDocument.
+            </summary>
+            <param name="entity">The entity.</param>
+            <returns>Task&lt;ActionResult&lt;LcDocumentDto&gt;&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.UpdateLcDocumentPartially(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Jasmine.Abs.Api.Dto.AccountReceivables.LcDocumentDto})">
+            <summary>
+            Updates the LcDocument.
+            </summary>
+            <param name="id"></param>
+            <param name="patchDoc"></param>
+            <returns>Task&lt;ActionResult&lt;LcDocumentDto&gt;&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.DeleteLcDocument(System.Int32)">
+            <summary>
+            Deletes the LcDocument.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>Task&lt;IActionResult&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.AccountReceivables.LcDocumentController.GetQuotationForPrintAsync(System.Int32)">
+            <summary>
+            get quotation for print.
+            </summary>
+            <param name="id">The quotation identifier.</param>
+            <returns>Task&lt;IActionResult&gt;.</returns>
+        </member>
+        <member name="M:Jasmine.Abs.Api.Controllers.Lookup.Abs.CustomerController.Get">
+            <summary>
+             Gets Customers from ABS   
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>
