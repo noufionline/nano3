@@ -3,12 +3,14 @@ using System.IO;
 using System.Reflection;
 using Autofac;
 using AutoMapper;
+using DevExpress.Logify.Web;
 using Jasmine.Abs.Api.PolicyServer;
 using Jasmine.Abs.Entities.Models.Azman;
 using Jasmine.Abs.Entities.Models.Core;
 using Jasmine.Abs.Entities.Models.Zeon;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +19,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using Z.EntityFramework.Extensions;
 
 namespace Jasmine.Abs.Api
@@ -55,11 +60,11 @@ namespace Jasmine.Abs.Api
             });
 
 
-            services.AddDbContext<AbsContext>(builder => 
+            services.AddDbContext<AbsContext>(builder =>
             {
                 builder.UseSqlServer(Configuration.GetConnectionString("CICONABS"));
-            },ServiceLifetime.Transient);
-                
+            }, ServiceLifetime.Transient);
+
 
             //services.AddDbContext<ZeonContext>(builder =>
             //    builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
@@ -111,70 +116,76 @@ namespace Jasmine.Abs.Api
                 }
 
 
-                services.Configure<ApiBehaviorOptions>(options =>
-               {
-                   options.InvalidModelStateResponseFactory = actionContext =>
-                   {
-                       var actionExecutingContext =
-                           actionContext as Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext;
 
-                       // if there are modelstate errors & all keys were correctly
-                       // found/parsed we're dealing with validation errors
-                       if (actionContext.ModelState.ErrorCount > 0
-                          && actionExecutingContext?.ActionArguments.Count == actionContext.ActionDescriptor.Parameters.Count)
-                       {
-                           return new UnprocessableEntityObjectResult(actionContext.ModelState);
-                       }
-
-                       // if one of the keys wasn't correctly found / couldn't be parsed
-                       // we're dealing with null/unparsable input
-                       return new BadRequestObjectResult(actionContext.ModelState);
-                   };
-               });
-
-                services.AddAuthentication("Bearer")
-               .AddIdentityServerAuthentication(options =>
-               {
-                   if (_env.IsProduction())
-                   {
-                       options.Authority = "https://abs.cicononline.com/zeon";
-                       options.RequireHttpsMetadata = true;
-                   }
-                   else
-                   {
-                       options.Authority = "https://localhost:5001";
-                       options.RequireHttpsMetadata = true;
-                   }
-
-                   options.ApiName = "abscoreapi";
-                   options.SaveToken = true;
-               });
-
-
-                services.AddAutoMapper(typeof(Startup).GetTypeInfo().Assembly);
-
-#if DEBUG
-                services.AddSwaggerGen(setupAction =>
-                {
-                    setupAction.SwaggerDoc("LibraryOpenAPISpecification",
-                        new OpenApiInfo()
-                        {
-                            Title = "Library API",
-                            Version = "1"
-                        });
-
-                    //  setupAction.AddFluentValidationRules();
-
-                    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-                    setupAction.IncludeXmlComments(xmlCommentsFullPath);
-
-                });
-
-#endif
 
 
             });
+
+
+            services.Configure<ApiBehaviorOptions>(options =>
+           {
+               options.InvalidModelStateResponseFactory = actionContext =>
+               {
+                   var actionExecutingContext =
+                       actionContext as Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext;
+
+                   // if there are modelstate errors & all keys were correctly
+                   // found/parsed we're dealing with validation errors
+                   if (actionContext.ModelState.ErrorCount > 0
+                  && actionExecutingContext?.ActionArguments.Count == actionContext.ActionDescriptor.Parameters.Count)
+                   {
+                       return new UnprocessableEntityObjectResult(actionContext.ModelState);
+                   }
+
+                   // if one of the keys wasn't correctly found / couldn't be parsed
+                   // we're dealing with null/unparsable input
+                   return new BadRequestObjectResult(actionContext.ModelState);
+               };
+           });
+
+
+            services.AddAuthentication("Bearer")
+            .AddIdentityServerAuthentication(options =>
+            {
+                if (_env.IsProduction())
+                {
+                    options.Authority = "https://abs.cicononline.com/zeon";
+                    options.RequireHttpsMetadata = true;
+                }
+                else
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.RequireHttpsMetadata = true;
+                }
+
+                options.ApiName = "abscoreapi";
+                options.SaveToken = true;
+            });
+
+
+            services.AddAutoMapper(typeof(Startup).GetTypeInfo().Assembly);
+
+#if DEBUG
+
+
+            services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.SwaggerDoc("LibraryOpenAPISpecification",
+                    new OpenApiInfo()
+                    {
+                        Title = "Library API",
+                        Version = "1"
+                    });
+
+                //  setupAction.AddFluentValidationRules();
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
+
+            });
+
+#endif
         }
 
         // ConfigureContainer is where you can register things directly
@@ -187,18 +198,73 @@ namespace Jasmine.Abs.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddSerilog();
+
             if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+
+                    appBuilder.Run(async context =>
+                    {
+
+                        var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+                        if (exceptionHandlerFeature != null)
+                        {
+                            var logger = loggerFactory.CreateLogger("Global Exception Logger");
+                            logger.LogError(500, exceptionHandlerFeature.Error, exceptionHandlerFeature.Error.Message);
+                        }
+
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected fault happen. Please try again later").ConfigureAwait(false);
+                    });
+                });
+                app.UseHsts();
+            }
+
+
+            app.UseLogifyAlert(Configuration.GetSection("LogifyAlert"));
 
             app.UseHttpsRedirection();
 
+
             app.UseRouting();
 
+
+
+
             app.UseAuthorization();
+
+#if DEBUG
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setupAction =>
+            {
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json",
+                    "Library API");
+
+                setupAction.DefaultModelExpandDepth(2);
+                setupAction.DefaultModelRendering(ModelRendering.Model);
+                setupAction.DocExpansion(DocExpansion.List);
+
+                setupAction.RoutePrefix = string.Empty;
+
+                setupAction.DocumentTitle = "ABS Enterprise Core API Documentation";
+
+                setupAction.EnableFilter();
+
+                setupAction.EnableDeepLinking();
+                setupAction.DisplayOperationId();
+
+            });
+#endif
+
 
             app.UseEndpoints(endpoints =>
             {
