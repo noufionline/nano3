@@ -12,7 +12,7 @@ namespace Jasmine.Abs.Entities
     {
         public void ConfigureDesignTimeServices(IServiceCollection services)
         {
-            ReverseEngineerOptions options = ReverseEngineerOptions.DbContextAndEntities;
+           // ReverseEngineerOptions options = ReverseEngineerOptions.DbContextAndEntities;
 
             // Add custom template data
     
