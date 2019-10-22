@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
+using Jasmine.Abs.Api.Repositories.Contracts;
 using Jasmine.Abs.Entities.Models.Azman;
 using Jasmine.Abs.Entities.Models.Zeon;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,8 @@ namespace Jasmine.Abs.Api
                    .Where(t => t.Name.EndsWith("Repository"))
                    .AsImplementedInterfaces();
 
-
+  
+            builder.RegisterGeneric(typeof(ILookupItemRepository<>)).As(typeof(LookupItemRepository<>));
 
             builder.Register(context =>
             {
