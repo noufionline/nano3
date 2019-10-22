@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class TradeReferenceType
+    public partial class TradeReferenceType : TrackableEntityBase
     {
         public TradeReferenceType()
         {

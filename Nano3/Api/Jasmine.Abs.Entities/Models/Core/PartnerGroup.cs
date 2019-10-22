@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class PartnerGroup
+    public partial class PartnerGroup : TrackableEntityBase
     {
         public PartnerGroup()
         {

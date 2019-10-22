@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("PaymentTermsAll")]
-    public partial class PaymentTermsAll
+    public partial class PaymentTermsAll : TrackableEntityBase
     {
         [Key]
         [Column("Account_Code")]

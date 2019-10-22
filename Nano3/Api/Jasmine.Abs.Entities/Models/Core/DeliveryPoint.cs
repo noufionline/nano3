@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class DeliveryPoint
+    public partial class DeliveryPoint : TrackableEntityBase
     {
         public DeliveryPoint()
         {

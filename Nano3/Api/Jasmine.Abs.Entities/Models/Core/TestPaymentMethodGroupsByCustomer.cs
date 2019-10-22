@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("TestPaymentMethodGroupsByCustomer")]
-    public partial class TestPaymentMethodGroupsByCustomer
+    public partial class TestPaymentMethodGroupsByCustomer : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

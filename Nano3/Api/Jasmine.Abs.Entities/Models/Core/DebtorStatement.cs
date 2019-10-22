@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class DebtorStatement
+    public partial class DebtorStatement : TrackableEntityBase
     {
         public DebtorStatement()
         {

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("ApprovedOriginsForQuotation")]
-    public partial class ApprovedOriginsForQuotation
+    public partial class ApprovedOriginsForQuotation : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

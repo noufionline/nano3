@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class TaskAttachment
+    public partial class TaskAttachment : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

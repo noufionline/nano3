@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class PaymentReceiptVoucher
+    public partial class PaymentReceiptVoucher : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

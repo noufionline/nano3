@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("vQuotationStatus")]
-    public partial class VQuotationStatu
+    public partial class VQuotationStatu : TrackableEntityBase
     {
         public int Id { get; set; }
         [Required]

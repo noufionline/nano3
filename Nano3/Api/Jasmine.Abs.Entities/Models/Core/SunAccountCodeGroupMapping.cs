@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("SunAccountCodeGroupMapping")]
-    public partial class SunAccountCodeGroupMapping
+    public partial class SunAccountCodeGroupMapping : TrackableEntityBase
     {
         [Key]
         [StringLength(15)]

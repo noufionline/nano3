@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class ApplicationSetting
+    public partial class ApplicationSetting : TrackableEntityBase
     {
         [Key]
         [StringLength(250)]

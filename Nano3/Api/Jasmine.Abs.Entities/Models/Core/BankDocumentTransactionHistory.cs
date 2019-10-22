@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("BankDocumentTransactionHistory")]
-    public partial class BankDocumentTransactionHistory
+    public partial class BankDocumentTransactionHistory : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

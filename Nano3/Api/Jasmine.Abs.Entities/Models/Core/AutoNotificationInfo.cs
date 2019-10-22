@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Jasmine.Abs.Entities.Models.Core
 {
 [Table("AutoNotificationInfo")]
-    public partial class AutoNotificationInfo
+    public partial class AutoNotificationInfo : TrackableEntityBase
     {
         [Key]
         public int Id { get; set; }

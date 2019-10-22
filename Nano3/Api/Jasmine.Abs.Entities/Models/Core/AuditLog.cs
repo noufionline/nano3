@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class AuditLog
+    public partial class AuditLog : TrackableEntityBase
     {
         public AuditLog()
         {

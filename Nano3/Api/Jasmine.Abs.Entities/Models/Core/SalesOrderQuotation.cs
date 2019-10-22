@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class SalesOrderQuotation
+    public partial class SalesOrderQuotation : TrackableEntityBase
     {
         [Key]
         public int SalesOrderId { get; set; }

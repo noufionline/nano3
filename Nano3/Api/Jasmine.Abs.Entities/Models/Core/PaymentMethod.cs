@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Jasmine.Abs.Entities.Models.Core
 {
-    public partial class PaymentMethod
+    public partial class PaymentMethod : TrackableEntityBase
     {
         public PaymentMethod()
         {
