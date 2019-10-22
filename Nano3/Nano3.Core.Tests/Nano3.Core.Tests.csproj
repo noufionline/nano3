@@ -14,8 +14,4 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Nano3.Core\Nano3.Core.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -41,8 +41,6 @@ namespace Jasmine.Abs.Entities.Models.Zeon
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=192.168.30.31; Initial Catalog=ZEON; User Id=sa;pwd=fkt");
             }
         }
 

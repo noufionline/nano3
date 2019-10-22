@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nano3.Core", "Nano3.Core\Nano3.Core.csproj", "{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nano3.Core.Tests", "Nano3.Core.Tests\Nano3.Core.Tests.csproj", "{9DC015C2-B201-43FF-9E2E-D4989055F833}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{9740BF75-7D3D-438A-8727-CBA74A1439D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jasmine.Abs.Api", "Api\Jasmine.Abs.Api\Jasmine.Abs.Api.csproj", "{A2C694C7-9959-4753-89EF-B80B1306C791}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jasmine.Abs.Api", "Api\Jasmine.Abs.Api\Jasmine.Abs.Api.csproj", "{A2C694C7-9959-4753-89EF-B80B1306C791}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jasmine.Abs.Entities", "Api\Jasmine.Abs.Entities\Jasmine.Abs.Entities.csproj", "{E5D3B85A-4FA0-4D0A-8CD4-94C520F2CC1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jasmine.Abs.Entities", "Api\Jasmine.Abs.Entities\Jasmine.Abs.Entities.csproj", "{E5D3B85A-4FA0-4D0A-8CD4-94C520F2CC1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jasmine.Abs.Lookup", "Api\Jasmine.Abs.Lookup\Jasmine.Abs.Lookup.csproj", "{0AF21880-0406-4352-BADD-73C34116FE36}"
 EndProject
@@ -25,30 +21,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Debug|x64.Build.0 = Debug|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Publish|Any CPU.ActiveCfg = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Publish|Any CPU.Build.0 = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Publish|x64.ActiveCfg = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Publish|x64.Build.0 = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Release|x64.ActiveCfg = Release|Any CPU
-		{34FC5693-CEB8-4DC1-ACB7-EEC03B49D313}.Release|x64.Build.0 = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Debug|x64.Build.0 = Debug|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Publish|Any CPU.ActiveCfg = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Publish|Any CPU.Build.0 = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Publish|x64.ActiveCfg = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Publish|x64.Build.0 = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Release|x64.ActiveCfg = Release|Any CPU
-		{9DC015C2-B201-43FF-9E2E-D4989055F833}.Release|x64.Build.0 = Release|Any CPU
 		{A2C694C7-9959-4753-89EF-B80B1306C791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2C694C7-9959-4753-89EF-B80B1306C791}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2C694C7-9959-4753-89EF-B80B1306C791}.Debug|x64.ActiveCfg = Debug|Any CPU

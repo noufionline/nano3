@@ -5,13 +5,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\Noufal\source\repos\nano3\Nano3\Api\Jasmine.Abs.Api\Jasmine.Abs.Api.xml</DocumentationFile>
+    <DocumentationFile>Jasmine.Abs.Api.xml</DocumentationFile>
+    <NoWarn>1701;1702;CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.ValidateModel" Version="1.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="DevExpress.Data" Version="19.1.7" />
+    <PackageReference Include="DevExpress.Data" Version="19.2.2-beta" />
     <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5039" />
     <PackageReference Include="FluentDateTime" Version="2.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.5.0" />
@@ -26,8 +27,8 @@
     </PackageReference>
     
       <PackageReference Include="PolicyServer.Local" Version="2.0.0" />
-    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.2.13" />
-    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.2.13" />
+    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.3.8-rc" />
+    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.3.8-rc" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.1.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
@@ -40,22 +41,22 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
     <PackageReference Include="Slapper.AutoMapper" Version="2.0.0.9-beta" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
     
       <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.6.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.6.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.6.0" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.6.0" />
     <PackageReference Include="TrackableEntities.Common.Core" Version="3.0.0" />
     <PackageReference Include="TrackableEntities.EF.Core" Version="3.0.0" />
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.9" />
-    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.14" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.10" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.15" />
   </ItemGroup>
 
   <ItemGroup>

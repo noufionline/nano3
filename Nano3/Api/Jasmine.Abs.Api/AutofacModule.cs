@@ -1,10 +1,14 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Jasmine.Abs.Api.Repositories.Contracts;
+using Jasmine.Abs.Entities.Models.Abs;
 using Jasmine.Abs.Entities.Models.Azman;
 using Jasmine.Abs.Entities.Models.Zeon;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Reflection;
 
 namespace Jasmine.Abs.Api
@@ -20,7 +24,8 @@ namespace Jasmine.Abs.Api
                    .AsImplementedInterfaces();
 
   
-            builder.RegisterGeneric(typeof(ILookupItemRepository<>)).As(typeof(LookupItemRepository<>));
+            builder.RegisterGeneric(typeof(LookupItemRepository<>)).As(typeof(ILookupItemRepository<>));
+
 
             builder.Register(context =>
             {
@@ -33,59 +38,32 @@ namespace Jasmine.Abs.Api
 
                 return new ZeonContext(optionsBuilder.Options);
 
-            }).InstancePerRequest();
-
+            }).InstancePerLifetimeScope();
 
             builder.Register(context =>
             {
-                var cs = context.Resolve<IConfiguration>()
-                    .GetConnectionString("NetSqlAzman");
 
-                var optionsBuilder = new DbContextOptionsBuilder<NetSqlAzmanContext>()
+                var httpContextAccessor = context.Resolve<IHttpContextAccessor>();
+                if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("db", out var db))
+                {
+                    var cs = context.Resolve<IConfiguration>()
+                   .GetConnectionString("CICONABS");
+
+                    var connectionString = new SqlConnectionStringBuilder(cs) { InitialCatalog = db,DataSource="192.168.30.26" }.ToString();
+
+                    var optionsBuilder = new DbContextOptionsBuilder<AbsClassicContext>()
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseSqlServer(cs);
-                return new NetSqlAzmanContext(optionsBuilder.Options);
+                    .UseSqlServer(connectionString);
 
-            }).InstancePerRequest();
+                    return new AbsClassicContext(optionsBuilder.Options);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("abs db name not specified in request header");
+                }
 
+            }).InstancePerLifetimeScope();
 
-            //builder.Register(context =>
-            //{
-            //    var cs = context.Resolve<IConfiguration>().GetConnectionString("MSSQL2014").WithDb("ABS_SMS");
-
-            //    var optionsBuilder = new DbContextOptionsBuilder<SmsContext>()
-            //        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-            //        .UseSqlServer(cs);
-
-            //    return new SmsContext(optionsBuilder.Options);
-            //}).Transient();
-
-           // For<CiconContext>().Use(context =>
-           // {
-           //    var cs = context.GetInstance<IConfiguration>()
-           //        .GetConnectionString("MSSQL2014")
-           //        .WithDb("CICON");
-
-           //    var optionsBuilder = new DbContextOptionsBuilder<CiconContext>()
-           //        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-           //        .UseSqlServer(cs);
-
-           //    return new CiconContext(optionsBuilder.Options);
-           //}).Transient();
-
-
-            //For<LmsContext>().Use(context =>
-            //{
-            //    var cs = context.GetInstance<IConfiguration>()
-            //        .GetConnectionString("CICONABS")
-            //        .WithDb("Logistics");
-
-            //    var optionsBuilder = new DbContextOptionsBuilder<LmsContext>()
-            //        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-            //        .UseSqlServer(cs);
-
-            //    return new LmsContext(optionsBuilder.Options);
-            //}).Transient();
         }
     }
 }
