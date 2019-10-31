@@ -74,7 +74,6 @@ namespace Nano3.Core.Tests
         public void ShouldCallSaveWhenUpdate()
         {
             var mockRepository=new Mock<ICustomerRepository>();
-            mockRepository.Setup(x=> x.Save()).Verifiable();
             var vm=new CustomerViewModel(mockRepository.Object);
             vm.Update();
             mockRepository.Verify(x=> x.Save(),Times.Once);
