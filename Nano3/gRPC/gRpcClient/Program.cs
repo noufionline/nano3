@@ -1,4 +1,5 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,10 +19,10 @@ namespace gRpcClient
             IServiceCollection services = new ServiceCollection();
 
             services.AddTransient<AbsRefreshTokenHandler>();
-            services.AddSingleton<IApiTokenProvider,ApiTokenProvider>();
+            services.AddSingleton<IApiTokenProvider, ApiTokenProvider>();
 
-            services.AddHttpClient("zeon",c=> c.BaseAddress=new Uri("https://localhost:5001"));
-         
+            services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
+
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
@@ -34,17 +35,40 @@ namespace gRpcClient
             var b = services.BuildServiceProvider();
 
 
-            var sm=b.GetService<ISignInManager>();
+            var sm = b.GetService<ISignInManager>();
 
-            var result = await sm.SignInAsync("noufal@cicon.net","MtpsF42@",1);
-            
+            var result = await sm.SignInAsync("noufal@cicon.net", "MtpsF42@", 1);
+
 
             ICustomerService service = b.GetService<ICustomerService>();
-            var customers = await service.GetAllAsync();
-            foreach (var customer in customers)
+            try
             {
-                Console.WriteLine($"Customer :{customer.Name}");
+                var customers = await service.GetAllAsync();
+                foreach (var customer in customers)
+                {
+                    Console.WriteLine($"Customer :{customer.Name}");
+                }
             }
+            catch (RpcException e)
+            {
+                // ouch!
+                // lets print the gRPC error message
+                // which is "Length of `Name` cannot be more than 10 characters"
+                Console.WriteLine(e.Status.Detail);
+                // lets access the error code, which is `INVALID_ARGUMENT`
+                Console.WriteLine(e.Status.StatusCode);
+                // Want its int version for some reason?
+                // you shouldn't actually do this, but if you need for debugging,
+                // you can access `e.Status.StatusCode` which will give you `3`
+                Console.WriteLine((int)e.Status.StatusCode);
+                // Want to take specific action based on specific error?
+                if (e.Status.StatusCode == Grpc.Core.StatusCode.InvalidArgument)
+                {
+                    // do your thing
+                }
+            }
+
+
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
@@ -73,10 +97,10 @@ namespace gRpcClient
     public class SignInManager : ISignInManager
     {
 
-         private readonly IApiTokenProvider _apiTokenProvider;
+        private readonly IApiTokenProvider _apiTokenProvider;
         private readonly HttpClient _discoveryClient;
         private readonly IHttpClientFactory _factory;
-        public SignInManager(IHttpClientFactory factory, IApiTokenProvider apiTokenProvider) 
+        public SignInManager(IHttpClientFactory factory, IApiTokenProvider apiTokenProvider)
         {
             _factory = factory;
             _apiTokenProvider = apiTokenProvider;
@@ -86,7 +110,7 @@ namespace gRpcClient
 
         public Task<ClaimsPrincipal> SignInAsync(string userName, string password, int divisionId)
         {
-            return SignIn(userName,password,divisionId);
+            return SignIn(userName, password, divisionId);
         }
 
 
@@ -122,7 +146,7 @@ namespace gRpcClient
             _apiTokenProvider.ReSet(tokenResponse.AccessToken, tokenResponse.RefreshToken, expiresAt.ToString("o", CultureInfo.InvariantCulture));
 
             ClaimsIdentity newidentity = new ClaimsIdentity("Abs", "Email", ClaimTypes.Role);
-            newidentity.AddClaim(new Claim("DivisionId","1"));
+            newidentity.AddClaim(new Claim("DivisionId", "1"));
             return new ClaimsPrincipal(newidentity);
         }
 
