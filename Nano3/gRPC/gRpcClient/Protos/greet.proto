@@ -36,14 +36,18 @@ message CustomersResponse{
 }
 
 
-message Decimal {
+message DecimalValue {
 
-    // Whole units part of the amount
-    int64 units = 1;
+  // The whole units of the amount.
+  int64 units = 1;
 
-    // Nano units of the amount (10^-9)
-    // Must be same sign as units
-    sfixed32 nanos = 2;
+  // Number of nano (10^-9) units of the amount.
+  // The value must be between -999,999,999 and +999,999,999 inclusive.
+  // If `units` is positive, `nanos` must be positive or zero.
+  // If `units` is zero, `nanos` can be positive, zero, or negative.
+  // If `units` is negative, `nanos` must be negative or zero.
+  // For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+  int32 nanos = 2;
 }
 
 message Customer {
@@ -51,7 +55,7 @@ message Customer {
     string name = 2;
 	google.protobuf.Int32Value partnerId=3;
 	google.protobuf.Timestamp createdDate=4;
-    Decimal salary=5;
+    DecimalValue salary=5;
 }
 
 

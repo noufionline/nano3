@@ -49,7 +49,7 @@ namespace gRpcClient
                 var customers = await service.GetAllAsync();
                 foreach (var customer in customers)
                 {
-                    Console.WriteLine($"Customer :{customer.Name} - Created on : {customer.CreatedDate:dd-MMM-yyyy} - PartnerId : {customer.PartnerId}" );
+                    Console.WriteLine($"Customer :{customer.Name} - Salary {customer.Salary}" );
                 }
             }
             catch (RpcException e)
