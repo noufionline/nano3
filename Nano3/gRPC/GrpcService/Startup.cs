@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,7 +45,7 @@ namespace GrpcService
                 options.EnableDetailedErrors = true;
             });
 
-
+             services.AddAutoMapper(typeof(Startup).GetTypeInfo().Assembly);
         }
 
         // ConfigureContainer is where you can register things directly

@@ -43,7 +43,7 @@ namespace gRpcClient
             ICustomerService service = b.GetService<ICustomerService>();
             try
             {
-                var customers = await service.GetAllAsync();
+                var customers = await service.GetCustomersAsync();
                 foreach (var customer in customers)
                 {
                     Console.WriteLine($"Customer :{customer.Name}");
@@ -67,6 +67,9 @@ namespace gRpcClient
                     // do your thing
                 }
             }
+
+
+            
 
 
 

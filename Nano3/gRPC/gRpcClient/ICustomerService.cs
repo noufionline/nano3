@@ -7,5 +7,6 @@ namespace gRpcClient
     public interface ICustomerService
     {
         Task<List<Customer>> GetAllAsync();
+        Task<List<Customer>> GetCustomersAsync();
     }
 }

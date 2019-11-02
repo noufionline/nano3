@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using GrpcService;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -17,14 +18,25 @@ namespace gRpcClient
         }
         public async Task<List<Customer>> GetAllAsync()
         {
-            
+
             var customers = new List<Customer>();
 
             var db = "ABS_AUHStore";
 
-            var headers = new Metadata(){ {"db",db} };
+            var headers = new Metadata() { { "db", db } };
             
-            using (var call = _client.GetCustomers(new CustomersRequest { Id = 1 }, headers))
+            var response = await _client.GetCustomersAsync(new CustomersRequest { Id = 1 }, headers);
+
+            customers.AddRange(response.Customers);
+
+            return customers;
+        }
+
+
+        public async Task<List<Customer>> GetCustomersAsync()
+        {
+            var customers = new List<Customer>();
+            using (var call = _client.GetCustomersAsStreamAsync(new Empty(), new Metadata { { "db", "ABS_AUHStore" } }))
             {
                 await foreach (var customer in call.ResponseStream.ReadAllAsync())
                 {
@@ -34,5 +46,6 @@ namespace gRpcClient
 
             return customers;
         }
+
     }
 }

@@ -2,13 +2,16 @@ syntax = "proto3";
 
 option csharp_namespace = "GrpcService";
 
+import "google/protobuf/empty.proto";
+
 package Greet;
 
 // The greeting service definition.
 service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
-  rpc GetCustomers (CustomersRequest) returns (stream Customer);
+  rpc GetCustomers (CustomersRequest) returns (CustomersResponse);
+  rpc GetCustomersAsStreamAsync(.google.protobuf.Empty) returns (stream Customer);
 }
 
 // The request message containing the user's name.
