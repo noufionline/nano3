@@ -1,15 +1,10 @@
-﻿using Grpc.Core;
-using Grpc.Net.Client;
-using GrpcService;
+﻿using Grpc.Net.Client;
 using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using static GrpcService.Greeter;
 
@@ -23,19 +18,26 @@ namespace gRpcClient
             IServiceCollection services = new ServiceCollection();
 
             services.AddTransient<AbsRefreshTokenHandler>();
+            services.AddSingleton<IApiTokenProvider,ApiTokenProvider>();
 
-            services.AddHttpClient<IApiTokenProvider,ApiTokenProvider>
-                (client=> client.BaseAddress=new Uri("https://localhost:5001"));
-
+            services.AddHttpClient("zeon",c=> c.BaseAddress=new Uri("https://localhost:5001"));
+         
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
-               o.Address = new Uri("https://localhost:5002");
+                o.Address = new Uri("https://localhost:5002");
             }).AddHttpMessageHandler<AbsRefreshTokenHandler>();
 
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<ISignInManager, SignInManager>();
 
             var b = services.BuildServiceProvider();
+
+
+            var sm=b.GetService<ISignInManager>();
+
+            var result = await sm.SignInAsync("noufal@cicon.net","MtpsF42@",1);
+            
 
             ICustomerService service = b.GetService<ICustomerService>();
             var customers = await service.GetAllAsync();
@@ -48,202 +50,81 @@ namespace gRpcClient
             Console.ReadKey();
         }
 
-     
+
 
         private async static void CreateChannel(IServiceProvider provider, GrpcChannelOptions options)
         {
-           var x= provider.GetService<ApiTokenProvider>();
-           var token = await x.GetTokenAsync();
-          options.HttpClient.SetBearerToken(token);
+            var x = provider.GetService<ApiTokenProvider>();
+            var token = await x.GetTokenAsync();
+            options.HttpClient.SetBearerToken(token);
 
         }
 
-        
-       
-    }
-
-    public class AbsRefreshTokenHandler : DelegatingHandler
-    {
-
-        private readonly IApiTokenProvider _loginManager;
-
-        public AbsRefreshTokenHandler(IApiTokenProvider loginManager)
-        {
-            _loginManager = loginManager;
-        }
-
-        public AbsRefreshTokenHandler(HttpMessageHandler innerHandler, IApiTokenProvider loginManager) : base(
-            innerHandler)
-        {
-            _loginManager = loginManager;
-        }
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var token = await _loginManager.GetTokenAsync();
-
-            request.SetBearerToken(token);
-
-            return await base.SendAsync(request, cancellationToken);
-        }
 
 
     }
 
-    public class ApiTokenProvider : IApiTokenProvider
+
+    public interface ISignInManager
     {
-        private readonly HttpClient _client;
+        Task<ClaimsPrincipal> SignInAsync(string userName, string password, int divisionId);
+    }
 
-        public ApiTokenProvider(HttpClient client)
+    public class SignInManager : ISignInManager
+    {
+
+         private readonly IApiTokenProvider _apiTokenProvider;
+        private readonly HttpClient _discoveryClient;
+        private readonly IHttpClientFactory _factory;
+        public SignInManager(IHttpClientFactory factory, IApiTokenProvider apiTokenProvider) 
         {
-            _client = client;
+            _factory = factory;
+            _apiTokenProvider = apiTokenProvider;
+            _discoveryClient = _factory.CreateClient("zeon");
         }
-        public bool HasToken => !string.IsNullOrWhiteSpace(AccessToken);
-        public void ReSet(string accessToken, string refreshToken, string expiresAt)
+
+
+        public Task<ClaimsPrincipal> SignInAsync(string userName, string password, int divisionId)
         {
-            AccessToken = accessToken;
-            RefreshToken = refreshToken;
-            ExpiresAt = expiresAt;
+            return SignIn(userName,password,divisionId);
         }
 
 
-        public string AccessToken { get; private set; }
-        public string RefreshToken { get; private set; }
-
-        public string ExpiresAt { get; private set; }
 
 
-        public async Task<string> GetTokenAsync()
+        private async Task<ClaimsPrincipal> SignIn(string userName, string password, int divisionId)
         {
-            return "newToken";
+            DiscoveryDocumentResponse disco = await _discoveryClient.GetDiscoveryDocumentAsync();
 
-            bool expired = string.IsNullOrWhiteSpace(ExpiresAt) ||
-                           DateTime.Parse(ExpiresAt).AddSeconds(-60).ToUniversalTime() < DateTime.UtcNow;
-
-            //Debug.WriteLine($"Current Time : {DateTime.UtcNow}");
-            //Debug.WriteLine($"Expires at : {ExpiresAt}");
-
-            if (expired)
+            var tokenResponse = await _discoveryClient.RequestPasswordTokenAsync(new PasswordTokenRequest()
             {
-                DiscoveryDocumentResponse disco = await _client.GetDiscoveryDocumentAsync();
+                Address = disco.TokenEndpoint,
+                GrantType = "password",
 
 
-                string refreshtoken = RefreshToken;
-
-                var divisionId = Convert.ToInt32(ClaimsPrincipal.Current.FindFirst("divisionId")?.Value);
-
-                if (divisionId == 0)
-                    throw new InvalidOperationException("Division cannot be null. Please re login to continue...");
+                UserName = userName,
+                Password = password,
 
 
-                var response = await _client.RequestRefreshTokenAsync(new RefreshTokenRequest()
-                {
-                    Address = disco.TokenEndpoint,
+                Scope = "abscoreapi  offline_access",
+                ClientId = "abseROP",
+                ClientSecret = "e18ab171-8233-447b-bcb0-1e879613d141",
+                Parameters = { { "DivisionId", divisionId.ToString() } }
+            });
 
-                    ClientId = "abseROP",
-                    ClientSecret = "e18ab171-8233-447b-bcb0-1e879613d141",
-                    Parameters = { { "DivisionId", divisionId.ToString() } },
-                    RefreshToken = refreshtoken
-
-                });
-
-
-
-                if (!response.IsError)
-                {
-                    ExpiresAt = (DateTime.UtcNow + TimeSpan.FromSeconds(response.ExpiresIn)).ToString("o", CultureInfo.InvariantCulture);
-
-                    ReSet(response.AccessToken, response.RefreshToken, ExpiresAt);
-                }
+            if (tokenResponse.IsError)
+            {
+                return new ClaimsPrincipal(new ClaimsIdentity());
             }
 
-            return AccessToken;
+            DateTime expiresAt = DateTime.UtcNow + TimeSpan.FromSeconds(tokenResponse.ExpiresIn);
+
+            _apiTokenProvider.ReSet(tokenResponse.AccessToken, tokenResponse.RefreshToken, expiresAt.ToString("o", CultureInfo.InvariantCulture));
+
+            ClaimsIdentity newidentity = new ClaimsIdentity("Abs", "Email", ClaimTypes.Role);
+            newidentity.AddClaim(new Claim("DivisionId","1"));
+            return new ClaimsPrincipal(newidentity);
         }
 
-
-        public string GetAuthority()
-        {
-#if DEBUG
-            string environment = ConfigurationManager.AppSettings.Get("Environment");
-
-            if (environment == "Production")
-            {
-                return ConfigurationManager.AppSettings.Get("IdServerEndPoint");
-            }
-
-            return ConfigurationManager.AppSettings.Get("LocalIdServerEndPoint");
-#else
-            return ConfigurationManager.AppSettings["IdServerEndPoint"];
-#endif
-        }
-
-
-
-        public string GetApiEndPoint()
-        {
-#if DEBUG
-            string enviorment = ConfigurationManager.AppSettings.Get("Environment");
-            if (enviorment == "Production")
-            {
-                return ConfigurationManager.AppSettings.Get("HttpBaseAddress");
-            }
-
-            return ConfigurationManager.AppSettings.Get("LocalHttpBaseAddress");
-#else
-            return ConfigurationManager.AppSettings.Get("HttpBaseAddress");
-#endif
-        }
-
-    }
-
-
-    public interface IApiTokenProvider
-    {
-        bool HasToken { get; }
-        string AccessToken { get; }
-        string RefreshToken { get; }
-        string ExpiresAt { get; }
-        void ReSet(string accessToken, string refreshToken, string expiresAt);
-        Task<string> GetTokenAsync();
-        string GetApiEndPoint();
-        string GetAuthority();
-    }
-
-
-    public class CustomerService : ICustomerService
-    {
-        private readonly GreeterClient _client;
-
-        public CustomerService(GreeterClient client)
-        {
-            _client = client;
-        }
-        public async Task<List<Customer>> GetAllAsync()
-        {
-            //var channel = GrpcChannel.ForAddress("https://localhost:5001");
-            //var client = new Greeter.GreeterClient(channel);
-            var customers = new List<Customer>();
-
-            var token = "My Token";
-            var db = "ABS_AUHStore";
-
-            var headers = new Metadata();
-         //   headers.Add("Authorization", $"Bearer {token}");
-            headers.Add("db", db);
-
-            using (var call = _client.GetCustomers(new CustomersRequest { Id = 1 }, headers))
-            {
-                await foreach (var customer in call.ResponseStream.ReadAllAsync())
-                {
-                    customers.Add(customer);
-                }
-            }
-
-            return customers;
-        }
-    }
-
-    public interface ICustomerService
-    {
-        Task<List<Customer>> GetAllAsync();
     }
 }

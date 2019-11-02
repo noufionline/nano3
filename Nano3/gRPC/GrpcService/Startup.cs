@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ namespace GrpcService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
- 
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("protectedScope", policy =>
@@ -26,20 +27,26 @@ namespace GrpcService
                     policy.RequireClaim("scope", "grpc_protected_scope");
                 });
             });
- 
+
             services.AddAuthorizationPolicyEvaluator();
- 
-            services.AddAuthentication();
- 
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.ApiName = "abscoreapi";
+                    options.RequireHttpsMetadata = true;
+                });
+
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true;
             });
 
-           
+
         }
 
-         // ConfigureContainer is where you can register things directly
+        // ConfigureContainer is where you can register things directly
         // with Autofac. This runs after ConfigureServices so the things
         // here will override registrations made in ConfigureServices.
         // Don't build the container; that gets done for you by the factory.
@@ -57,6 +64,9 @@ namespace GrpcService
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
