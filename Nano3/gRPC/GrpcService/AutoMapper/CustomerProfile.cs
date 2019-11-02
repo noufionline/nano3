@@ -12,7 +12,8 @@ namespace GrpcService.AutoMapper
         {
               CreateMap<Jasmine.Abs.Entities.Models.Abs.Customer,Customer>()
                 .ForMember(d=> d.Id,opt=> opt.MapFrom(s=> s.CustomerId))
-                .ForMember(d=> d.Name,opt=> opt.MapFrom(s=> s.CustomerName));
+                .ForMember(d=> d.Name,opt=> opt.MapFrom(s=> s.CustomerName))
+                .ForMember(d=> d.PartnerId,opt=> opt.MapFrom(s=> s.PartnerId));
         }
     }
 }

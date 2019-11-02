@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using AutoMapper;
+using Grpc.Core;
 using Grpc.Net.Client;
 using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static GrpcService.Greeter;
+
 
 namespace gRpcClient
 {
@@ -22,7 +24,8 @@ namespace gRpcClient
             services.AddSingleton<IApiTokenProvider, ApiTokenProvider>();
 
             services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
-
+          //  services.AddAutoMapper
+            services.AddAutoMapper(typeof(Program).Assembly);
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
@@ -43,10 +46,10 @@ namespace gRpcClient
             ICustomerService service = b.GetService<ICustomerService>();
             try
             {
-                var customers = await service.GetCustomersAsync();
+                var customers = await service.GetAllAsync();
                 foreach (var customer in customers)
                 {
-                    Console.WriteLine($"Customer :{customer.Name}");
+                    Console.WriteLine($"Customer :{customer.Name} - Created on : {customer.CreatedDate:dd-MMM-yyyy} - PartnerId : {customer.PartnerId}" );
                 }
             }
             catch (RpcException e)

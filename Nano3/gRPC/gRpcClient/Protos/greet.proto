@@ -3,6 +3,9 @@ syntax = "proto3";
 option csharp_namespace = "GrpcService";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto"; // For Nullable Types (https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/protobuf-data-types)
+
 
 package Greet;
 
@@ -32,8 +35,24 @@ message CustomersResponse{
 	repeated Customer Customers =1;
 }
 
+
+message Decimal {
+
+    // Whole units part of the amount
+    int64 units = 1;
+
+    // Nano units of the amount (10^-9)
+    // Must be same sign as units
+    sfixed32 nanos = 2;
+}
+
 message Customer {
     int32 id = 1;
     string name = 2;
+	google.protobuf.Int32Value partnerId=3;
+	google.protobuf.Timestamp createdDate=4;
+    Decimal salary=5;
 }
+
+
 

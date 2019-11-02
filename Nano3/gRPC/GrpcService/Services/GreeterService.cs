@@ -22,7 +22,7 @@ namespace GrpcService
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GreeterService(ILogger<GreeterService> logger,AbsClassicContext context,IMapper mapper)
+        public GreeterService(ILogger<GreeterService> logger, AbsClassicContext context, IMapper mapper)
         {
             _logger = logger;
             _context = context;
@@ -41,10 +41,23 @@ namespace GrpcService
 
         public override async Task<CustomersResponse> GetCustomers(CustomersRequest request, ServerCallContext context)
         {
-            var customers = await _context.Customers
+            var customers = await _context.Customers.Where(x => x.PartnerId != null)
                 .OrderBy(x => x.CustomerId)
                 .Take(10).ProjectTo<Customer>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+
+            var customersWithoutPartners = await _context.Customers.Where(x => x.PartnerId == null)
+                .OrderBy(x => x.CustomerId)
+                .Take(10).ProjectTo<Customer>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            customers.AddRange(customersWithoutPartners);
+
+            foreach (var customer in customers)
+            {
+                customer.CreatedDate = Timestamp.FromDateTimeOffset(DateTime.Today);
+                
+            }
             var response = new CustomersResponse();
             response.Customers.AddRange(customers);
             return response;
@@ -62,6 +75,9 @@ namespace GrpcService
                 await responseStream.WriteAsync(customer);
             }
         }
+
+
+       
 
         //public override async Task GetCustomersAsStreamAsync(IServerStreamWriter<Customer> responseStream, ServerCallContext context)
         //{

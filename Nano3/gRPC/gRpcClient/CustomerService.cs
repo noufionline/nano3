@@ -1,5 +1,7 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using gRpcClient.Mapper;
 using GrpcService;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -11,15 +13,17 @@ namespace gRpcClient
     public class CustomerService : ICustomerService
     {
         private readonly GreeterClient _client;
+        private readonly IMapper _mapper;
 
-        public CustomerService(GreeterClient client)
+        public CustomerService(GreeterClient client,IMapper mapper)
         {
             _client = client;
+            _mapper = mapper;
         }
-        public async Task<List<Customer>> GetAllAsync()
+        public async Task<List<CustomerList>> GetAllAsync()
         {
 
-            var customers = new List<Customer>();
+            var customers = new List<CustomerList>();
 
             var db = "ABS_AUHStore";
 
@@ -27,7 +31,7 @@ namespace gRpcClient
             
             var response = await _client.GetCustomersAsync(new CustomersRequest { Id = 1 }, headers);
 
-            customers.AddRange(response.Customers);
+            customers.AddRange(_mapper.Map<List<CustomerList>>(response.Customers));
 
             return customers;
         }
