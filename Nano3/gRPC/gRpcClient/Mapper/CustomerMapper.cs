@@ -12,7 +12,10 @@ namespace gRpcClient.Mapper
         {
             CreateMap<Customer, CustomerList>()
             //    .ForMember(d=> d.Salary,opt=> opt.MapFrom(s=> new GrpcDecimal(s.Salary.Units,s.Salary.Nanos)))
-                .ForMember(d => d.CreatedDate, opt => opt.MapFrom(s => s.CreatedDate.ToDateTimeOffset().LocalDateTime));
+                .ForMember(d => d.CreatedDate, opt => opt.MapFrom(s => s.CreatedDate.ToDateTimeOffset().LocalDateTime))
+                .ForMember(d=> d.Projects,opt=> opt.MapFrom(s=> s.Projects));
+
+            CreateMap<Project,ProjectList>();
         }
 
     }
@@ -57,6 +60,13 @@ namespace gRpcClient.Mapper
 
         public decimal Salary { get; set; }
 
+        public List<ProjectList> Projects{get;set;}
+    }
+
+    public class ProjectList
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     //TODO implement Decimal Conversion

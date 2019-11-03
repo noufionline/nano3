@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static GrpcService.AutoMapper.CustomerProfile;
 
 namespace GrpcService
 {
@@ -41,28 +42,38 @@ namespace GrpcService
 
         public override async Task<CustomersResponse> GetCustomers(CustomersRequest request, ServerCallContext context)
         {
-            var customers = await _context.Customers.Where(x => x.PartnerId != null)
+            var customers = await _context.Customers
+                .Where(x => x.PartnerId != null && x.Projects.Count > 0)
                 .OrderBy(x => x.CustomerId)
-                .Take(10).ProjectTo<Customer>(_mapper.ConfigurationProvider)
+                .Take(10).ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            var customersWithoutPartners = await _context.Customers.Where(x => x.PartnerId == null)
+            var customersWithoutPartners = await _context
+                .Customers.Where(x => x.PartnerId == null)
                 .OrderBy(x => x.CustomerId)
-                .Take(10).ProjectTo<Customer>(_mapper.ConfigurationProvider)
+                .Take(10).ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             customers.AddRange(customersWithoutPartners);
 
-            foreach (var customer in customers)
-            {
-                customer.CreatedDate = Timestamp.FromDateTimeOffset(DateTime.Today);
-                customer.Salary = DecimalValue.FromDecimal(1000m);
 
-
-            }
             var response = new CustomersResponse();
-            response.Customers.AddRange(customers);
+
+            try
+            {
+                var grpcCustomers = _mapper.Map<List<Customer>>(customers);
+
+                response.Customers.AddRange(grpcCustomers);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+
+          
             return response;
+
         }
 
         public override async Task GetCustomersAsStreamAsync(Empty request, IServerStreamWriter<Customer> responseStream, ServerCallContext context)

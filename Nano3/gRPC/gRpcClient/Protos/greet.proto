@@ -56,6 +56,13 @@ message Customer {
 	google.protobuf.Int32Value partnerId=3;
 	google.protobuf.Timestamp createdDate=4;
     DecimalValue salary=5;
+	repeated Project projects=6;
+}
+
+message Project 
+{
+	int32 id=1;
+	string name=2;
 }
 
 
