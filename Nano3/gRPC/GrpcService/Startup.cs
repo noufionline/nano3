@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,7 +46,12 @@ namespace GrpcService
                 options.EnableDetailedErrors = true;
             });
 
-             services.AddAutoMapper(typeof(Startup).GetTypeInfo().Assembly);
+             services.AddAutoMapper(config=> 
+             {
+                 config.CreateMap<DateTime,Timestamp>().ConvertUsing(s=> Timestamp.FromDateTimeOffset(s));
+                 config.CreateMap<decimal,DecimalValue>().ConvertUsing(s=> DecimalValue.FromDecimal(s));
+             },typeof(Startup).GetTypeInfo().Assembly);
+            
         }
 
         // ConfigureContainer is where you can register things directly

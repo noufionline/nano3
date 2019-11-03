@@ -28,8 +28,6 @@ namespace GrpcService.AutoMapper
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.Salary, opt => opt.Ignore())
                 .ForMember(d => d.CreatedDate, opt => opt.Ignore())
-                .ForMember(d => d.Salary, opt => opt.ConvertUsing<DecimalFormatter,decimal>())
-                .ForMember(d => d.CreatedDate, opt => opt.ConvertUsing<DateFormatter,DateTime>())
                 .ForMember(d => d.Projects, opt => opt.MapFrom(s => s.Projects));
             CreateMap<ProjectDto, Project>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
@@ -37,25 +35,7 @@ namespace GrpcService.AutoMapper
 
         }
 
-        public class DateFormatter : IValueConverter<DateTime,Timestamp>
-        {
-            public Timestamp Convert(DateTime sourceMember, ResolutionContext context)
-            {
-                if(sourceMember==DateTime.MinValue)
-                    sourceMember=DateTime.Today;
-
-                 return Timestamp.FromDateTimeOffset(sourceMember);
-            }
-        }
-
-        public class DecimalFormatter : IValueConverter<decimal,DecimalValue>
-        {
-            public DecimalValue  Convert(decimal sourceMember, ResolutionContext context)
-            {
-                return DecimalValue.FromDecimal(sourceMember);
-            }
-        }
-
+      
         public class CustomerDto
         {
             public int Id { get; set; }

@@ -25,7 +25,7 @@ namespace gRpcClient
 
             var customers = new List<CustomerList>();
 
-            var db = "ABS_AUHStore";
+            var db = "ABS_CAGEF1";
 
             var headers = new Metadata() { { "db", db } };
             
@@ -40,7 +40,7 @@ namespace gRpcClient
         public async Task<List<Customer>> GetCustomersAsync()
         {
             var customers = new List<Customer>();
-            using (var call = _client.GetCustomersAsStreamAsync(new Empty(), new Metadata { { "db", "ABS_AUHStore" } }))
+            using (var call = _client.GetCustomersAsStreamAsync(new Empty(), new Metadata { { "db", "ABS_CBF2" } }))
             {
                 await foreach (var customer in call.ResponseStream.ReadAllAsync())
                 {
