@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class AspNetUserToken
+    public partial class AspNetUserToken : TrackableEntityBase
     {
         public string UserId { get; set; }
         public string LoginProvider { get; set; }

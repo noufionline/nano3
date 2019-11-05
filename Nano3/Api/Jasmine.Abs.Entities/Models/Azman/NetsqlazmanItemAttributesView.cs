@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class NetsqlazmanItemAttributesView
+    public partial class NetsqlazmanItemAttributesView : TrackableEntityBase
     {
         public int ItemId { get; set; }
         public int ApplicationId { get; set; }

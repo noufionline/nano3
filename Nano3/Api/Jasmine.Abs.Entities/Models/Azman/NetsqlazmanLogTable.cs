@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class NetsqlazmanLogTable
+    public partial class NetsqlazmanLogTable : TrackableEntityBase
     {
         public int LogId { get; set; }
         public DateTime LogDateTime { get; set; }

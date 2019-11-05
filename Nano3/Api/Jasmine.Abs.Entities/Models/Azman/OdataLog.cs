@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class OdataLog
+    public partial class OdataLog : TrackableEntityBase
     {
         public int Id { get; set; }
         public string Message { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class PersistedGrant
+    public partial class PersistedGrant : TrackableEntityBase
     {
         public string Key { get; set; }
         public string Type { get; set; }

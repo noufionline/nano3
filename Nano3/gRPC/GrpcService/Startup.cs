@@ -7,9 +7,14 @@ using Autofac;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using IdentityServer4.AccessTokenValidation;
+using Jasmine.Abs.Api.PolicyServer;
+using Jasmine.Abs.Entities.Models.Azman;
+using Jasmine.Abs.Entities.Models.Zeon;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -19,19 +24,35 @@ namespace GrpcService
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+
+        private readonly IWebHostEnvironment _environment;
+
+        public IConfiguration Configuration { get; }
+
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
+        {
+            _environment = environment;
+            Configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("protectedScope", policy =>
-                {
-                    policy.RequireClaim("scope", "grpc_protected_scope");
-                });
-            });
 
-            services.AddAuthorizationPolicyEvaluator();
+            //services.AddHttpContextAccessor();
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("protectedScope", policy =>
+            //    {
+            //        policy.RequireClaim("scope", "grpc_protected_scope");
+            //    });
+            //});
+
+            services.AddAbsAuthorization()
+              .AddAuthorizationPermissionPolicies();
+
+            //  services.AddAuthorizationPolicyEvaluator();
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
@@ -41,17 +62,38 @@ namespace GrpcService
                     options.RequireHttpsMetadata = true;
                 });
 
+
+            //if (_environment.IsDevelopment())
+            //{
+            //    services.AddTestAuthorization()
+            //        .AddAuthorizationPermissionPolicies();
+            //    // services.For<IAuthorizationService>().Use<TestAuthorizationService>();
+
+            //}
+            //else
+            //{
+
+
+            //}
+
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true;
             });
 
-             services.AddAutoMapper(config=> 
-             {
-                 config.CreateMap<DateTime,Timestamp>().ConvertUsing(s=> Timestamp.FromDateTimeOffset(s));
-                 config.CreateMap<decimal,DecimalValue>().ConvertUsing(s=> DecimalValue.FromDecimal(s));
-             },typeof(Startup).GetTypeInfo().Assembly);
-            
+            services.AddAutoMapper(config =>
+            {
+                config.CreateMap<DateTime, Timestamp>().ConvertUsing(s => Timestamp.FromDateTimeOffset(s));
+                config.CreateMap<decimal, DecimalValue>().ConvertUsing(s => DecimalValue.FromDecimal(s));
+            }, typeof(Startup).GetTypeInfo().Assembly);
+
+
+            services.AddDbContext<ZeonContext>(builder =>
+                builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
+
+            services.AddDbContext<NetSqlAzmanContext>(builder =>
+                builder.UseSqlServer(Configuration.GetConnectionString("NetSqlAzman")), ServiceLifetime.Transient);
+
         }
 
         // ConfigureContainer is where you can register things directly

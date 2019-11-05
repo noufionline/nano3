@@ -21,13 +21,15 @@ namespace GrpcService
         private readonly ILogger<GreeterService> _logger;
         private readonly AbsClassicContext _context;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuthorizationService _authz;
 
-        public GreeterService(ILogger<GreeterService> logger, AbsClassicContext context, IMapper mapper)
+        public GreeterService(ILogger<GreeterService> logger,
+            AbsClassicContext context, IMapper mapper, IAuthorizationService authz)
         {
             _logger = logger;
             _context = context;
             _mapper = mapper;
+            _authz = authz;
         }
 
         [AllowAnonymous]
@@ -42,6 +44,14 @@ namespace GrpcService
 
         public override async Task<CustomersResponse> GetCustomers(CustomersRequest request, ServerCallContext context)
         {
+            var user = context.GetHttpContext().User;
+            AuthorizationResult result = await _authz.AuthorizeAsync(user, "CreateDebtorStatement");
+
+            if (!result.Succeeded)
+            {
+                throw new RpcException(Status.DefaultCancelled);
+            }
+
             var customers = await _context.Customers
                 .Where(x => x.PartnerId != null && x.Projects.Count > 0)
                 .OrderBy(x => x.CustomerId)
@@ -56,6 +66,11 @@ namespace GrpcService
 
             customers.AddRange(customersWithoutPartners);
 
+            foreach (var customer in customers)
+            {
+                customer.CreatedDate = DateTime.Today;
+                customer.Salary = 10000;
+            }
 
             var response = new CustomersResponse();
 
@@ -71,13 +86,24 @@ namespace GrpcService
             }
 
 
-          
+
             return response;
 
         }
 
         public override async Task GetCustomersAsStreamAsync(Empty request, IServerStreamWriter<Customer> responseStream, ServerCallContext context)
         {
+
+
+            var user = context.GetHttpContext().User;
+            AuthorizationResult result = await _authz.AuthorizeAsync(user, "CreateDebtorStatement");
+
+            if (!result.Succeeded)
+            {
+                throw new RpcException(Status.DefaultCancelled);
+            }
+
+
             var customers = await _context.Customers
             .OrderBy(x => x.CustomerId)
             .Take(10).ProjectTo<Customer>(_mapper.ConfigurationProvider)

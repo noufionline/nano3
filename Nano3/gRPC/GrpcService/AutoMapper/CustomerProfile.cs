@@ -29,6 +29,7 @@ namespace GrpcService.AutoMapper
                 .ForMember(d => d.Salary, opt => opt.Ignore())
                 .ForMember(d => d.CreatedDate, opt => opt.Ignore())
                 .ForMember(d => d.Projects, opt => opt.MapFrom(s => s.Projects));
+
             CreateMap<ProjectDto, Project>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name));

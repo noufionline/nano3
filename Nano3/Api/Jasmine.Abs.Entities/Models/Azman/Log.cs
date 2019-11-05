@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class Log
+    public partial class Log : TrackableEntityBase
     {
         public int Id { get; set; }
         public string Application { get; set; }

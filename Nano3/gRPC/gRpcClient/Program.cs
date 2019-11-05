@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using IdentityModel.Client;
@@ -25,7 +26,11 @@ namespace gRpcClient
 
             services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
           //  services.AddAutoMapper
-            services.AddAutoMapper(typeof(Program).Assembly);
+            services.AddAutoMapper(options=> 
+            {
+                //options.CreateMap<Timestamp,DateTime>()
+                //.ForMember(d=> d,opt=> opt.MapFrom(s=> s.ToDateTimeOffset().LocalDateTime));
+            },typeof(Program).Assembly);
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {

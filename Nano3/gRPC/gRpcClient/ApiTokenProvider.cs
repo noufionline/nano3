@@ -44,7 +44,6 @@ namespace gRpcClient
             {
                 DiscoveryDocumentResponse disco = await _client.GetDiscoveryDocumentAsync();
 
-
                 string refreshtoken = RefreshToken;
 
                 var divisionId = Convert.ToInt32(ClaimsPrincipal.Current.FindFirst("divisionId")?.Value);

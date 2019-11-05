@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class NetsqlazmanApplicationGroupMembersTable
+    public partial class NetsqlazmanApplicationGroupMembersTable : TrackableEntityBase
     {
         public int ApplicationGroupMemberId { get; set; }
         public int ApplicationGroupId { get; set; }

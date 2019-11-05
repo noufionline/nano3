@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class AspNetRoleClaim
+    public partial class AspNetRoleClaim : TrackableEntityBase
     {
         public int Id { get; set; }
         public string ClaimType { get; set; }

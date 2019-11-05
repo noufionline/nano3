@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Jasmine.Abs.Entities.Models.Azman
 {
-    public partial class ApiSecret
+    public partial class ApiSecret : TrackableEntityBase
     {
         public int Id { get; set; }
         public int ApiResourceId { get; set; }
