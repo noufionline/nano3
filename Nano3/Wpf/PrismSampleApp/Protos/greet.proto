@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto"; // For Nullable Types (https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/protobuf-data-types)
+
+
+package Greet;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetCustomers (CustomersRequest) returns (CustomersResponse);
+  rpc GetCustomersAsStreamAsync(.google.protobuf.Empty) returns (stream Customer);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}
+
+message CustomersRequest{
+	int32 id=1;
+}
+
+message CustomersResponse{
+	repeated Customer Customers =1;
+}
+
+
+message DecimalValue {
+
+  // The whole units of the amount.
+  int64 units = 1;
+
+  // Number of nano (10^-9) units of the amount.
+  // The value must be between -999,999,999 and +999,999,999 inclusive.
+  // If `units` is positive, `nanos` must be positive or zero.
+  // If `units` is zero, `nanos` can be positive, zero, or negative.
+  // If `units` is negative, `nanos` must be negative or zero.
+  // For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+  int32 nanos = 2;
+}
+
+message Customer {
+    int32 id = 1;
+    string name = 2;
+	google.protobuf.Int32Value partnerId=3;
+	google.protobuf.Timestamp createdDate=4;
+    DecimalValue salary=5;
+	repeated Project projects=6;
+}
+
+message Project 
+{
+	int32 id=1;
+	string name=2;
+}
+
+
+

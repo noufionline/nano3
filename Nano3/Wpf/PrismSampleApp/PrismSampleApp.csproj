@@ -9,17 +9,34 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DevExpressMvvm" Version="19.2.3" />
+    <None Remove="Protos\greet.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="19.2.3" />
+    <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="19.2.3" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.24.0" />
     <PackageReference Include="MediaTypeMap" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.0" />
-    <PackageReference Include="PostSharp" Version="6.3.9" />
+      <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.24.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.10.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.24.0" PrivateAssets="All" />
+    <PackageReference Include="IdentityModel" Version="4.1.0" />
+    <PackageReference Include="PostSharp" Version="6.3.10" />
+    <PackageReference Include="PostSharp.Patterns.Model" Version="6.3.10" />
     <PackageReference Include="Prism.Unity" Version="7.2.0.1367" />
-     <PackageReference Include="Unity.Microsoft.DependencyInjection">
+    <PackageReference Include="Unity.Microsoft.DependencyInjection">
       <Version>5.10.2</Version>
     </PackageReference>
     <PackageReference Include="Unity.RegistrationByConvention">
       <Version>5.11.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\greet.proto">
+      <GrpcServices>Client</GrpcServices>
+    </Protobuf>
   </ItemGroup>
 </Project>
