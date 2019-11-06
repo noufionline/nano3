@@ -7,7 +7,7 @@ namespace PrismSampleApp
 {
     public interface ICustomerService
     {
-        Task<List<CustomerList>> GetAllAsync();
+        Task<List<CustomerList>> GetAllAsync(string dbName);
         Task<List<Customer>> GetCustomersAsync();
     }
 }

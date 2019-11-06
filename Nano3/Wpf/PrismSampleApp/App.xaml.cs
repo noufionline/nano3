@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DevExpress.Xpf.Core;
 using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
@@ -22,6 +23,11 @@ namespace PrismSampleApp
     /// </summary>
     public partial class App
     {
+
+        public App()
+        {
+             ApplicationThemeHelper.ApplicationThemeName = "VS2017Dark";
+        }
         protected override Window CreateShell()
         {
             return Container.Resolve<MainWindow>();

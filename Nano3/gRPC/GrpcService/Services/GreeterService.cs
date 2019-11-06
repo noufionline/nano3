@@ -55,13 +55,13 @@ namespace GrpcService
             var customers = await _context.Customers
                 .Where(x => x.PartnerId != null && x.Projects.Count > 0)
                 .OrderBy(x => x.CustomerId)
-                .Take(10).ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             var customersWithoutPartners = await _context
                 .Customers.Where(x => x.PartnerId == null)
                 .OrderBy(x => x.CustomerId)
-                .Take(10).ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             customers.AddRange(customersWithoutPartners);

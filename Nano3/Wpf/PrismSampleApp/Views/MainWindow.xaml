@@ -1,14 +1,32 @@
-﻿<Window x:Class="PrismSampleApp.Views.MainWindow"
+﻿<dx:ThemedWindow
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" x:Class="PrismSampleApp.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:grid="clr-namespace:DevExpress.Xpf.Grid;assembly=DevExpress.Xpf.Grid.v19.2"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}" Height="350" Width="525" >
+    <dx:ThemedWindow.Resources>
+        <dxmvvm:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </dx:ThemedWindow.Resources>
     <Grid>
         <!--<ContentControl prism:RegionManager.RegionName="ContentRegion" />-->
         <dxlc:LayoutControl Orientation="Vertical">
+            <dxlc:LayoutItem Label="Division" LabelPosition="Top">
+                <dxe:ComboBoxEdit x:Name="DivisionsComboBox" ItemsSource="{Binding Divisions}" DisplayMember="Name" ValueMember="DbName">
+                    <dxmvvm:Interaction.Behaviors>
+                        <dxmvvm:EventToCommand Command="{Binding FetchDataCommand}" CommandParameter="{Binding ElementName=DivisionsComboBox,Path=EditValue}"
+                                               EventName="EditValueChanged"
+                                               />
+                    </dxmvvm:Interaction.Behaviors>
+                    <dxe:ComboBoxEdit.Buttons>
+                        <dxe:LoadingIndicatorButtonInfo Visibility="{Binding FetchDataCommand.IsExecuting,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </dxe:ComboBoxEdit.Buttons>
+                </dxe:ComboBoxEdit>
+            </dxlc:LayoutItem>
             <dxlc:LayoutGroup>
                 <grid:GridControl ItemsSource="{Binding Customers}">
                     <grid:GridControl.Columns>
@@ -19,9 +37,16 @@
                     </grid:GridControl.View>
                 </grid:GridControl>
             </dxlc:LayoutGroup>
-            <Button Content="Open File" Height="25" Width="150" Command="{Binding OpenFileCommand}" />
-            <Button Content="Fetch Data" Height="25" Width="150" Command="{Binding FetchDataCommand}" />
-
+            <dxlc:LayoutItem>
+                <TextBlock Text="{Binding Customers.Count}"/>
+            </dxlc:LayoutItem>
+            <dxlc:LayoutItem>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Login" Height="25" Width="150" Command="{Binding LoginCommand}" Margin="5"/>
+                    <Button Content="Open File" Height="25" Width="150" Command="{Binding OpenFileCommand}" Margin="5"/>
+                    <Button Content="Fetch Data" Height="25" Width="150" Command="{Binding FetchDataCommand}" CommandParameter="{Binding ElementName=DivisionsComboBox, Path=EditValue}" Margin="5"/>
+                </StackPanel>
+            </dxlc:LayoutItem>
         </dxlc:LayoutControl>
     </Grid>
-</Window>
+</dx:ThemedWindow>

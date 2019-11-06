@@ -20,14 +20,14 @@ namespace PrismSampleApp
             _client = client;
             _mapper = mapper;
         }
-        public async Task<List<CustomerList>> GetAllAsync()
+        public async Task<List<CustomerList>> GetAllAsync(string dbName)
         {
 
             var customers = new List<CustomerList>();
 
-            var db = "ABS_CAGEF1";
+            
 
-            var headers = new Metadata() { { "db", db } };
+            var headers = new Metadata() { { "db", dbName } };
             
             var response = await _client.GetCustomersAsync(new CustomersRequest { Id = 1 }, headers);
 
