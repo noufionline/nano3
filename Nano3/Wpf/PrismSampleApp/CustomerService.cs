@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static GrpcService.Greeter;
+using System;
+using PrismSampleApp.Dto;
 
 namespace PrismSampleApp
 {
@@ -49,6 +51,29 @@ namespace PrismSampleApp
             }
 
             return customers;
+        }
+
+        public async Task<List<SteelDeliveryNoteDetailReportData>> GetDeliveryDetailsReportDataAsync(SteelDeliveryNoteDetailReportCriteriaRequest criteria)
+        {
+            var items = new List<SteelDeliveryNoteDetailReportData>();
+
+            
+
+            var headers = new Metadata() { { "db", criteria.DbName} };
+            using (var call = _client.GetDeliveryNoteDetailsReportData(new SteelDeliveryNoteDetailReportCriteriaRequest
+            {
+                FromDate=Timestamp.FromDateTimeOffset(DateTime.Today),
+                ToDate=Timestamp.FromDateTimeOffset(DateTime.Today) ,
+                DbName=criteria.DbName
+            },headers))
+            {
+                await foreach (var item in call.ResponseStream.ReadAllAsync())
+                {
+                    items.Add(_mapper.Map<SteelDeliveryNoteDetailReportData>(item));
+                }
+            }
+
+            return items;
         }
 
     }

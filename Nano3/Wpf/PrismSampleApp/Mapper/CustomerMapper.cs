@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GrpcService;
+using PrismSampleApp.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,8 @@ namespace PrismSampleApp.Mapper
                 .ForMember(d=> d.Projects,opt=> opt.MapFrom(s=> s.Projects));
 
             CreateMap<Project,ProjectList>();
+
+            CreateMap<SteelDeliveryNoteDetailReportDataResponse,SteelDeliveryNoteDetailReportData>();
         }
 
     }

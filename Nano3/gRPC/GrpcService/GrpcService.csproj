@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.23.1" />
      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
      <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
@@ -27,11 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
   <ItemGroup>
-    <WCFMetadata Include="Connected Services" />
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>

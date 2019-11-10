@@ -11,6 +11,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Windows;
+using DelegateCommand = Prism.Commands.DelegateCommand;
 
 namespace PrismSampleApp.ViewModels
 {
@@ -22,9 +24,10 @@ namespace PrismSampleApp.ViewModels
         private readonly ISignInManager _signInManager;
         private readonly IApiTokenProvider _tokenProvider;
 
-        public MainWindowViewModel(IAlfrescoClient alfrescoClient, ICustomerService service, ISignInManager signInManager,IApiTokenProvider tokenProvider)
+        public MainWindowViewModel(IAlfrescoClient alfrescoClient, 
+            ICustomerService service, ISignInManager signInManager,IApiTokenProvider tokenProvider)
         {
-            OpenFileCommand = new AsyncCommand(ExecuteOpenFile, CanExecuteOpenFile);
+            OpenFileCommand = new AsyncCommand<string>(ExecuteOpenFile, CanExecuteOpenFile);
             _alfrescoClient = alfrescoClient;
             _service = service;
             _signInManager = signInManager;
@@ -33,7 +36,7 @@ namespace PrismSampleApp.ViewModels
             LoginCommand = new AsyncCommand(ExecuteLoginAsync, CanExecuteLogin);
         }
 
-
+       
         public List<DivisionInfo> Divisions{get;set;} = DivisionInfo.GetAll();
 
         public string SelectedDb {get;set;}
@@ -50,7 +53,9 @@ namespace PrismSampleApp.ViewModels
 
         private async Task ExecuteLoginAsync()
         {
-            await _signInManager.SignInAsync("noufal@cicon.net", "MtpsF42@", 1);
+            var principal = await _signInManager.SignInAsync("noufal@cicon.net", "MtpsF42@", 1);
+            AppDomain.CurrentDomain.SetThreadPrincipal(principal);
+            MessageBox.Show("Login Success");
         }
 
         #endregion
@@ -63,6 +68,7 @@ namespace PrismSampleApp.ViewModels
 
         private async Task ExecuteFetchDataAsync(string dbName)
         {  
+            var pricipal = ClaimsPrincipal.Current;
             Customers = await _service.GetAllAsync(dbName);
         }
 
@@ -72,15 +78,27 @@ namespace PrismSampleApp.ViewModels
 
         #region OpenFileCommand
 
-        public AsyncCommand OpenFileCommand { get; set; }
+        public AsyncCommand<string> OpenFileCommand { get; set; }
 
-        protected bool CanExecuteOpenFile() => true;
+        protected bool CanExecuteOpenFile(string db) => !string.IsNullOrWhiteSpace(db);
 
-        private async Task ExecuteOpenFile()
+        private async Task ExecuteOpenFile(string db)
         {
-            var userName = "admin";
-            var password = "MtpsF42@Alfresco";
-            await _alfrescoClient.OpenFileAsync("8a4c343e-af89-4c84-94d8-cc431426be7a", userName, password);
+            //var path=@"C:\Users\Noufal\Downloads\41092_0.pdf";
+            //(Guid id, string version) result = await _alfrescoClient.AttachFileAsync(Guid.Parse("75faed7f-1bba-4877-aff5-a2fd37efd9bd"), "ACC-1234567.pdf", path,
+            //    new FileOptions
+            //    {
+            //        //Title = "Title",
+            //        //Comment = "Comment",
+            //        RelativePath = $"ACC/SHAMS",
+            //        //Description = "Description",
+            //        //MimeType = "application/pdf",
+            //        Overwrite = true
+            //    });
+            //// await _alfrescoClient.OpenFileAsync("8a4c343e-af89-4c84-94d8-cc431426be7a");
+            // await _alfrescoClient.OpenFileAsync(result.id);
+
+            var items= await _service.GetDeliveryDetailsReportDataAsync(new SteelDeliveryNoteDetailReportCriteriaRequest{ DbName=db });
         }
 
         #endregion

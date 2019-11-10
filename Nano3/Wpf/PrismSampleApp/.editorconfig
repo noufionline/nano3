@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CommandShouldBeInitializedAnalyzer: Command should be initialized
+dotnet_diagnostic.CommandShouldBeInitializedAnalyzer.severity = suggestion

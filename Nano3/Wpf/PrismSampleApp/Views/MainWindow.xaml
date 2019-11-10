@@ -43,7 +43,7 @@
             <dxlc:LayoutItem>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Login" Height="25" Width="150" Command="{Binding LoginCommand}" Margin="5"/>
-                    <Button Content="Open File" Height="25" Width="150" Command="{Binding OpenFileCommand}" Margin="5"/>
+                    <Button Content="Open File" Height="25" Width="150" Command="{Binding OpenFileCommand}" CommandParameter="{Binding ElementName=DivisionsComboBox,Path=EditValue}" Margin="5"/>
                     <Button Content="Fetch Data" Height="25" Width="150" Command="{Binding FetchDataCommand}" CommandParameter="{Binding ElementName=DivisionsComboBox, Path=EditValue}" Margin="5"/>
                 </StackPanel>
             </dxlc:LayoutItem>

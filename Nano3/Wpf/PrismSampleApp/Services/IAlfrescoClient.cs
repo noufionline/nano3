@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace PrismSampleApp.Services
 {
     public interface IAlfrescoClient
     {
-        Task OpenFileAsync(string fileId,string userName,string password);
+        Task<(System.Guid id, string version)> AttachFileAsync(System.Guid nodeId, string name, string path, FileOptions options);
+        Task OpenFileAsync(Guid fileId);
     }
 }

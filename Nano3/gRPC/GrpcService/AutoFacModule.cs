@@ -15,6 +15,7 @@ namespace GrpcService
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<AbsConnectionStringProvider>().As<IAbsConnectionStringProvider>();
             builder.Register(context =>
            {
 

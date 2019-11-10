@@ -1,18 +1,25 @@
 ﻿using AutoMapper;
 using DevExpress.Xpf.Core;
+using Google.Protobuf.WellKnownTypes;
 using IdentityModel.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
 using Prism.Unity;
 using PrismSampleApp.Services;
 using PrismSampleApp.Views;
+using RestSharp;
+using RestSharp.Authenticators;
 using System;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Windows;
 using Unity;
+using Unity.Injection;
 using Unity.Microsoft.DependencyInjection;
 using static GrpcService.Greeter;
 
@@ -26,7 +33,7 @@ namespace PrismSampleApp
 
         public App()
         {
-             ApplicationThemeHelper.ApplicationThemeName = "VS2017Dark";
+            ApplicationThemeHelper.ApplicationThemeName = "VS2017Dark";
         }
         protected override Window CreateShell()
         {
@@ -36,24 +43,39 @@ namespace PrismSampleApp
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
 
-            containerRegistry.RegisterSingleton<IAlfrescoClient,AlfrescoClient>();
-
+            containerRegistry.RegisterSingleton<IAlfrescoClient, AlfrescoClient>();
+            
             IUnityContainer container = containerRegistry.GetContainer();
+            
 
             var services = new ServiceCollection();
 
-
-            services.AddHttpClient("alfresco", client => client.BaseAddress = new Uri("http://192.168.30.179:8080/alfresco/api/"));
-          services.AddTransient<AbsRefreshTokenHandler>();
-            services.AddSingleton<IApiTokenProvider, ApiTokenProvider>();
-
-            services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
-          //  services.AddAutoMapper
-            services.AddAutoMapper(options=> 
+            services.AddAlfrescoClient(
+            client=> client.BaseAddress = new Uri("http://192.168.30.179:8080/alfresco/api/"),
+            alfresco=> 
             {
-                //options.CreateMap<Timestamp,DateTime>()
-                //.ForMember(d=> d,opt=> opt.MapFrom(s=> s.ToDateTimeOffset().LocalDateTime));
-            },typeof(App).Assembly);
+                alfresco.UserName=ConfigurationManager.AppSettings.Get("Alfresco_UserName");
+                alfresco.Password=ConfigurationManager.AppSettings.Get("Alfresco_Password");
+            });
+            
+            services.AddTransient<AbsRefreshTokenHandler>();
+            services.AddSingleton<IApiTokenProvider, ApiTokenProvider>();
+           
+            services.AddSingleton<IRestClient>(new RestClient("http://192.168.30.179:8080/alfresco/api/")
+            {
+                Authenticator= new HttpBasicAuthenticator("admin", "MtpsF42@Alfresco")
+            });
+            services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
+            //  services.AddAutoMapper
+            services.AddAutoMapper(options =>
+            {
+                options.CreateMap<DateTime, Timestamp>()
+                .ConvertUsing(s => Timestamp.FromDateTimeOffset(s));
+
+                options.CreateMap<Timestamp,DateTime>()
+                .ConvertUsing(s=> s.ToDateTimeOffset().LocalDateTime);
+
+            }, typeof(App).Assembly);
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
@@ -70,7 +92,7 @@ namespace PrismSampleApp
 
 
 
-      public interface ISignInManager
+    public interface ISignInManager
     {
         Task<ClaimsPrincipal> SignInAsync(string userName, string password, int divisionId);
     }

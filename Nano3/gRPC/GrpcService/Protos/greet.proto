@@ -14,8 +14,65 @@ service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
   rpc GetCustomers (CustomersRequest) returns (CustomersResponse);
-  rpc GetCustomersAsStreamAsync(.google.protobuf.Empty) returns (stream Customer);
+  rpc GetDeliveryNoteDetailsReportData (SteelDeliveryNoteDetailReportCriteriaRequest) returns (stream SteelDeliveryNoteDetailReportDataResponse);
+  rpc GetCustomersAsStreamAsync (.google.protobuf.Empty) returns (stream Customer);
 }
+
+message SteelDeliveryNoteDetailReportCriteriaRequest{
+	google.protobuf.Timestamp FromDate=1;
+	google.protobuf.Timestamp ToDate=2;
+	google.protobuf.Int32Value CustomerId=3;
+	google.protobuf.Int32Value ProjectId=4;
+	google.protobuf.Int32Value ProductGroupId=5;
+	google.protobuf.Int32Value ProductCategoryId=6;
+	google.protobuf.Int32Value ProductId=7;
+	google.protobuf.Int32Value MovementTypeId=8;
+	google.protobuf.Int32Value InvoicedById=9;
+	google.protobuf.Int32Value SalesOrderId=10;
+	google.protobuf.Int32Value DeliveryTypeId=11;
+	google.protobuf.Int32Value SubOrderId=12;
+	google.protobuf.Int32Value Delivered=13;
+	google.protobuf.Int32Value WeightType=14;
+	string dbName=15;
+}
+
+message SteelDeliveryNoteDetailReportDataResponse{
+	string Type=1;
+	int32 DONo=2;
+	google.protobuf.Timestamp Date=3;
+	google.protobuf.Timestamp DeliveredDate=4;
+	string CustomerName=5;
+	string SunAccountCode=6;
+	string VatRegNo=7;
+	string ProjectName=8;
+	string AccountCode=9;
+	string InvoicedByName=10;
+	string SuppliedBy=11;
+	string MovementType=12;
+	string DeliveryTypeName=13;
+	string ProductName=14;
+	string Abbr=15;
+	string Origin=16;
+	string OrderRef=17;
+	string SubOrderRef=18;
+	string Code=19;
+	string BBSRef=20;
+	string OtherRef=21;
+	DecimalValue D08MM=22;
+	DecimalValue D10MM=23;
+	DecimalValue D12MM=24;
+	DecimalValue D14MM=25;
+	DecimalValue D16MM=26;
+	DecimalValue D18MM=27;
+	DecimalValue D20MM=28;
+	DecimalValue D22MM=29;
+	DecimalValue D25MM=30;
+	DecimalValue D28MM=31;
+	DecimalValue D32MM=32;
+	DecimalValue D40MM=33;
+
+}
+
 
 // The request message containing the user's name.
 message HelloRequest {

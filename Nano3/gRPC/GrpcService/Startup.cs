@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
+using GrpcService.AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using Jasmine.Abs.Api.PolicyServer;
 using Jasmine.Abs.Entities.Models.Azman;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -83,18 +85,29 @@ namespace GrpcService
 
             services.AddAutoMapper(config =>
             {
-                config.CreateMap<DateTime, Timestamp>().ConvertUsing(s => Timestamp.FromDateTimeOffset(s));
+                config.CreateMap<DateTime, Timestamp>()
+                .ConvertUsing(d => d == DateTime.MinValue ? Timestamp.FromDateTimeOffset(DateTimeOffset.MinValue) : Timestamp.FromDateTimeOffset(d));
+
+                config.CreateMap<Timestamp, DateTime>()
+                .ConvertUsing(s => s.ToDateTimeOffset().LocalDateTime);
+
+                config.CreateMap<string, string>().ConvertUsing<NullStringConverter>();
+
                 config.CreateMap<decimal, DecimalValue>().ConvertUsing(s => DecimalValue.FromDecimal(s));
+
             }, typeof(Startup).GetTypeInfo().Assembly);
 
 
             services.AddDbContext<ZeonContext>(builder =>
                 builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
 
+            
             services.AddDbContext<NetSqlAzmanContext>(builder =>
                 builder.UseSqlServer(Configuration.GetConnectionString("NetSqlAzman")), ServiceLifetime.Transient);
 
         }
+
+     
 
         // ConfigureContainer is where you can register things directly
         // with Autofac. This runs after ConfigureServices so the things

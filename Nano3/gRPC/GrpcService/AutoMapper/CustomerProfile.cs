@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
+using GrpcService.Dto;
 using Microsoft.AspNetCore.Components.RenderTree;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EF = Jasmine.Abs.Entities.Models.Abs;
 namespace GrpcService.AutoMapper
 {
-    public class CustomerProfile : Profile
+    public partial class CustomerProfile : Profile
     {
         public CustomerProfile()
         {
@@ -19,39 +18,43 @@ namespace GrpcService.AutoMapper
             CreateMap<EF.Customer, CustomerDto>()
               .ForMember(d => d.Id, opt => opt.MapFrom(s => s.CustomerId))
               .ForMember(d => d.Name, opt => opt.MapFrom(s => s.CustomerName))
-              .ForMember(d => d.PartnerId, opt => opt.MapFrom(s => s.PartnerId))
               .ForMember(d => d.Projects, opt => opt.Ignore()); //opt.MapFrom(s => s.Projects));
 
             CreateMap<CustomerDto, Customer>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
-                .ForMember(d => d.PartnerId, opt => opt.MapFrom(s => s.PartnerId))
-                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.Salary, opt => opt.Ignore())
                 .ForMember(d => d.CreatedDate, opt => opt.Ignore());
-                //.ForMember(d => d.Projects, opt => opt.MapFrom(s => s.Projects));
+
+
+            CreateMap<SteelDeliveryNoteDetailReportCriteriaRequest, SteelDeliveryNoteDetailReportCriteriaDto>(MemberList.Destination);
+            CreateMap<SteelDeliveryNoteDetailReportData, SteelDeliveryNoteDetailReportDataResponse>().ReverseMap();
+                //.ForMember(d=> d.DeliveredDate,opt=> opt.AllowNull());
+                
+
+            //.ForMember(d => d.Projects, opt => opt.MapFrom(s => s.Projects));
 
             //CreateMap<ProjectDto, Project>()
             //    .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
             //    .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name));
 
         }
+    }
 
-      
-        public class CustomerDto
+
+    public class NullStringConverter : ITypeConverter<string, string>
+    {
+        public string Convert(string source)
         {
-            public int Id { get; set; }
-            public int? PartnerId { get; set; }
-            public string Name { get; set; }
-            public decimal Salary { get; set; }
-            public DateTime CreatedDate { get; set; }
-
-            public List<ProjectDto> Projects { get; set; }
+            return source ?? string.Empty;
         }
 
-        public class ProjectDto
+        public string Convert(string source, string destination, ResolutionContext context)
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
+            if (source == null)
+            {
+                return string.Empty;
+            }
+
+            return source;
         }
     }
 }

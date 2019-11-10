@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Extensions.DependencyInjection;
+using Dapper;
+using Dapper.FluentMap;
+using GrpcService.TypeMappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -13,6 +16,22 @@ namespace GrpcService
     {
         public static void Main(string[] args)
         {
+
+
+            FluentMapper.Initialize(cfg =>
+           {
+               cfg.AddMap(new SteelDeliveryNoteDetailReportDataMap());
+               cfg.AddMap(new SalesAndServicesThreadingDataMap());
+               cfg.AddMap(new SalesAndServicesOthersDataMap());
+               cfg.AddMap(new MaterialTransferSteelDataMap());
+               cfg.AddMap(new MaterialTransferOthersDataMap());
+               cfg.AddMap(new OtherSteelDeliveryReportDataMap());
+               cfg.AddMap(new ForProductionDataReportDataMap());
+
+           });
+
+            SqlMapper.AddTypeHandler(new TimestampMapper());
+
 
             CreateHostBuilder(args).Build().Run();
         }

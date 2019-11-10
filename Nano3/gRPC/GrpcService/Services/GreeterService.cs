@@ -1,17 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Dapper;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GrpcService.Dto;
 using Jasmine.Abs.Entities.Models.Abs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using static GrpcService.AutoMapper.CustomerProfile;
+using SqlConnection = System.Data.SqlClient.SqlConnection;
+using SqlConnectionStringBuilder = Microsoft.Data.SqlClient.SqlConnectionStringBuilder;
 
 namespace GrpcService
 {
@@ -19,14 +26,20 @@ namespace GrpcService
     public class GreeterService : Greeter.GreeterBase
     {
         private readonly ILogger<GreeterService> _logger;
+        private readonly IAbsConnectionStringProvider _connectionStringProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
         private readonly AbsClassicContext _context;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authz;
 
         public GreeterService(ILogger<GreeterService> logger,
+          IAbsConnectionStringProvider connectionStringProvider,
             AbsClassicContext context, IMapper mapper, IAuthorizationService authz)
         {
             _logger = logger;
+            _connectionStringProvider = connectionStringProvider;
+            
             _context = context;
             _mapper = mapper;
             _authz = authz;
@@ -116,6 +129,32 @@ namespace GrpcService
         }
 
 
+        public override async Task GetDeliveryNoteDetailsReportData(SteelDeliveryNoteDetailReportCriteriaRequest request, IServerStreamWriter<SteelDeliveryNoteDetailReportDataResponse> responseStream, ServerCallContext context)
+        {
+            var criteria = _mapper.Map<SteelDeliveryNoteDetailReportCriteriaDto>(request);
+            
+            var connectionString = _connectionStringProvider.ConnectionString;
+            if(!string.IsNullOrWhiteSpace(connectionString))
+            {
+                using (var con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    var data = await con.QueryAsync<SteelDeliveryNoteDetailReportData>("[Reports].[GetDeliveryNoteDetails_SalesAndServices]", criteria, commandType: System.Data.CommandType.StoredProcedure).ConfigureAwait(false);
+
+                    var items = _mapper.Map<List<SteelDeliveryNoteDetailReportDataResponse>>(data);
+
+                    foreach (var item in items)
+                    {
+                        await responseStream.WriteAsync(item);
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Database is not specified");
+            }
+
+        }
 
 
         //public override async Task GetCustomersAsStreamAsync(IServerStreamWriter<Customer> responseStream, ServerCallContext context)
@@ -146,30 +185,22 @@ namespace GrpcService
 
     }
 
-    public partial class DecimalValue
+    public interface IAbsConnectionStringProvider
     {
-        private const decimal NanoFactor = 1_000_000_000;
+        string ConnectionString { get; }
+    }
 
-        public DecimalValue(long units, int nanos)
+    public class AbsConnectionStringProvider : IAbsConnectionStringProvider
+    {
+        public AbsConnectionStringProvider(IHttpContextAccessor httpContextAccessor,IConfiguration configuration)
         {
-            Units = units;
-            Nanos = nanos;
+            if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("db", out var db))
+            {
+                var connectionString = configuration.GetConnectionString("CICONABS");
+                var builder = new SqlConnectionStringBuilder(connectionString) { InitialCatalog = db };
+                ConnectionString = builder.ToString();
+            }
         }
-
-        public static implicit operator decimal(DecimalValue decimalValue) => decimalValue.ToDecimal();
-
-        public static implicit operator DecimalValue(decimal value) => FromDecimal(value);
-
-        public decimal ToDecimal()
-        {
-            return Units + Nanos / NanoFactor;
-        }
-
-        public static DecimalValue FromDecimal(decimal value)
-        {
-            var units = decimal.ToInt64(value);
-            var nanos = decimal.ToInt32((value - units) * NanoFactor);
-            return new DecimalValue(units, nanos);
-        }
+        public string ConnectionString { get; }
     }
 }
