@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
+using GrpcService.Contracts;
 using Jasmine.Abs.Entities.Models.Abs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

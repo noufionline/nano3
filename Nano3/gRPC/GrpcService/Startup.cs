@@ -51,18 +51,28 @@ namespace GrpcService
             //    });
             //});
 
-            services.AddAbsAuthorization()
-              .AddAuthorizationPermissionPolicies();
+            //services.AddAbsAuthorization()
+            //  .AddAuthorizationPermissionPolicies();
 
-            //  services.AddAuthorizationPolicyEvaluator();
+            ////  services.AddAuthorizationPolicyEvaluator();
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "https://localhost:5001";
-                    options.ApiName = "abscoreapi";
-                    options.RequireHttpsMetadata = true;
-                });
+            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //    .AddIdentityServerAuthentication(options =>
+            //    {
+            //        if (_environment.IsProduction())
+            //        {
+            //            options.Authority = "https://abs.cicononline.com/zeon";
+            //            options.RequireHttpsMetadata = true;
+            //        }
+            //        else
+            //        {
+            //            options.Authority = "https://localhost:5001";
+            //            options.RequireHttpsMetadata = true;
+            //        }
+                    
+            //        options.ApiName = "abscoreapi";
+            //        options.SaveToken=true;
+            //    });
 
 
             //if (_environment.IsDevelopment())
@@ -128,8 +138,8 @@ namespace GrpcService
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

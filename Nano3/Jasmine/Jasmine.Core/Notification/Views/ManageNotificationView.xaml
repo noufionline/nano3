@@ -1,0 +1,257 @@
+﻿<UserControl x:Class="Jasmine.Core.Notification.Views.ManageNotificationView"
+				 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+				 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+				 xmlns:local="clr-namespace:Jasmine.Core.Notification.Views"            
+				 xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+			 xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+		xmlns:dxet="http://schemas.devexpress.com/winfx/2008/xaml/editors/themekeys"
+		xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+				 xmlns:helpers="clr-namespace:Jasmine.Core.Helpers"
+				 mc:Ignorable="d" Width="640"
+				 d:DesignHeight="450" d:DesignWidth="800"
+            xmlns:prism="http://prismlibrary.com/">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="dx:ThemedWindow">
+            <Setter Property="WindowKind" Value="Ribbon"/>
+            <Setter Property="WindowStyle" Value="ToolWindow"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+	<Grid>
+		<Grid.Resources>
+			<dxmvvm:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+			<Style x:Key="{dxet:EditorListBoxThemeKey ResourceKey=DefaultItemStyle, ThemeName=VS2017Dark}" TargetType="{x:Type dxe:ListBoxEditItem}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type dxe:ListBoxEditItem}">
+							<Grid x:Name="Root">
+								<Rectangle x:Name="IsFocus"
+																		   Opacity="0"
+																		   StrokeDashArray="1 2"
+																		   StrokeThickness="1" />
+								<Border x:Name="IsDefault"
+																	Background="Transparent"
+																	BorderBrush="{Binding Foreground, Source={x:Static helpers:ColorHelper.Instance}}"
+																	BorderThickness="0,0,0,0.1"
+																	SnapsToDevicePixels="True">
+									<ContentPresenter />
+								</Border>								
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused" Value="True">									
+									<Setter TargetName="IsFocus" Property="Opacity" Value="1" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="True">									
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF007ACC" />
+									<Setter TargetName="IsFocus" Property="Opacity" Value="0" />
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsSelected" Value="True" />
+										<Condition Property="IsFocused" Value="False" />
+									</MultiTrigger.Conditions>									
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="Opacity" Value="0.62" />
+								</MultiTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Value="True" Binding="{Binding Path=(dxe:BaseEdit.OwnerEdit).AllowItemHighlighting, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="True" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Self}}" />
+									</MultiDataTrigger.Conditions>									
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF3E3E40" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF3E3E40" />
+								</MultiDataTrigger>
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter TargetName="Root" Property="Opacity" Value="0.38" />
+								</Trigger>								
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="{dxet:EditorListBoxThemeKey ResourceKey=DefaultItemStyle, ThemeName=VS2017Light}" TargetType="{x:Type dxe:ListBoxEditItem}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type dxe:ListBoxEditItem}">
+							<Grid x:Name="Root">
+								<Rectangle x:Name="IsFocus"
+																		   Opacity="0"
+																		   StrokeDashArray="1 2"
+																		   StrokeThickness="1" />
+								<Border x:Name="IsDefault"
+																		Background="Transparent"
+																		BorderBrush="{Binding Foreground, Source={x:Static helpers:ColorHelper.Instance}}"
+																		BorderThickness="0,0,0,0.1"
+																		SnapsToDevicePixels="True">
+									<ContentPresenter />
+								</Border>								
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused" Value="True">
+									<Setter TargetName="IsFocus" Property="Opacity" Value="1" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="True">
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF007ACC" />
+									<Setter TargetName="IsFocus" Property="Opacity" Value="0" />
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsSelected" Value="True" />
+										<Condition Property="IsFocused" Value="False" />
+									</MultiTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF007ACC" />
+									<Setter TargetName="IsDefault" Property="Opacity" Value="0.62" />
+								</MultiTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Value="True" Binding="{Binding Path=(dxe:BaseEdit.OwnerEdit).AllowItemHighlighting, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="True" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Self}}" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FFC9DEF5" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FFC9DEF5" />
+								</MultiDataTrigger>
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter TargetName="Root" Property="Opacity" Value="0.38" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="{dxet:EditorListBoxThemeKey ResourceKey=DefaultItemStyle, ThemeName=VS2017Blue}" TargetType="{x:Type dxe:ListBoxEditItem}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type dxe:ListBoxEditItem}">
+							<Grid x:Name="Root">
+								<Rectangle x:Name="IsFocus"
+																		   Opacity="0"
+																		   StrokeDashArray="1 2"
+																		   StrokeThickness="1" />
+								<Border x:Name="IsDefault"
+																		Background="Transparent"
+																		BorderBrush="{Binding Foreground, Source={x:Static helpers:ColorHelper.Instance}}"
+																		BorderThickness="0,0,0,0.1"
+																		SnapsToDevicePixels="True">
+									<ContentPresenter />
+								</Border>
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused" Value="True">									
+									<Setter TargetName="IsFocus" Property="Opacity" Value="1" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="True">
+									<Setter TargetName="IsDefault" Property="Background" Value="#FFFFF29D" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FFFFF29D" />
+									<Setter TargetName="IsFocus" Property="Opacity" Value="0" />
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsSelected" Value="True" />
+										<Condition Property="IsFocused" Value="False" />
+									</MultiTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FFFFF29D" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FFFFF29D" />
+									<Setter TargetName="IsDefault" Property="Opacity" Value="0.62" />
+								</MultiTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Value="True" Binding="{Binding Path=(dxe:BaseEdit.OwnerEdit).AllowItemHighlighting, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="True" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Self}}" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FFFDF4BF" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FFFDF4BF" />
+								</MultiDataTrigger>
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter TargetName="Root" Property="Opacity" Value="0.38" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="{dxet:EditorListBoxThemeKey ResourceKey=DefaultItemStyle, ThemeName=Office2016BlackSE}" TargetType="{x:Type dxe:ListBoxEditItem}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type dxe:ListBoxEditItem}">
+							<Grid x:Name="Root">
+								<Rectangle x:Name="IsFocus"
+																		   Opacity="0"
+																		   StrokeDashArray="1 2"
+																		   StrokeThickness="1" />
+								<Border x:Name="IsDefault"
+																		Background="Transparent"
+																		BorderBrush="{Binding Foreground, Source={x:Static helpers:ColorHelper.Instance}}"
+																		BorderThickness="0,0,0,0.1"
+																		SnapsToDevicePixels="True">
+									<ContentPresenter />
+								</Border>							
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused" Value="True">
+									<Setter TargetName="IsFocus" Property="Opacity" Value="1" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="True">
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF6A6A6A" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF6A6A6A" />
+									<Setter TargetName="IsFocus" Property="Opacity" Value="0" />
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsSelected" Value="True" />
+										<Condition Property="IsFocused" Value="False" />
+									</MultiTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF6A6A6A" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF6A6A6A" />
+									<Setter TargetName="IsDefault" Property="Opacity" Value="0.62" />
+								</MultiTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Value="True" Binding="{Binding Path=(dxe:BaseEdit.OwnerEdit).AllowItemHighlighting, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="True" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" />
+										<Condition Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Self}}" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="IsDefault" Property="Background" Value="#FF505050" />
+									<Setter TargetName="IsDefault" Property="BorderBrush" Value="#FF505050" />
+								</MultiDataTrigger>
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter TargetName="Root" Property="Opacity" Value="0.38" />
+								</Trigger>							
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+		</Grid.Resources>
+
+		<dxe:ListBoxEdit ItemsSource="{Binding ApprovedNotifications}" AllowItemHighlighting="True" Margin="0" Padding="0">
+			<dxe:ListBoxEdit.ItemTemplate>
+				<DataTemplate>
+					<Grid Margin="5">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" Text="{Binding Type}" FontWeight="DemiBold" FontSize="14"/>
+                        <dxe:ToggleSwitch Visibility="{Binding Approved, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="0" Grid.Column="1" IsChecked="{Binding Enable}" CheckedStateContent="ON" UncheckedStateContent="OFF" ContentPlacement="Inside"/>
+						<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" TextWrapping="Wrap" Width="600" Text="{Binding Description}"/>					
+					</Grid>
+				</DataTemplate>
+			</dxe:ListBoxEdit.ItemTemplate>
+		</dxe:ListBoxEdit>
+	</Grid>
+</UserControl>

@@ -1,0 +1,63 @@
+﻿<dxe:ListBoxEdit 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    x:Class="Jasmine.Core.Controls.StatusIndicator"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:converters="clr-namespace:Jasmine.Core.Converters"
+    IsReadOnly="True" ShowBorder="False" AllowCollectionView="True"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right">
+    <dxe:ListBoxEdit.Resources>
+        <converters:EnumToStateConverter x:Key="EnumToStringConverter"></converters:EnumToStateConverter>
+    </dxe:ListBoxEdit.Resources>
+    <dxe:ListBoxEdit.ItemsPanel>
+        <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Margin="0,0,-13,0"></StackPanel>
+        </ItemsPanelTemplate>
+    </dxe:ListBoxEdit.ItemsPanel>
+    <dxe:ListBoxEdit.ItemContainerStyle>
+        <Style TargetType="{x:Type dxe:ListBoxEditItem}">
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Foreground" Value="FloralWhite"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="dxe:ListBoxEditItem">
+
+                        <DockPanel LastChildFill="True" Margin="-12,0,0,0">
+                            <Path Name="LeftPath"  DockPanel.Dock="Left" Data="M0,0 L40,0 40,40 0,40 30,20" Stretch="Fill" Height="22" Width="12" />
+                            <Path Name="RightPath" Margin="-1,0,0,0"   DockPanel.Dock="Right" Stroke="{TemplateBinding Foreground}" 
+                                  Data="M0,0 L20,20 0,40" Stretch="Fill" Height="22" Width="12" />
+                            <Border Name="Border" Margin="0,0,0,0" Height="22"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            Padding="{TemplateBinding Padding}" BorderThickness="0" VerticalAlignment="Center">
+                                <ContentPresenter Name="ContentPresenter"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,5,0"/>
+                            </Border>
+                        </DockPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <!--<Setter Property="FontWeight" Value="Bold"/>-->
+                                <Setter TargetName="Border" Property="Background"
+                                                Value="DarkOrange"/>
+                                <Setter TargetName="LeftPath" Property="Fill"
+                                                Value="DarkOrange"/>
+                                <Setter TargetName="RightPath" Property="Stroke"
+                                                Value="DarkOrange"/>
+                                <Setter TargetName="RightPath" Property="Fill"
+                                                Value="DarkOrange"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </dxe:ListBoxEdit.ItemContainerStyle>
+    <dxe:ListBoxEdit.ItemTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding Converter={StaticResource EnumToStringConverter}}"/>
+        </DataTemplate>
+    </dxe:ListBoxEdit.ItemTemplate>
+</dxe:ListBoxEdit>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -8,17 +7,13 @@ using AutoMapper.QueryableExtensions;
 using Dapper;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GrpcService.Contracts;
 using GrpcService.Dto;
 using Jasmine.Abs.Entities.Models.Abs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using static GrpcService.AutoMapper.CustomerProfile;
 using SqlConnection = System.Data.SqlClient.SqlConnection;
-using SqlConnectionStringBuilder = Microsoft.Data.SqlClient.SqlConnectionStringBuilder;
 
 namespace GrpcService
 {
@@ -27,8 +22,7 @@ namespace GrpcService
     {
         private readonly ILogger<GreeterService> _logger;
         private readonly IAbsConnectionStringProvider _connectionStringProvider;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IConfiguration _configuration;
+
         private readonly AbsClassicContext _context;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authz;
@@ -39,7 +33,7 @@ namespace GrpcService
         {
             _logger = logger;
             _connectionStringProvider = connectionStringProvider;
-            
+
             _context = context;
             _mapper = mapper;
             _authz = authz;
@@ -58,6 +52,7 @@ namespace GrpcService
         public override async Task<CustomersResponse> GetCustomers(CustomersRequest request, ServerCallContext context)
         {
             var user = context.GetHttpContext().User;
+
             AuthorizationResult result = await _authz.AuthorizeAsync(user, "CreateDebtorStatement");
 
             if (!result.Succeeded)
@@ -132,14 +127,17 @@ namespace GrpcService
         public override async Task GetDeliveryNoteDetailsReportData(SteelDeliveryNoteDetailReportCriteriaRequest request, IServerStreamWriter<SteelDeliveryNoteDetailReportDataResponse> responseStream, ServerCallContext context)
         {
             var criteria = _mapper.Map<SteelDeliveryNoteDetailReportCriteriaDto>(request);
-            
+
             var connectionString = _connectionStringProvider.ConnectionString;
-            if(!string.IsNullOrWhiteSpace(connectionString))
+            if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 using (var con = new SqlConnection(connectionString))
                 {
                     con.Open();
-                    var data = await con.QueryAsync<SteelDeliveryNoteDetailReportData>("[Reports].[GetDeliveryNoteDetails_SalesAndServices]", criteria, commandType: System.Data.CommandType.StoredProcedure).ConfigureAwait(false);
+
+                    var data = await con
+                        .QueryAsync<SteelDeliveryNoteDetailReportData>("[Reports].[GetDeliveryNoteDetails_SalesAndServices]", criteria, commandType: System.Data.CommandType.StoredProcedure)
+                        .ConfigureAwait(false);
 
                     var items = _mapper.Map<List<SteelDeliveryNoteDetailReportDataResponse>>(data);
 
@@ -183,24 +181,5 @@ namespace GrpcService
         //    //}
         //}
 
-    }
-
-    public interface IAbsConnectionStringProvider
-    {
-        string ConnectionString { get; }
-    }
-
-    public class AbsConnectionStringProvider : IAbsConnectionStringProvider
-    {
-        public AbsConnectionStringProvider(IHttpContextAccessor httpContextAccessor,IConfiguration configuration)
-        {
-            if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("db", out var db))
-            {
-                var connectionString = configuration.GetConnectionString("CICONABS");
-                var builder = new SqlConnectionStringBuilder(connectionString) { InitialCatalog = db };
-                ConnectionString = builder.ToString();
-            }
-        }
-        public string ConnectionString { get; }
     }
 }

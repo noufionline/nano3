@@ -1,0 +1,817 @@
+ [NotifyPropertyChanged]
+    public abstract class AsyncViewModelBase : DxMvvmServicesBase, IViewModelBase, IActiveAware, IDialogAware,
+    IConfirmNavigationRequest, IRegionMemberLifetime, INotifyPropertyChanged
+    {
+
+        protected IDialogService DialogService { get; }
+        protected IEventAggregator EventAggregator { get; }
+
+
+        public virtual bool ShowValidationSummary { get; set; } = true;
+        protected AsyncViewModelBase(IEventAggregator eventAggregator, IDialogService dialogService)
+        {
+            EventAggregator = eventAggregator;
+            DialogService = dialogService;
+            CloseCommand = new DelegateCommand(ExecuteClose);
+            LookupItemCreationCommand = new DelegateCommand<string>(ExecuteLookupItemCreation, CanExecuteLookupItemCreation);
+
+            LookupItemRefreshCommand = new DelegateCommand<string>(ExecuteLookupItemRefresh);
+        }
+
+
+
+        public ICommand CloseCommand { get; set; }
+
+        public virtual string Caption { get; set; }
+        public virtual ImageSource CaptionImage { get; set; }
+        public bool ShowBusyIndicator { get; set; }
+
+
+
+        public bool IsActive { get; set; }
+        public event EventHandler IsActiveChanged;
+
+        public virtual void OnNavigatedTo(NavigationContext navigationContext)
+        {
+
+        }
+
+
+
+        public virtual bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public virtual void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
+        }
+
+        public virtual void ConfirmNavigationRequest(NavigationContext navigationContext,
+            Action<bool> continuationCallback)
+        {
+            continuationCallback(true);
+        }
+
+        public virtual bool KeepAlive => true;
+
+        protected virtual void OnIsActiveChanged()
+        {
+            IsActiveChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public virtual async Task<bool> CanCloseDialogAsync() => true;
+
+        public bool? DialogResult { get; private set; }
+        public bool ClosingFromViewModel { get; protected set; }
+
+        public event Action RequestClose;
+
+        public virtual DialogOptions GetDialogOptions()
+        {
+            return null;
+        }
+
+        protected void ExecuteClose()
+        {
+            if (CanCloseDialogAsync().Result)
+            {
+                ClosingFromViewModel = true;
+                RequestClose?.Invoke();
+                DialogResult = true;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #region CreateLookupItemCommand
+
+
+        public DelegateCommand<string> LookupItemCreationCommand { get; set; }
+
+
+        private void ExecuteLookupItemCreation(string routeName)
+        {
+            if (string.IsNullOrWhiteSpace(routeName)) throw new RouteNotFoundException("Route attribute for LookupItemEdit is not found");
+            var parameter = new NavigationParameters { { "routeName", routeName } };
+            DialogService.ShowRibbonDialog("LookupItemView", parameter);
+            EventAggregator.GetEvent<RefreshLookupItemEvent>().Publish(routeName);
+        }
+
+        protected bool CanExecuteLookupItemCreation(string routeName) => true;
+
+        #endregion
+
+        #region RefreshLookupItemCommand
+
+
+        public DelegateCommand<string> LookupItemRefreshCommand { get; set; }
+        public IMessageBoxService MessageBoxService => GetService<IMessageBoxService>();
+        public IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
+        public ISplashScreenService SplashScreenService => GetService<ISplashScreenService>();
+        public IDispatcherService DispatcherService => GetService<IDispatcherService>();
+
+
+        private void ExecuteLookupItemRefresh(string routeName)
+        {
+            if (string.IsNullOrWhiteSpace(routeName)) throw new RouteNotFoundException("Route attribute for LookupItemEdit is not found");
+            EventAggregator.GetEvent<RefreshLookupItemEvent>().Publish(routeName);
+        }
+
+        protected bool CanExecuteLookupItemRefresh(string routeName) => true;
+
+        public virtual void OnClosed()
+        {
+
+        }
+
+        #endregion
+
+
+    }
+    public abstract class AsyncViewModelBase<T> : AsyncViewModelBase
+       where T : class, IEntity, ITrackable, IIdentifiable, IDirty,
+       INotifyPropertyChanged, IValidatable, ISupportValidation,
+       INotifyDataErrorInfo, new()
+    {
+
+        private readonly Logger _logger;
+
+        private ChangeTrackingCollection<T> _changeTracker;
+
+        protected AsyncViewModelBase(IEventAggregator eventAggregator, IDialogService dialogService) : base(eventAggregator, dialogService)
+        {
+            _logger = Logger.GetLogger("Custom", typeof(ViewModelBase<T>));
+
+
+            SaveCommand = new AsyncCommand(ExexuteSaveAsync, CanExecuteSave);
+            SaveAndNewCommand = new AsyncCommand(SaveAndNewAsync, CanExecuteSave);
+            SaveAndCloseCommand = new AsyncCommand(SaveAndCloseAsync, CanExecuteSave);
+            ResetCommand = new AsyncCommand(ExecuteResetAsync, CanExecuteReset);
+            DeleteCommand = new AsyncCommand(ExecuteDeleteAsync, CanExecuteDelete);
+            Entity = new T();
+        }
+
+
+
+        protected virtual void OnEntitySet(T entity)
+        {
+
+        }
+        private bool CanExecuteDelete() => Entity.Id > 0 && !IsReadonly && !Entity.IsDirty;
+
+        private Task ExecuteDeleteAsync()
+        {
+            var result =
+                MessageBoxService.ShowMessage(string.Format(CommonResources.Confirmation_Delete, typeof(T).Name),
+                    GetCaption(), MessageButton.YesNo, MessageIcon.Question, MessageResult.No);
+
+            if (result == MessageResult.Yes)
+            {
+                DeleteAsync();
+                EventAggregator.GetEvent<EntityDeletedEvent>().Publish();
+                _logger.Write(LogLevel.Info, "EntityDeletedEvent published");
+                OnAfterDelete();
+                Entity = new T();
+
+            }
+        }
+
+
+        protected virtual void OnAfterDelete()
+        {
+
+        }
+
+        protected abstract Task DeleteAsync();
+
+        private bool CanExecuteReset()
+        {
+            return Entity.IsDirty && !IsReadonly;
+        }
+
+        private async Task ExecuteResetAsync()
+        {
+            var result = MessageBoxService.ShowMessage(CommonResources.Confirmation_Reset,
+                CommonResources.Confirmation_Caption, MessageButton.OKCancel, MessageIcon.Question,
+                MessageResult.Cancel);
+
+            if (result == MessageResult.OK)
+            {
+                await ResetChangesAsync().ConfigureAwait(true);
+            }
+        }
+
+        protected async Task ResetChangesAsync()
+        {
+            Entity = Entity.Id == 0 ? new T() :await GetEntityAsync(Entity.Id).ConfigureAwait(true);
+
+        }
+
+        public abstract Task<T> GetEntityAsync(int id);
+
+        public AsyncCommand SaveCommand { get; }
+        public AsyncCommand SaveAndNewCommand { get; }
+        public AsyncCommand SaveAndCloseCommand { get; }
+        public AsyncCommand ResetCommand { get; }
+        public AsyncCommand DeleteCommand { get; }
+
+        #region SaveCommand
+
+        public virtual bool CanExecuteSave()
+        {
+            var result = Entity?.IsDirty == true && !Entity.HasErrors && !IsReadonly;
+            return result;
+        }
+
+        private Task ExexuteSaveAsync()
+        {
+            return SaveCoreAsync();
+        }
+
+
+        private async Task<bool> SaveCoreAsync()
+        {
+
+            try
+            {
+                ShowBusyIndicator = true;
+                var args = new CancelEventArgs();
+                OnBeforeSave(args);
+                if (!args.Cancel && !Entity.HasErrors)
+                {
+                    if (Entity.Id == 0)
+                    {
+                        Entity = await SaveAsync(Entity).ConfigureAwait(true);
+                    }
+                    else
+                    {
+                        var modifiedEntity = _changeTracker.GetChanges().SingleOrDefault();
+                        if (modifiedEntity != null)
+                        {
+                            //var result = Save(entityWithChanges);
+                            //_changeTracker.MergeChanges(result);
+                            //Entity.IsDirty = false;
+                            Entity = await SaveAsync(modifiedEntity).ConfigureAwait(true);
+                        }
+                        else
+                        {
+                            Entity = await GetEntityAsync(Entity.Id).ConfigureAwait(true);
+                            RaiseCanExecuteChanged();
+                        }
+                    }
+
+                    RaiseCanExecuteChanged();
+
+                    OnAfterSave();
+                    EventAggregator.GetEvent<EntitySavedEvent>().Publish();
+                    _logger.Write(LogLevel.Info, "EntitySavedEvent published");
+                    return true;
+                }
+                RaiseCanExecuteChanged();
+                return false;
+            }
+            finally
+            {
+                ShowBusyIndicator = false;
+            }
+        }
+
+        public virtual void OnBeforeSave(CancelEventArgs args)
+        {
+
+        }
+
+        public virtual void OnAfterSave()
+        {
+
+        }
+
+        public abstract Task<T> SaveAsync(T entity);
+
+        #endregion
+
+        private Task SaveAndNewAsync()
+        {
+            return SaveCoreAsync();
+        }
+
+        private Task SaveAndCloseAsync()
+        {
+            return SaveCoreAsync();
+        }
+
+        protected virtual void Close()
+        {
+            ExecuteClose();
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            SaveCommand.RaiseCanExecuteChanged();
+            SaveAndNewCommand.RaiseCanExecuteChanged();
+            SaveAndCloseCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
+            ResetCommand.RaiseCanExecuteChanged();
+
+            OnAfterRaiseCanExecuteChanged();
+        }
+
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters.Any())
+            {
+                var parameter = ((int id, bool readOnly))navigationContext.Parameters["entity"];
+
+                IsReadonly = parameter.readOnly;
+                Entity = await GetEntityAsync(parameter.id).ConfigureAwait(true);
+                var splashScreen = GetService<ISplashScreenService>();
+                if (splashScreen != null && splashScreen.IsSplashScreenActive)
+                {
+                    splashScreen.HideSplashScreen();
+                }
+            }
+        }
+
+
+        public bool IsReadonly { get; private set; }
+
+        public T Entity
+        {
+            get => _entity;
+            set
+            {
+                _entity = value;
+                if (_entity != null)
+                {
+                    _entity.PropertyChanged += (s, e) => RaiseCanExecuteChanged();
+                    _entity.ErrorsChanged += (s, e) =>
+                    {
+                        RefreshErrors();
+                    };
+                    _entity.IsDirty = false;
+                    if (_entity.Id > 0)
+                    {
+                        _changeTracker = new ChangeTrackingCollection<T>(_entity);
+
+                        _changeTracker.ExcludedProperties.Add("HasErrors");
+                        _changeTracker.ExcludedProperties.Add("ValidationSummary");
+                        _changeTracker.ExcludedProperties.Add("IsValid");
+
+                        _changeTracker.EntityChanged += (s, e) =>
+                        {
+                            Entity.IsDirty = true;
+                            Entity.ValidateSelf();
+                            RaiseCanExecuteChanged();
+                        };
+
+                        _changeTracker.Tracking = true;
+                        RaiseCanExecuteChanged();
+                    }
+                    RefreshErrors();
+                }
+                OnEntitySet(value);
+            }
+        }
+
+        private void RefreshErrors()
+        {
+            ShowValidationSummary = Entity.HasErrors;
+            ValidationSummary = new ObservableCollection<ValidationFailure>(Entity.ValidationSummary);
+        }
+
+        public ObservableCollection<ValidationFailure> ValidationSummary { get; set; }
+
+
+        private T _entity;
+
+        public override async Task<bool> CanCloseDialogAsync()
+        {
+            if (Entity.HasErrors)
+            {
+                var warningResult = MessageBoxService.Show(CommonResources.Warning_SomeFieldsContainInvalidData,
+                    CommonResources.Warning_Caption,
+                    MessageButton.OKCancel, MessageIcon.Warning, MessageResult.Cancel);
+                return warningResult == MessageResult.OK;
+            }
+            if (!Entity.IsDirty) return true;
+            var result = MessageBoxService.Show(CommonResources.Confirmation_Save, GetCaption(),
+                MessageButton.YesNoCancel, MessageIcon.Question, MessageResult.Cancel);
+            if (result == MessageResult.Yes)
+            {
+                return await SaveCoreAsync().ConfigureAwait(true);
+            }
+            return result != MessageResult.Cancel;
+        }
+
+        private string GetCaption() =>
+            string.IsNullOrWhiteSpace(Caption) ? typeof(T).Name.Humanize(LetterCasing.Title) : Caption;
+
+        protected virtual void OnAfterRaiseCanExecuteChanged()
+        {
+
+        }
+    }
+	
+	
+	 public interface ILookupItemService
+    {
+        Task<Core.LookupItem> SaveAsync(string lookupType, Core.LookupItem entity);
+        Task<Core.LookupItem> UpdateAsync(string lookupType, Core.LookupItem entity);
+        Task<bool> DeleteAsync(string lookupType, Core.LookupItem entity);
+        Task<Core.LookupItem> GetAsync(string lookupType, int id);
+        Task<List<Core.LookupItem>> GetAllAsync(string lookupType);
+    }
+	
+	
+	  public class LookupItemViewModel : ViewModelBase<Core.LookupItem>
+    {
+        readonly ILookupItemService _lookupItemService;
+        public LookupItemViewModel(
+            IEventAggregator eventAggregator,
+            ILookupItemService lookupItemService,
+            IDialogService dialogService) : base(eventAggregator,dialogService)
+        {
+            _eventAggregator = eventAggregator;
+            _lookupItemService = lookupItemService;
+        }
+
+        public override Core.LookupItem GetEntity(int id)
+        {
+            return new Core.LookupItem();
+        }
+
+        public override Core.LookupItem Save(Core.LookupItem entity)
+        {
+            if(entity.Id == 0)
+                return _lookupItemService.SaveAsync(_routeName, entity).Result;
+            return _lookupItemService.UpdateAsync(_routeName, entity).Result;
+        }
+
+        public override void OnAfterSave()
+        {
+            Entity = new Core.LookupItem();
+            RefreshEntities();
+        }
+
+        protected override void Delete()
+        {
+            _lookupItemService.DeleteAsync(_routeName, SelectedEntity);
+            RefreshEntities();
+        }
+
+        public override DialogOptions GetDialogOptions()
+        {
+            return new DialogOptions { ResizeMode = System.Windows.ResizeMode.NoResize, WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner };
+        }
+
+
+
+        public override void OnNavigatedToAsync(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters["routeName"] != null)
+            {
+                _routeName = navigationContext.Parameters["routeName"].ToString();
+                RefreshEntities();
+            }
+        }
+
+        private void RefreshEntities()
+        {
+            Entities = _lookupItemService.GetAllAsync(_routeName).Result;
+        }
+
+        public List<Core.LookupItem> Entities { get; set; }
+        string _routeName;
+        readonly IEventAggregator _eventAggregator;
+        public Core.LookupItem SelectedEntity { get; set; }
+
+        #region NewCommand
+
+        [Command]
+        public ICommand NewCommand { get; set; }
+
+        private void ExecuteNew()
+        {
+            Entity = new Core.LookupItem();
+        }
+
+        protected bool CanExecuteNew() => true;
+
+        #endregion
+
+        #region EditCommand
+
+        [Command]
+        public ICommand EditCommand { get; set; }
+
+        private void ExecuteEdit()
+        {
+            Entity = SelectedEntity;
+        }
+
+        protected bool CanExecuteEdit => SelectedEntity != null;
+
+        #endregion
+
+        #region DeleteCommand
+
+        [Command]
+        public ICommand DeleteEntityCommand { get; set; }
+
+        private void ExecuteDeleteEntity()
+        {
+            Delete();
+        }
+
+        protected bool CanExecuteDeleteEntity => SelectedEntity != null;
+
+        #endregion
+
+
+
+    }
+	
+	
+	  public interface IDialogAware
+    {
+        Task<bool> CanCloseDialogAsync();
+
+        event Action RequestClose;
+
+        DialogOptions GetDialogOptions();
+
+        bool? DialogResult { get;  }
+
+        bool ClosingFromViewModel { get;  }
+
+        void OnClosed();
+    }
+	
+	
+	  public interface ILookupItemRepository
+    {
+        Task<LookupItem> SaveAsync(string lookupType,LookupItem entity);
+        Task<LookupItem> UpdateAsync(string lookupType, LookupItem entity);
+        Task<bool> DeleteAsync(string lookupType, LookupItem entity);
+        Task<LookupItem> GetAsync(string lookupType,int id);
+        Task<List<LookupItem>> GetAllAsync(string lookupType);
+    }
+
+    public class LookupItemRepository : ILookupItemRepository
+    {
+        private readonly IHttpClientProvider _provider;
+        protected MediaTypeFormatter Formatter;
+        protected string AcceptHeader;
+        public LookupItemRepository(IHttpClientProvider provider)
+        {
+            _provider = provider;
+            _provider.GetFormatter(out Formatter, out AcceptHeader);
+
+        }
+
+
+        public async Task<LookupItem> SaveAsync(string lookupType,LookupItem entity)
+        {
+
+            var client = await _provider.GetClient().ConfigureAwait(true);
+            return await CreateAsync(client,lookupType, entity, Formatter).ConfigureAwait(true);
+
+        }
+
+        public async Task<LookupItem> UpdateAsync(string lookupType, LookupItem entity)
+        {
+            var client = await _provider.GetClient().ConfigureAwait(true);
+            return await UpdateAsync(client, lookupType, entity, Formatter).ConfigureAwait(true);
+
+        }
+
+        public async Task<bool> DeleteAsync(string lookupType, LookupItem entity)
+        {
+            var client = await _provider.GetClient().ConfigureAwait(true);
+            string request = $"{lookupType}/{entity.Id}";
+            var response = client.DeleteAsync(request);
+            return response.Result.IsSuccessStatusCode;
+        }
+
+        public async Task<LookupItem> GetAsync(string lookupType,int id)
+        {
+            var client = await _provider.GetClient().ConfigureAwait(true);
+            return await GetAsync(client,lookupType, id, Formatter).ConfigureAwait(true);
+        }
+
+        public async Task<List<LookupItem>> GetAllAsync(string lookupType)
+        {
+            var client = await _provider.GetClient().ConfigureAwait(true);
+            return await GetAsync(client,lookupType, Formatter).ConfigureAwait(true);
+        }
+
+
+        private async Task<LookupItem> GetAsync
+            (HttpClient client,string lookupType, int id, MediaTypeFormatter formatter)
+        {
+            string request = $"{lookupType}/{lookupType}/{id}";
+            var response =await client.GetAsync(request).ConfigureAwait(true);
+            response.EnsureSuccessStatusCode();
+            var result =await response.Content.ReadAsAsync<LookupItem>(new[] { formatter }).ConfigureAwait(true);
+            return result;
+        }
+
+        private async Task<List<LookupItem>> GetAsync
+            (HttpClient client,string lookupType, MediaTypeFormatter formatter)
+        {
+            var response = await client.GetAsync(lookupType).ConfigureAwait(true);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsAsync<List<LookupItem>>(new[] { formatter }).ConfigureAwait(true);
+            return result;
+        }
+
+        private async Task<LookupItem> CreateAsync(HttpClient client, string lookupType, LookupItem lookupItem, MediaTypeFormatter formatter)
+        {
+
+            var response = await client.PostAsync(new Uri(lookupType, UriKind.Relative), lookupItem, formatter).ConfigureAwait(true);
+            response.EnsureSuccessStatusCode();
+            var result = response.Content.ReadAsAsync<LookupItem>(new[] { formatter }).Result;
+            return result;
+        }
+
+        private async Task<LookupItem> UpdateAsync(HttpClient client, string lookupType, LookupItem lookupItem, MediaTypeFormatter formatter)
+        {
+
+            var response = await client.PutAsync(new Uri(lookupType, UriKind.Relative), lookupItem, formatter).ConfigureAwait(true);
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new DuplicateLookupItemException($"Another lookup Item already has this value");
+            }
+
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsAsync<LookupItem>(new[] { formatter }).ConfigureAwait(true);
+            return result;
+        }
+    }
+
+    public class DuplicateLookupItemException : Exception
+    {
+        public string ErrorMessage { get; }
+
+        public DuplicateLookupItemException(string errorMessage)
+        {
+            ErrorMessage = errorMessage;
+        }
+    }
+	
+	
+	  public class CustomerMapperRepository :ICustomerMapperRepository
+    {
+        private readonly IHttpClientProvider _provider;
+
+
+
+        protected MediaTypeFormatter Formatter;
+        protected string AcceptHeader;
+
+
+        public void UpdatePassportAttachmentPath(int id, string path)
+        {
+
+        }
+
+
+
+        public Task<List<CustomerInfo>> GetUnMappedCustomers(string searchString)
+        {
+            return Get($"abs/customers/{searchString}", Formatter);
+        }
+
+
+
+        private async Task<List<CustomerInfo>> Get(string uri, MediaTypeFormatter formatter)
+        {
+            var client = await _provider.GetClient();
+            var response = client.GetAsync(uri).Result;
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsAsync<List<CustomerInfo>>(new[] { formatter });
+            return result;
+        }
+
+
+        public Task<List<CustomerInfo>> GetMappedCustomers(int partnerId)
+        {
+            return Get($"abs/customers/mapped/{partnerId}", Formatter);
+
+        }
+
+         public async Task UpdateCustomerName(int partnerId, string tradeName, List<CustomerInfo> customers)
+         {
+
+             var client = await _provider.GetClient();
+             await client.PostAsync($"abs/customers/update/{partnerId}/{tradeName}", customers, Formatter);
+         }
+
+        public async Task UnMapCustomer(CustomerInfo customer)
+        {
+            var client = await _provider.GetClient();
+            await client.PostAsync("abs/customers/unmap", customer, Formatter);
+        }
+
+
+
+
+
+
+        public async Task OpenSalesOrderAttachment(string division, int salesOrderId, string fileName)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var url = $"http://localhost:5050/api/salesorders/attachments/{salesOrderId}/{fileName}";
+                client.DefaultRequestHeaders.Add("db", division);
+                using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                    {
+                        string fileToWriteTo = Path.GetRandomFileName();
+
+                        var tempDirectory = Path.GetTempPath();
+
+                        var directory = Path.Combine(tempDirectory, fileToWriteTo);
+
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+                        var path = Path.Combine(directory, fileName);
+                        using (Stream streamToWriteTo = File.Open(path, FileMode.Create))
+                        {
+                            await streamToReadFrom.CopyToAsync(streamToWriteTo);
+                        }
+
+                        Process.Start(path);
+                    }
+                }
+            }
+        }
+
+
+
+        public async Task AttachPassportCopyAsync(int id,string passportNo, string fileName)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var url = $"http://localhost:5050/api/owneridentity/passport/{id}/upload";
+
+                using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                    {
+                        string fileToWriteTo = Path.GetRandomFileName();
+
+                        var tempDirectory = Path.GetTempPath();
+
+                        var directory = Path.Combine(tempDirectory, fileToWriteTo);
+
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+                        var path = Path.Combine(directory, fileName);
+                        using (Stream streamToWriteTo = File.Open(path, FileMode.Create))
+                        {
+                            await streamToReadFrom.CopyToAsync(streamToWriteTo);
+                        }
+
+                        Process.Start(path);
+                    }
+                }
+            }
+        }
+
+        public CustomerMapperRepository(IMapper mapper,IHttpClientProvider provider)
+        {
+            _provider = provider;
+            _provider.GetFormatter(out Formatter,out AcceptHeader);
+        }
+    }
+	
+	public interface ICustomerMapperRepository
+    {
+
+        Task UpdateCustomerName(int partnerId, string tradeName, List<CustomerInfo> customers);
+        Task<List<CustomerInfo>> GetMappedCustomers(int partnerId);
+
+        Task<List<CustomerInfo>> GetUnMappedCustomers(string searchString);
+        Task OpenSalesOrderAttachment(string division, int salesOrderId, string fileName);
+        Task UnMapCustomer(CustomerInfo customer);
+    }

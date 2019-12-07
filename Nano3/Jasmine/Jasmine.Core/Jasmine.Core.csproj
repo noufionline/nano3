@@ -1,0 +1,1019 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Publish|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Publish\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.None.None.IncrementOnDemand</AssemblyVersionSettings>
+    <UpdatePackageVersion>False</UpdatePackageVersion>
+    <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
+    <AssemblyFileVersionSettings>None.None.None.IncrementOnDemand</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>None.None.None.IncrementOnDemand</AssemblyInfoVersionSettings>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Publish|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Publish\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.2</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{992C0B09-285A-4BFB-9F4A-904D2F51D457}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Jasmine.Core</RootNamespace>
+    <AssemblyName>Jasmine.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
+    <PostSharpSearchPath>..\packages\PostSharp.Patterns.Diagnostics.5.1.2-alpha\tools\**.*;
+..\packages\PostSharp.Patterns.Common.5.1.2-alpha\tools\**.*;
+</PostSharpSearchPath>
+    <PostSharpTargetProcessor>x64</PostSharpTargetProcessor>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+    <PostSharpSearchPath>..\packages\PostSharp.Patterns.Diagnostics.6.0.15-rc\tools\**.*;
+..\packages\PostSharp.Patterns.Common.6.0.15-rc\tools\**.*</PostSharpSearchPath>
+    <PostSharpTargetProcessor>x64</PostSharpTargetProcessor>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Charts.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.CodeParser.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Data.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.DataAccess.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Diagram.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Docs.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Images.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Mvvm.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Office.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Pdf.v19.2.Drawing, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.PivotGrid.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Printing.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v19.2.Export, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Snap.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Sparkline.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Spreadsheet.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Accordion.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.CodeView.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Controls.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Core.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Core.v19.2.Extensions, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.DataAccess.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Diagram.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Dialogs.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Docking.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.DocumentViewer.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.ExpressionEditor.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v19.2.Extensions, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Layout.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.LayoutControl.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.NavBar.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.PdfViewer.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.PivotGrid.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Printing.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.ReportDesigner.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Ribbon.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.RichEdit.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Themes.Office2016White.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.XtraGauges.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="DevExpress.XtraReports.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapters\ListBoxEditRegionAdapter.cs" />
+    <Compile Include="Alfresco\AlfrescoClient.cs" />
+    <Compile Include="ApplicationCommands.cs" />
+    <Compile Include="Aspects\AbsPrincipalReadPermissionAttribute.cs" />
+    <Compile Include="Aspects\BackgroundTaskAttribute.cs" />
+    <Compile Include="Aspects\AutoRetryAttribute.cs" />
+    <Compile Include="Aspects\HandleServerSideExceptionsAttribute.cs" />
+    <Compile Include="Aspects\MakeDirtyOnChangeAttribute.cs" />
+    <Compile Include="Aspects\ShowExceptionAttribute.cs" />
+    <Compile Include="Aspects\ShowWaitIndicatorAttribute.cs" />
+    <Compile Include="Attributes\AttributeBase.cs" />
+    <Compile Include="Attributes\AttributeWithFormatBase.cs" />
+    <Compile Include="Attributes\DateAttribute.cs" />
+    <Compile Include="Attributes\ExcelReportAttribute.cs" />
+    <Compile Include="Attributes\IColumnWithFormat.cs" />
+    <Compile Include="Attributes\LineItemAttribute.cs" />
+    <Compile Include="Attributes\PriceAttribute.cs" />
+    <Compile Include="Attributes\TonnageAttribute.cs" />
+    <Compile Include="Audit\AuditExtentions.cs" />
+    <Compile Include="Audit\AuditLog.cs" />
+    <Compile Include="Audit\AuditService.cs" />
+    <Compile Include="Audit\ModifiedPropertiesOnlyContractResolver.cs" />
+    <Compile Include="Audit\AuditLogLine.cs" />
+    <Compile Include="Audit\AuditLogService.cs" />
+    <Compile Include="Audit\IgnoreLoggingAttribute.cs" />
+    <Compile Include="Audit\TackableEntityContractResolver.cs" />
+    <Compile Include="Behaviors\BringNewItemIntoViewBehavior.cs" />
+    <Compile Include="Behaviors\CloseBehavior.cs" />
+    <Compile Include="Behaviors\TabOnEnterBehavior.cs" />
+    <Compile Include="Behaviors\TextEditCaretIndexBehavior.cs" />
+    <Compile Include="Chat\ChatService.cs" />
+    <Compile Include="Chat\Events\ChatViewActivatedEvent.cs" />
+    <Compile Include="Chat\Extensions\FileExt.cs" />
+    <Compile Include="Chat\IChatService.cs" />
+    <Compile Include="Chat\Model\ChatMessageModel.cs" />
+    <Compile Include="Chat\Views\ChatView.xaml.cs">
+      <DependentUpon>ChatView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Chat\Views\ChatViewModel.cs" />
+    <Compile Include="Chat\Views\LoggedUserCollectionView.xaml.cs">
+      <DependentUpon>LoggedUserCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Chat\Views\LoggedUserCollectionViewModel.cs" />
+    <Compile Include="Chat\Model\ParticipantModel.cs" />
+    <Compile Include="Chat\Views\SampleChatViewModel.cs" />
+    <Compile Include="Common\DateRangeHelper.cs" />
+    <Compile Include="Common\Helper.cs" />
+    <Compile Include="Common\IconHelper.cs" />
+    <Compile Include="Common\ImageHelper.cs" />
+    <Compile Include="Common\LookupItemDictionary.cs" />
+    <Compile Include="Common\NavigationParameterParser.cs" />
+    <Compile Include="Common\PostDelayHelper.cs" />
+    <Compile Include="Common\StreamAttachment.cs" />
+    <Compile Include="Contracts\IAlfrescoClient.cs" />
+    <Compile Include="Contracts\IApiTokenProvider.cs" />
+    <Compile Include="Contracts\IAuditable.cs" />
+    <Compile Include="Contracts\IAuditLogService.cs" />
+    <Compile Include="Contracts\IAuditService.cs" />
+    <Compile Include="Contracts\IAuthorizationCache.cs" />
+    <Compile Include="Contracts\IChatRepository.cs" />
+    <Compile Include="Contracts\ICreateRegionManagerScope.cs" />
+    <Compile Include="Contracts\IDialog.cs" />
+    <Compile Include="Contracts\IDialogService.cs" />
+    <Compile Include="Contracts\IEmailService.cs" />
+    <Compile Include="Contracts\IHttpClientProvider.cs" />
+    <Compile Include="Contracts\IIdentifiable.cs" />
+    <Compile Include="Contracts\ILookupItemRepository.cs" />
+    <Compile Include="Contracts\ILookupItemsProvider.cs" />
+    <Compile Include="Contracts\IMergeable.cs" />
+    <Compile Include="Contracts\INavigationPropertyInspector.cs" />
+    <Compile Include="Contracts\INotificationManagerRepository.cs" />
+    <Compile Include="Contracts\INotificationManagerService.cs" />
+    <Compile Include="Contracts\IRefPropertyChangeTrackerResolver.cs" />
+    <Compile Include="Contracts\IRegionManagerAware.cs" />
+    <Compile Include="Contracts\IReportBase.cs" />
+    <Compile Include="Contracts\IReportOptions.cs" />
+    <Compile Include="Contracts\ISearchable.cs" />
+    <Compile Include="Contracts\ISignInManager.cs" />
+    <Compile Include="Contracts\ISunSystemConnectionProvider.cs" />
+    <Compile Include="Contracts\ILocalSunSystemRepository.cs" />
+    <Compile Include="Contracts\ISunSystemService.cs" />
+    <Compile Include="Contracts\ITrackable.cs" />
+    <Compile Include="Contracts\ITrackingCollection.cs" />
+    <Compile Include="Contracts\ITrackingCollectionOfT.cs" />
+    <Compile Include="Contracts\IValidatable.cs" />
+    <Compile Include="Contracts\IWorkSheetBuilder.cs" />
+    <Compile Include="Contracts\ReportOptions.cs" />
+    <Compile Include="Contracts\UserProfileManager.cs" />
+    <Compile Include="Controls\AsyncButton.cs" />
+    <Compile Include="Controls\ComboBoxEditExt.xaml.cs">
+      <DependentUpon>ComboBoxEditExt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Emoji\ColorTypeface.cs" />
+    <Compile Include="Controls\Emoji\EmojiData.cs" />
+    <Compile Include="Controls\Emoji\EmojiInline.cs" />
+    <Compile Include="Controls\Emoji\EmojiRenderer.cs" />
+    <Compile Include="Controls\Emoji\EmojiTextBlock.xaml.cs">
+      <DependentUpon>EmojiTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Emoji\EmojiTypeface.cs" />
+    <Compile Include="Controls\JReadOnlyLookupItemEditor.cs" />
+    <Compile Include="Controls\JReadOnlyTextEdit.cs" />
+    <Compile Include="Controls\LookupItemEditor.xaml.cs">
+      <DependentUpon>LookupItemEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusIndicator.xaml.cs">
+      <DependentUpon>StatusIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\ByteBitmapSourceConverter.cs" />
+    <Compile Include="Converters\EditValueToVisibilityConverter.cs" />
+    <Compile Include="Converters\EnumToStateConverter.cs" />
+    <Compile Include="Converters\StringToTokenEditValueConverter.cs" />
+    <Compile Include="Dialogs\DateRange.cs" />
+    <Compile Include="Dialogs\DateRangeTypes.cs" />
+    <Compile Include="Dialogs\DateRangeValidator.cs" />
+    <Compile Include="Dialogs\FocusHelper.cs" />
+    <Compile Include="Dialogs\IRegionDialogService.cs" />
+    <Compile Include="Dialogs\JasmineWaitIndicator.xaml.cs">
+      <DependentUpon>JasmineWaitIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\ConnectionFailedException.cs" />
+    <Compile Include="Exceptions\GmailApiException.cs" />
+    <Compile Include="Exceptions\GmailTokenResponseException.cs" />
+    <Compile Include="Helpers\ColorHelper.cs" />
+    <Compile Include="Helpers\PrismDialogServiceExtensions.cs" />
+    <Compile Include="Helpers\LineItemActions.cs" />
+    <Compile Include="MarkupExtensions\AuthToEnabledExtension.cs" />
+    <Compile Include="MarkupExtensions\AuthToVisibilityExtension.cs" />
+    <Compile Include="Converters\ClaimsToBooleanConverter.cs" />
+    <Compile Include="Converters\NullToZeroConverter.cs" />
+    <Compile Include="Dialogs\DialogService.cs" />
+    <Compile Include="Dialogs\DialogOptions.cs" />
+    <Compile Include="DXSplashScreen\CustomWaitIndicator.xaml.cs">
+      <DependentUpon>CustomWaitIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Mvvm\AsyncViewModelBase.cs" />
+    <Compile Include="Mvvm\DialogAwareViewModelBase.cs" />
+    <Compile Include="Mvvm\IDirtyAware.cs" />
+    <Compile Include="Mvvm\CollectionListViewModel.cs" />
+    <Compile Include="Mvvm\CollectionViewModelBase.cs" />
+    <Compile Include="Converters\SelectedItemChangedEventArgsConverter.cs" />
+    <Compile Include="Mvvm\CriteriaViewModelBase.cs" />
+    <Compile Include="Mvvm\DxMvvmServicesBase.cs" />
+    <Compile Include="Mvvm\ISupportValidation.cs" />
+    <Compile Include="Events\EntitySavedEvent.cs" />
+    <Compile Include="Contracts\ICustomValidator.cs" />
+    <Compile Include="Contracts\IAbsDialogAware.cs" />
+    <Compile Include="Contracts\IDirty.cs" />
+    <Compile Include="Contracts\IEntity.cs" />
+    <Compile Include="Contracts\IViewModelBase.cs" />
+    <Compile Include="KnownRegions.cs" />
+    <Compile Include="ModuleBase.cs" />
+    <Compile Include="Mvvm\EntityBaseCore.cs" />
+    <Compile Include="Mvvm\EntityBase.cs" />
+    <Compile Include="Mvvm\ILookupItemService.cs" />
+    <Compile Include="Mvvm\InfiniteCollectionViewModelBase.cs" />
+    <Compile Include="Mvvm\ISecurable.cs" />
+    <Compile Include="Mvvm\ISupportFluentValidator.cs" />
+    <Compile Include="Mvvm\JasmineErrorContainer.cs" />
+    <Compile Include="Mvvm\LineItemViewModelBase.cs" />
+    <Compile Include="LookupItem.cs" />
+    <Compile Include="Mvvm\ChildLookupItemCollectionViewModel.cs" />
+    <Compile Include="MarkupExtensions\LookupItemMarkupExtension.cs" />
+    <Compile Include="Mvvm\LookupItems\LookupItemIsInUseException.cs" />
+    <Compile Include="Mvvm\LookupItems\LookupItemsServiceBase.cs" />
+    <Compile Include="Mvvm\LookupItems\LookupItemView.xaml.cs">
+      <DependentUpon>LookupItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Mvvm\LookupItems\LookupItemViewModel.cs" />
+    <Compile Include="Mvvm\ODataCollectionViewModelBase.cs" />
+    <Compile Include="Mvvm\PagedCollectionViewModelBase.cs" />
+    <Compile Include="Mvvm\RouteNotFoundException.cs" />
+    <Compile Include="Mvvm\TrackableModelBase.cs" />
+    <Compile Include="Mvvm\LookupItems\RefreshLookupItemEvent.cs" />
+    <Compile Include="Notification\INotificatinManager.cs" />
+    <Compile Include="Notification\INotificationAware.cs" />
+    <Compile Include="Notification\NotificationAwareRegionBehavior.cs" />
+    <Compile Include="Notification\NotificationControl.cs" />
+    <Compile Include="Notification\NotificationInfo.cs" />
+    <Compile Include="Notification\NotificationManager.cs" />
+    <Compile Include="Notification\NotificationParameter.cs" />
+    <Compile Include="Notification\NotificationUpdatedEvent.cs" />
+    <Compile Include="Notification\NotificationViewModelBase.cs" />
+    <Compile Include="Notification\Views\ManageNotificationViewModel.cs" />
+    <Compile Include="Notification\Views\NotificationModel.cs" />
+    <Compile Include="Notification\Views\NotificationViewModel.cs" />
+    <Compile Include="Notification\Views\ManageNotificationView.xaml.cs">
+      <DependentUpon>ManageNotificationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Notification\Views\NotificationView.xaml.cs">
+      <DependentUpon>NotificationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Odoo\IOdooCommonRpc.cs" />
+    <Compile Include="Odoo\IOdooObjectRpc.cs" />
+    <Compile Include="Odoo\OdooAPI.cs" />
+    <Compile Include="Odoo\OdooCredentials.cs" />
+    <Compile Include="Odoo\OdooExtentions.cs" />
+    <Compile Include="Odoo\OdooModel.cs" />
+    <Compile Include="Odoo\OdooRecord.cs" />
+    <Compile Include="Prism\Registrations\ContainerRegistryExtensions.cs" />
+    <Compile Include="Prism\Registrations\FluentContainerRegistry.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterCollectionView.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterCollectionViewAndDialogAndService.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterDialog.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterDialogAndService.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterRepository.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterService.cs" />
+    <Compile Include="Prism\Registrations\ICanRegisterServiceAndRepository.cs" />
+    <Compile Include="Prism\ScopedRegionManagerContentLoader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\CommonResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CommonResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Mvvm\ViewModelBase.cs" />
+    <Compile Include="Repositories\ChatRepository.cs" />
+    <Compile Include="Repositories\ChildItemRepositoryBase.cs" />
+    <Compile Include="Repositories\IParentChildServiceAsync.cs" />
+    <Compile Include="Repositories\NotificationManagerRepository.cs" />
+    <Compile Include="Repositories\RepositoryBaseAsync.cs" />
+    <Compile Include="Repositories\LookupItemRepositoryBase.cs" />
+    <Compile Include="Repositories\IRepositoryBaseAsync.cs" />
+    <Compile Include="Repositories\RestApiRepositoryBase.cs" />
+    <Compile Include="Repositories\RestApiRepositoryBaseAsync.cs" />
+    <Compile Include="Repositories\ServerSunSystemRepository.cs" />
+    <Compile Include="Security\AuthorizationExtensions.cs" />
+    <Compile Include="Security\NotAuthorizedException.cs" />
+    <Compile Include="Security\PasswordHelper.cs" />
+    <Compile Include="Security\PrincipalProvider.cs" />
+    <Compile Include="Security\SignInManager.cs" />
+    <Compile Include="Security\UserCredential.cs" />
+    <Compile Include="Security\UserCredentialValidator.cs" />
+    <Compile Include="Services\ApiTokenProvider.cs" />
+    <Compile Include="Services\LookupItemProviderService.cs" />
+    <Compile Include="Services\NotificationManagerService.cs" />
+    <Compile Include="Services\OutLookEmailService.cs" />
+    <Compile Include="Services\WorkSheetBuilder.cs" />
+    <Compile Include="Services\IRepository.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\Repository.cs" />
+    <Compile Include="Services\Service.cs" />
+    <Compile Include="StateIndicator\StateIndicator.cs" />
+    <Compile Include="Sun-System\SunDbCustomer.cs" />
+    <Compile Include="Repositories\LocalSunSystemRepository.cs" />
+    <Compile Include="Sun-System\SunSystemService.cs" />
+    <Compile Include="Sun-System\VatInfo.cs" />
+    <Compile Include="Sun-System\VatInfoMap.cs" />
+    <Compile Include="Tracking\ChangeTracker.cs" />
+    <Compile Include="Tracking\ChangeTrackingCollection.cs" />
+    <Compile Include="Tracking\ChangeTrackingExtensions.cs" />
+    <Compile Include="Tracking\Constants.cs" />
+    <Compile Include="Tracking\EntityBase.cs" />
+    <Compile Include="Tracking\EntityBasePortable.cs" />
+    <Compile Include="Tracking\EntityNavigationProperty.cs" />
+    <Compile Include="Tracking\ModelBase.cs" />
+    <Compile Include="Tracking\ObjectReferenceEqualityComparer.cs" />
+    <Compile Include="Tracking\ObjectVisitationHelper.cs" />
+    <Compile Include="Tracking\PortableReflectionHelper.cs" />
+    <Compile Include="Tracking\TrackableExtensions.cs" />
+    <Compile Include="Tracking\TrackingState.cs" />
+    <EmbeddedResource Include="Properties\CommonResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommonResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Chat\Views\ChatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Chat\Views\LoggedUserCollectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ComboBoxEditExt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Controls\Emoji\EmojiTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LookupItemEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StatusIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DXSplashScreen\CustomWaitIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\JasmineWaitIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Mvvm\LookupItems\LookupItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Notification\NotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Notification\Views\ManageNotificationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Notification\Views\NotificationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ReadOnlyResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Conventions\" />
+    <Folder Include="Humanizer\" />
+    <Folder Include="Reminders\Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\emojitest.txt" />
+    <Resource Include="Chat\Images\Settings.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Chat\Images\generic-user-purple.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Chat\Images\chat.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Chat\Images\chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Chat\Images\happy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Notification\Images\Close.svg" />
+    <Content Include="Notification\Images\Down.svg" />
+    <Content Include="Notification\Images\HybridDemo_Close.svg" />
+    <Content Include="Notification\Images\HybridDemo_Note.svg" />
+    <Content Include="Notification\Images\HybridDemo_Settings.svg" />
+    <Content Include="Notification\Images\Up.svg" />
+    <None Include="Resources\settings.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AspNetWebApi2Helpers.Serialization">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="AutoBogus">
+      <Version>2.7.1</Version>
+    </PackageReference>
+    <PackageReference Include="AutoMapper">
+      <Version>8.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="ControlzEx">
+      <Version>3.0.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="Dapper">
+      <Version>1.60.6</Version>
+    </PackageReference>
+    <PackageReference Include="Dapper.FluentMap">
+      <Version>1.8.0</Version>
+    </PackageReference>
+    <PackageReference Include="Emoji.Wpf">
+      <Version>0.0.18-experimental</Version>
+    </PackageReference>
+    <PackageReference Include="EntityFramework">
+      <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="FluentDateTime">
+      <Version>1.15.0</Version>
+    </PackageReference>
+    <PackageReference Include="FluentValidation">
+      <Version>8.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis">
+      <Version>1.40.1</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Auth">
+      <Version>1.40.1</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Core">
+      <Version>1.40.1</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Gmail.v1">
+      <Version>1.40.1.1613</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Oauth2.v2">
+      <Version>1.40.1.1602</Version>
+    </PackageReference>
+    <PackageReference Include="Humanizer.Core">
+      <Version>2.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="IdentityModel">
+      <Version>3.10.10</Version>
+    </PackageReference>
+    <PackageReference Include="Logify.Alert.Core">
+      <Version>1.0.51</Version>
+    </PackageReference>
+    <PackageReference Include="Logify.Alert.Wpf">
+      <Version>1.0.51</Version>
+    </PackageReference>
+    <PackageReference Include="MahApps.Metro">
+      <Version>1.6.5</Version>
+    </PackageReference>
+    <PackageReference Include="MailBee.NET">
+      <Version>11.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Marvin.StreamExtensions">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+      <Version>5.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Connections.Client">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Connections.Common">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client.Core">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder">
+      <Version>2.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Options">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Primitives">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>2.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.OData.Core">
+      <Version>7.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.OData.Edm">
+      <Version>7.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Office.Interop.Outlook">
+      <Version>15.0.4797.1003</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Spatial">
+      <Version>7.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>2.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Aggregation">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Aggregation.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Caching">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Caching.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Common">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Common.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Diagnostics">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Diagnostics.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Model">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Model.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Xaml">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Patterns.Xaml.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="PostSharp.Redist">
+      <Version>6.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Core">
+      <Version>7.2.0.1367</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Wpf">
+      <Version>7.2.0.1367</Version>
+    </PackageReference>
+    <PackageReference Include="RestSharp">
+      <Version>106.6.9</Version>
+    </PackageReference>
+    <PackageReference Include="System.AppContext">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Buffers">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite">
+      <Version>1.0.111</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.111</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.EF6">
+      <Version>1.0.111</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Linq">
+      <Version>1.0.111</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource">
+      <Version>4.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tracing">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization.Calendars">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression.ZipFile">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Pipelines">
+      <Version>4.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq.Expressions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Primitives">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Sockets">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Numerics.Vectors">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ObjectModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>4.1.5</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive.Linq">
+      <Version>4.1.5</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Emit.Lightweight">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.ResourceManager">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>4.5.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Extensions">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Handles">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Encoding">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encodings.Web">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Channels">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.5.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Timer">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.Abstractions">
+      <Version>5.11.1</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.Container">
+      <Version>5.11.1</Version>
+    </PackageReference>
+    <PackageReference Include="WPFSpark">
+      <Version>1.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="xmlrpcnet">
+      <Version>3.0.0.266</Version>
+    </PackageReference>
+    <PackageReference Include="Z.Expressions.Eval">
+      <Version>2.9.36</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jasmine.Controls\Jasmine.Controls.csproj">
+      <Project>{0a0cbbc0-493b-4164-b6f5-664a048589e4}</Project>
+      <Name>Jasmine.Controls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

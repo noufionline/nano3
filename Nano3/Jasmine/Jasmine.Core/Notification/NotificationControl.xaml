@@ -1,0 +1,72 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+    xmlns:dxt="http://schemas.devexpress.com/winfx/2008/xaml/core/themekeys"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"    
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:notification="clr-namespace:Jasmine.Core.Notification"
+    xmlns:dialogs="clr-namespace:Jasmine.Core.Dialogs">
+
+    <Style TargetType="{x:Type notification:NotificationControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type notification:NotificationControl}">
+                    <Border Padding="5" Background="Transparent" Name="PART_NotificationPanel">                       
+                        <dxmvvm:Interaction.Behaviors>
+                            <dxmvvm:DispatcherService/>
+                            <dx:DXSplashScreenService>
+                                <dx:DXSplashScreenService.ViewTemplate>
+                                    <DataTemplate>
+                                        <dialogs:JasmineWaitIndicator />
+                                    </DataTemplate>
+                                </dx:DXSplashScreenService.ViewTemplate>
+                            </dx:DXSplashScreenService>
+                        </dxmvvm:Interaction.Behaviors>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0">
+                                <Run Text="{Binding Type, RelativeSource={RelativeSource TemplatedParent}}"  FontSize="12" FontWeight="Bold"/>
+                                <Run Text="{Binding Time, RelativeSource={RelativeSource TemplatedParent}}" FontSize="10"/>
+                            </TextBlock>
+                            <StackPanel Visibility="Hidden" Name="PART_ResizePanel" Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Width="16" Height="16" Cursor="Hand" Margin="0,0,3,0" Name="PART_ExpandButton">
+                                    <Button.Template>
+                                        <ControlTemplate>
+                                            <Image Source="{dx:SvgImageSource Uri='pack://application:,,,../Images/Down.svg'}"/>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                <Button Width="16" Height="16" Visibility="Collapsed" Cursor="Hand" Margin="0,0,3,0" Name="PART_CollapseButton">
+                                    <Button.Template>
+                                        <ControlTemplate>
+                                            <Image Source="{dx:SvgImageSource Uri='pack://application:,,,../Images/Up.svg'}"/>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+                            <ContentControl Name="PART_NotificationContentPanel" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="0" MaxHeight="19" >
+                                <TextBlock Name="PART_Message" TextWrapping="Wrap" Text="{Binding Message, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </ContentControl>
+                            <StackPanel x:Name="ActionPanel" Grid.ColumnSpan="2" Grid.Row="2" Grid.Column="0"
+                             HorizontalAlignment="Right" Visibility="Collapsed" Orientation="Horizontal">
+                                <ContentControl Name="PART_FooterContentPanel" VerticalAlignment="Center">
+                                    <Button Cursor="Hand" Content="Show" Margin="0,0,5,0" Command="{Binding DataContext.ShowCommand, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                </ContentControl>
+                                <Button Cursor="Hand" Content="Dismiss" Margin="0,5,0,5" Command="{Binding DataContext.DismissCommand, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </StackPanel>
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

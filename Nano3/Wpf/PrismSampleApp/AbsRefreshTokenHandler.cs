@@ -26,6 +26,10 @@ namespace PrismSampleApp
 
             request.SetBearerToken(token);
 
+           // request.RequestUri=new System.Uri($"{request.RequestUri.Scheme}://{request.RequestUri.Authority}/grpc{request.RequestUri.AbsolutePath}");
+
+            //request.RequestUri =new System.Uri("");
+
             return await base.SendAsync(request, cancellationToken);
         }
 
