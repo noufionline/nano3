@@ -1,0 +1,121 @@
+﻿@page "/fetchdata"
+
+@using Jasmine.Blazor.Server.Data
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @*<table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Temp. (C)</th>
+                    <th>Temp. (F)</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var forecast in forecasts)
+                {
+                    <tr>
+                        <td>@forecast.Date.ToShortDateString()</td>
+                        <td>@forecast.TemperatureC</td>
+                        <td>@forecast.TemperatureF</td>
+                        <td>@forecast.Summary</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
+
+
+    <RadzenGrid @ref="ordersGrid" AllowFiltering="true" 
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
+                AllowPaging="true" PageSize="10" AllowSorting="true" 
+                Data="@forecasts" TItem="WeatherForecast" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="WeatherForecast" Property="Date" Title="Date">
+                <Template Context="data">
+                    @String.Format("{0:dd-MMM-yyyy}", data.Date)
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenDatePicker @bind-Value="order.Date" Style="width:100%" />
+                </EditTemplate>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="WeatherForecast" Property="TemperatureC" Title="TemperatureC" />
+            <RadzenGridColumn TItem="WeatherForecast" Property="TemperatureF" Title="TemperatureF" />
+            <RadzenGridColumn TItem="WeatherForecast" Property="Summary" Title="Summary" />
+            <RadzenGridColumn TItem="WeatherForecast" Context="sampleBlazorModelsSampleOrder" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                <Template Context="order">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(order))">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => UpdateRow(order))">
+                    </RadzenButton>
+                    <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="WeatherForecast" Context="order" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                <Template Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(order))">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+}
+
+@code {
+    WeatherForecast[] forecasts;
+
+    RadzenGrid<WeatherForecast> ordersGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }
+
+
+    void EditRow(WeatherForecast order)
+    {
+        ordersGrid.EditRow(order);
+    }
+
+    void UpdateRow(WeatherForecast order)
+    {
+        ordersGrid.UpdateRow(order);
+
+        //dbContext.Update<WeatherForecast>(order);
+        //dbContext.SaveChanges();
+    }
+
+    void CancelEdit(WeatherForecast order)
+    {
+        ordersGrid.CancelEditRow(order);
+
+        //var orderEntry = dbContext.Entry(order);
+        //orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+        //orderEntry.State = EntityState.Unchanged;
+    }
+
+    void DeleteRow(WeatherForecast order)
+    {
+        //dbContext.Remove<Order>(order);
+        //dbContext.SaveChanges();
+
+        ordersGrid.Reload();
+    }
+}

@@ -1,0 +1,48 @@
+﻿@page "/counter"
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<br/>
+
+<DxComboBox Data="@employees"
+            TextFieldName="Name" 
+           
+            ListRenderMode="@ListRenderMode.Virtual"
+            FilteringMode="@DataGridFilteringMode.Contains"
+            >
+</DxComboBox>
+@code {
+
+    List<Employee> employees;
+    int currentCount = 0;
+
+    void IncrementCount()
+    {
+        currentCount++;
+    }
+
+        protected override void OnInitialized()
+        {
+            employees = Employee.GetEmployees();
+        }
+
+        public class Employee
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public static List<Employee> GetEmployees()
+        {
+            var list=new List<Employee>();
+            for (int i = 4620; i < 5618; i++)
+            {
+                list.Add(new Employee{Id=i,Name=$"{i}-Name AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {i}"});
+            }
+            return list;
+        }
+    }
+}

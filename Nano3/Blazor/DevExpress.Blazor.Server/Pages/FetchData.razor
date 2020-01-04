@@ -1,0 +1,30 @@
+﻿@page "/fetchdata"
+@using DevExpress.Blazor.Server.Data;
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (documents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<DxDataGrid Data="@documents"
+            PageSize="10"
+            RowRemoving="@((dataItem) => OnRowRemoving(dataItem))"
+            RowUpdating="@((updatingDataItem, newValues) => OnRowUpdating(updatingDataItem, newValues))"
+            RowInserting="@((newValues) => OnRowInserting(newValues))">
+    <DxDataGridCommandColumn Width="150px"></DxDataGridCommandColumn>
+    <DxDataGridColumn Field="@nameof(LcDocumentList.ClientBankName)" Caption="Client Bank" TextAlignment="@DataGridTextAlign.Left" />
+    <DxDataGridColumn Field="@nameof(LcDocumentList.ClientLcNo)" Caption="Client LC" TextAlignment="@DataGridTextAlign.Left" />
+    <DxDataGridColumn Field="@nameof(LcDocumentList.Name)" Caption="Out LC" TextAlignment="@DataGridTextAlign.Left" />
+    
+
+    @*<DxDataGridSpinEditColumn Field="@nameof(WeatherForecast.TemperatureF)" Caption="Temp. (F)"></DxDataGridSpinEditColumn>
+        <DxDataGridComboBoxColumn Field="@nameof(WeatherForecast.Summary)" Caption="Summary" Data="@summaries"></DxDataGridComboBoxColumn>
+        <DxDataGridDateEditColumn Field="@nameof(WeatherForecast.Date)" DisplayFormatString="D" EditFormatString="d"></DxDataGridDateEditColumn>*@
+</DxDataGrid>
+}
+

@@ -22,7 +22,8 @@ namespace Jasmine.Abs.Api.Repositories.Abs
             return await _context.Customers.Select(x=> new CustomerDto
             { 
                 CustomerId=x.CustomerId,
-                CustomerName=x.CustomerName
+                CustomerName=x.CustomerName,
+                SunAccountCode=x.SunAccountCode ?? string.Empty
 
             }).ToListAsync().ConfigureAwait(false);
         }

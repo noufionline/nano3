@@ -2,8 +2,14 @@ using System;
 using System.IO;
 using System.Reflection;
 using Autofac;
+using Autofac.Core;
 using AutoMapper;
 using DevExpress.Logify.Web;
+using GraphQL;
+using GraphQL.Server;
+using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Server.Ui.Playground;
+using Jasmine.Abs.Api.GraphQL;
 using Jasmine.Abs.Api.PolicyServer;
 using Jasmine.Abs.Entities.Models.Azman;
 using Jasmine.Abs.Entities.Models.Core;
@@ -24,6 +30,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Z.EntityFramework.Extensions;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace Jasmine.Abs.Api
 {
@@ -52,6 +59,17 @@ namespace Jasmine.Abs.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -60,8 +78,8 @@ namespace Jasmine.Abs.Api
             });
 
 
-            services.AddDbContext<AbsContext>(builder =>  
-                builder.UseSqlServer(Configuration.GetConnectionString("CICONABS")),ServiceLifetime.Transient);
+            services.AddDbContext<AbsContext>(builder =>
+                builder.UseSqlServer(Configuration.GetConnectionString("CICONABS")), ServiceLifetime.Transient);
 
             services.AddDbContext<ZeonContext>(builder =>
                 builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
@@ -179,6 +197,16 @@ namespace Jasmine.Abs.Api
             });
 
 #endif
+
+
+           // services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
+            services.AddScoped<AbsCustomerSchema>();
+            
+            services.AddGraphQL(o =>
+            {
+                o.ExposeExceptions = true;
+            }) // .AddUserContextBuilder(httpContext => httpContext.User)
+                .AddGraphTypes(ServiceLifetime.Scoped);
         }
 
         // ConfigureContainer is where you can register things directly
@@ -258,7 +286,18 @@ namespace Jasmine.Abs.Api
             });
 #endif
 
+            app.UseGraphQL<AbsCustomerSchema>("/graphql");
+             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions
+            {
+                Path = "/ui/playground"
+            });
 
+            app.UseGraphiQLServer(new GraphiQLOptions
+            {
+                Path = "/ui/graphiql",
+                GraphQLEndPoint = "/graphql",
+            });
+;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
