@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace DevExpress.Blazor.Server
 {
@@ -24,5 +25,15 @@ namespace DevExpress.Blazor.Server
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+    }
+
+
+    public static class FileUtils
+    {
+        public async static ValueTask SaveAs(this IJSRuntime js, string filename, byte[] data)
+       => await js.InvokeAsync<object>(
+          "saveAsFile",
+          filename,
+          Convert.ToBase64String(data));
     }
 }
