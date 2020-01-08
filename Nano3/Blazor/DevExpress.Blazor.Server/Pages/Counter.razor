@@ -2,14 +2,17 @@
 
 @using System.IO
 @using DevExpress.Export.Xl
+
 @inject Microsoft.JSInterop.IJSRuntime JS
+@inject DevExpress.Blazor.Server.Data.ILcDocumentService service
 
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-<button class="btn btn-primary" @onclick="CreateDocument">Excel</button>
+<button class="btn btn-primary" @onclick="CreateExcelReport">Excel</button>
+<button class="btn btn-primary" @onclick="CreatePdfReport">PDF</button>
 <br />
 
 
@@ -28,7 +31,7 @@
     /// <summary>
     /// Create and download the Excel document
     /// </summary>
-    protected async void CreateDocument()
+    protected async Task CreateExcelReport()
     {
         // Create an exporter instance.
         IXlExporter exporter = XlExport.CreateExporter(XlDocumentFormat.Xlsx);
@@ -155,20 +158,65 @@
                 }
             }
 
-            var memoryStream=new MemoryStream();
+            //var memoryStream = new MemoryStream();
 
-            stream.Seek(0,SeekOrigin.Begin);
+            //stream.Seek(0, SeekOrigin.Begin);
 
-            await stream.CopyToAsync(memoryStream);
+            //await stream.CopyToAsync(memoryStream);
 
-            await JS.SaveAs("Sample.xlsx", memoryStream.ToArray());
+            //await JS.SaveAs("Sample.xlsx", memoryStream.ToArray());
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+            using (var ms = new MemoryStream())
+            {
+                await stream.CopyToAsync(ms);
+
+                byte[] exportedFileBytes = ms.ToArray();
+                string myExportString = Convert.ToBase64String(exportedFileBytes);
+                await JS.InvokeVoidAsync("downloadFileClientSide", myExportString, "testreport.xlsx");
+            }
+
         }
 
     }
 
 
-    
-    List<Employee> employees;
+
+
+    public async Task CreatePdfReport()
+    {
+        try
+        {
+            var data = await service.GetQuotationHistoryByPartner(64);
+            var report = new Reports.QuotationHistoryByPartnerReport();
+            report.DataSource = data;
+
+
+            await new System.Threading.Tasks.TaskFactory().StartNew(() =>
+            {
+                report.CreateDocument();
+                using (var stream = new MemoryStream())
+                {
+                    report.ExportToPdf(stream);
+
+                    byte[] exportedFileBytes = stream.ToArray();
+                    string myExportString = Convert.ToBase64String(exportedFileBytes);
+                    JS.InvokeVoidAsync("downloadFileClientSide", myExportString, "Customer History");
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+    }
+
+
+
+    List<Employee>
+    employees;
     int currentCount = 0;
 
     void IncrementCount()
@@ -186,9 +234,11 @@
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public static List<Employee> GetEmployees()
+        public static List<Employee>
+            GetEmployees()
         {
-            var list = new List<Employee>();
+            var list = new List<Employee>
+                ();
             for (int i = 4620; i < 5618; i++)
             {
                 list.Add(new Employee { Id = i, Name = $"{i}-Name AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {i}" });

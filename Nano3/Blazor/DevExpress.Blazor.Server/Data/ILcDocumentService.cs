@@ -6,5 +6,6 @@ namespace DevExpress.Blazor.Server.Data
     public interface ILcDocumentService
     {
         Task<List<LcDocumentList>> GetLcDocumentsAsync();
+        Task<List<QuotationHistoryByPartnerDto>> GetQuotationHistoryByPartner(int partnerId);
     }
 }

@@ -1,0 +1,85 @@
+﻿@page "/"
+
+@using Syncfusion.EJ2.Blazor.Grids
+@using Syncfusion.EJ2.Blazor.SplitButtons
+
+@using Syncfusion.EJ2.Blazor.Buttons 
+@using Syncfusion.EJ2.Blazor.Spinner
+
+<div class="col-lg-12 control-section">
+    <div class="content-wrapper">
+        <div class="row">
+            <EjsGrid DataSource="@GridData" AllowFiltering="true" AllowPaging="true">
+                <GridColumns>
+                    <GridColumn Field=@nameof(Customer.Id) HeaderText="Customer ID" Width="150"></GridColumn>
+                    <GridColumn Field=@nameof(Customer.Name) HeaderText="Customer Name"></GridColumn>
+                </GridColumns>
+            </EjsGrid>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <button @onclick="Click">Show/Hide Spinner</button>
+    <div id="container">
+     
+    </div>
+    <EjsSpinner @ref="SpinnerObj" Target="#container" Label="Please wait..." Type="Syncfusion.EJ2.Blazor.Popups.SpinnerType.Bootstrap4">
+    </EjsSpinner>
+</div>
+@code{
+
+
+    EjsSpinner SpinnerObj;
+    string target { get; set; } = "#container";
+
+    private async Task Click()
+    {
+        SpinnerObj.ShowSpinner(target);
+        await Task.Delay(3000);
+        SpinnerObj.HideSpinner(target);
+    }
+
+
+    EjsProgressButton ProgressBtn;
+
+    public string Content = "Download";
+    public string CssClass = "e-hide-spinner";
+    public string IconCss = "e-icons e-download";
+
+    public List<Customer> GridData { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        GridData = await Customer.GetCustomersAsync();
+    }
+
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public static Task<List<Customer>> GetCustomersAsync()
+        {
+            var list = new List<Customer>();
+            for (int i = 0; i < 100; i++)
+            {
+                list.Add(new Customer { Id = i + 1, Name = $"Customer :{i + 1}" });
+            }
+            return Task.FromResult(list);
+        }
+    }
+
+    //private async Task Click(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    //{
+
+    //    this.CssClass = "e-show-spinner";
+    //    this.Content="Please wait...!";
+    //    await Task.Delay(5000);
+    //    this.CssClass = "e-hide-spinner";
+    //    this.Content="Download";
+
+    //    await this.ProgressBtn.ProgressComplete();
+    //}
+}
+

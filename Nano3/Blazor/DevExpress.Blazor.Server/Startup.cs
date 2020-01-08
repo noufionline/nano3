@@ -13,6 +13,9 @@ using DevExpress.Blazor.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using DevExpress.AspNetCore;
+using DevExpress.AspNetCore.Reporting;
+using DevExpress.Blazor.Server.Controllers;
 
 namespace DevExpress.Blazor.Server
 {
@@ -30,8 +33,14 @@ namespace DevExpress.Blazor.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AbsCoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AbsCore")));
+            
+        
+            services.AddMvc().AddNewtonsoftJson().AddDefaultReportingControllers();
+
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => options.DetailedErrors = true);
+
+           services.AddDevExpressControls();
 
             services.AddAuthentication(options =>
             {
@@ -77,6 +86,9 @@ namespace DevExpress.Blazor.Server
             }
 
             app.UseHttpsRedirection();
+
+            DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension.RegisterExtensionGlobal(new CustomReportStorageWebExtension());
+
             app.UseStaticFiles();
 
             app.UseRouting();

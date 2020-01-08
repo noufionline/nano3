@@ -61,11 +61,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcClientForNashath", "Grp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevExpress.Blazor.Server", "Blazor\DevExpress.Blazor.Server\DevExpress.Blazor.Server.csproj", "{5D3D061E-A606-4DB3-BE97-A42C204B0BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWithIdentity", "Blazor\BlazorWithIdentity\BlazorWithIdentity.csproj", "{9D2B1F5D-854E-4972-BF59-F80DD1237600}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWithIdentity", "Blazor\BlazorWithIdentity\BlazorWithIdentity.csproj", "{9D2B1F5D-854E-4972-BF59-F80DD1237600}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "is4aspid", "is4aspid", "{3307C750-1B26-456D-A31C-979D31D23A87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "is4aspid", "IS4\is4aspid\is4aspid.csproj", "{A7C0BD8B-CBEE-4923-904B-1EDA504FDE44}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncFusion.Blazor.Server", "Blazor\SyncFusion.Blazor.Server\SyncFusion.Blazor.Server.csproj", "{3FC959CF-181F-4601-AD3E-4144691114E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -317,6 +319,18 @@ Global
 		{A7C0BD8B-CBEE-4923-904B-1EDA504FDE44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7C0BD8B-CBEE-4923-904B-1EDA504FDE44}.Release|x64.ActiveCfg = Release|Any CPU
 		{A7C0BD8B-CBEE-4923-904B-1EDA504FDE44}.Release|x64.Build.0 = Release|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Debug|x64.Build.0 = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Publish|x64.ActiveCfg = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Publish|x64.Build.0 = Debug|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Release|x64.ActiveCfg = Release|Any CPU
+		{3FC959CF-181F-4601-AD3E-4144691114E6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -345,6 +359,7 @@ Global
 		{9D2B1F5D-854E-4972-BF59-F80DD1237600} = {6CB6A089-CAD9-4C1B-9DBB-7D94D191F152}
 		{3307C750-1B26-456D-A31C-979D31D23A87} = {3ACC1725-8F3A-4CA0-8689-F739A71C33B4}
 		{A7C0BD8B-CBEE-4923-904B-1EDA504FDE44} = {3307C750-1B26-456D-A31C-979D31D23A87}
+		{3FC959CF-181F-4601-AD3E-4144691114E6} = {6CB6A089-CAD9-4C1B-9DBB-7D94D191F152}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {266E5B5E-EE4A-4C65-BF16-1828102A7E9E}

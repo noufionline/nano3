@@ -1,0 +1,104 @@
+﻿@page "/counter"
+@using System.ComponentModel.DataAnnotations
+@*<h1>Counter</h1>
+
+    <p>Current count: @currentCount</p>
+
+    <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+<EditForm Model="@starship" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit" Context="EditFormContext">
+    <DataAnnotationsValidator />
+    <DxFormLayout>
+        <DxFormLayoutItem Caption="Identifier:" ColSpanMd="4">
+            <Template>
+                <DxTextBox @bind-Text="@starship.Identifier" />
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem Caption="Primary Classification:" ColSpanMd="4">
+            <Template>
+                <DxComboBox NullText="Select classification ..."
+                            @bind-SelectedItem="@starship.Classification"
+                            Data="@(new List<string>() { null, "Defense", "Exploration", "Diplomacy" })" />
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem Caption="Maximum Accommodation:" ColSpanMd="8">
+            <Template>
+                <DxSpinEdit Id="accommodation" @bind-Value="@starship.MaximumAccommodation" />
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem Caption="Production Date:" ColSpanMd="8">
+            <Template>
+                <DxDateEdit @bind-Date="@starship.ProductionDate" />
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem Caption="Date Range :" ColSpanMd="8">
+            <Template>
+                <EjsDateRangePicker Placeholder="Choose a Range"></EjsDateRangePicker>
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem Caption="Sync Fusion Date :">
+            <Template>
+                <EjsDateTimePicker TValue="DateTime?" Placeholder="Select a date and time"></EjsDateTimePicker>
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem ColSpanMd="12">
+            <Template>
+                <ValidationSummary />
+            </Template>
+        </DxFormLayoutItem>
+        <DxFormLayoutItem ColSpanMd="12">
+            <Template>
+                <button type="submit">Submit</button>
+            </Template>
+        </DxFormLayoutItem>
+    </DxFormLayout>
+</EditForm>
+
+
+@code {
+    int currentCount = 0;
+
+    void IncrementCount()
+    {
+        currentCount++;
+    }
+
+
+    private Starship starship = new Starship();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("OnValidSubmit");
+    }
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("OnInvalidSubmit");
+    }
+
+    public class Starship
+    {
+        [Required]
+        [StringLength(16,
+        ErrorMessage = "The Identifier exceeds 16 characters.")]
+        public string Identifier { get; set; }
+
+        [Required]
+        public string Classification { get; set; }
+
+        [Range(1, 100000, ErrorMessage = "The Maximum Accommodation value should be a number between 1 and 100,000.")]
+        public int MaximumAccommodation { get; set; }
+
+        [Required]
+        [DateInPastAttribute(ErrorMessage = "The Production Date value cannot be later than today.")]
+        public DateTime ProductionDate { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
+    public class DateInPastAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            return (DateTime)value <= DateTime.Today;
+        }
+    }
+}
