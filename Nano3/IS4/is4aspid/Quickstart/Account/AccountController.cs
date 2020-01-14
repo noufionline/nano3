@@ -246,7 +246,7 @@ namespace IdentityServer4.Quickstart.UI
                     DisplayName = x.DisplayName,
                     AuthenticationScheme = x.Name
                 }).ToList();
-
+            
             var allowLocal = true;
             if (context?.ClientId != null)
             {

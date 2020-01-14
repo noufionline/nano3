@@ -17,7 +17,7 @@ namespace DevExpress.Blazor.Server.Pages
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
              var prop = new AuthenticationProperties()
             {
-                RedirectUri = "https://localhost:44314"
+                RedirectUri = "https://localhost:44309"
             };
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme,prop);
         }

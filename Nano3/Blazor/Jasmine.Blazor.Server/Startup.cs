@@ -10,14 +10,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Jasmine.Blazor.Server.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Jasmine.Blazor.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration,IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -29,6 +34,39 @@ namespace Jasmine.Blazor.Server
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+
+            services.AddAuthentication(options =>
+          {
+              options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+              options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+          })
+              .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+              .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+              {
+                  
+                  if(_env.IsDevelopment())
+                  {
+                      options.Authority = "https://localhost:44311";
+                  }
+                  else
+                  {
+                      options.Authority = "https://abs.cicononline.com/idp";
+                  }
+                  
+
+                  options.ClientId = "abscoreblazor";
+                  options.ClientSecret = "5651841c-9615-4d1e-bf79-81a382faac81";
+
+                  options.ResponseType = "code id_token";
+
+                  options.Scope.Add("openid");
+                  options.Scope.Add("profile");
+                  options.Scope.Add("email");
+                  options.Scope.Add("abscoreapi");
+
+                  options.SaveTokens = true;
+                  options.GetClaimsFromUserInfoEndpoint = true;
+              });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +87,7 @@ namespace Jasmine.Blazor.Server
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();

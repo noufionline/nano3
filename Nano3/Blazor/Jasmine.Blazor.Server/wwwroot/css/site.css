@@ -148,3 +148,25 @@ app {
         display: block;
     }
 }
+
+.user-info {
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+    .user-info img {
+        margin-right: 0.7rem;
+        width: 2.6rem;
+    }
+
+    .user-info .username {
+        color: #ff6e00;
+        display: block;
+        font-weight: 700;
+        line-height: 0.7rem;
+        margin-top: 0.5rem;
+    }
+

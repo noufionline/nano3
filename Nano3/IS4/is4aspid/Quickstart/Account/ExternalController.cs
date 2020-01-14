@@ -101,6 +101,7 @@ namespace IdentityServer4.Quickstart.UI
                 _logger.LogDebug("External claims: {@claims}", externalClaims);
             }
 
+
             // lookup our user and external provider info
             var (user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result);
             if (user == null)
@@ -119,6 +120,11 @@ namespace IdentityServer4.Quickstart.UI
             ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
+
+
+           
+
+
 
             // issue authentication cookie for user
             // we must issue the cookie maually, and can't use the SignInManager because

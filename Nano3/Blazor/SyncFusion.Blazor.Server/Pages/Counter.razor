@@ -1,10 +1,24 @@
 ﻿@page "/counter"
 @using System.ComponentModel.DataAnnotations
+@using Syncfusion.EJ2.Blazor.SplitButtons
+
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.Spinner
 @*<h1>Counter</h1>
 
     <p>Current count: @currentCount</p>
 
     <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+
+<style>
+    .e-custom-class {
+        pointer-events: none;
+        background-color: rgba(0, 0, 0, 0.12) !important;
+        box-shadow: none !important;
+        color: rgba(0, 0, 0, 0.26) !important;
+    }
+</style>
 
 <EditForm Model="@starship" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit" Context="EditFormContext">
     <DataAnnotationsValidator />
@@ -51,18 +65,32 @@
                 <button type="submit">Submit</button>
             </Template>
         </DxFormLayoutItem>
+        <DxFormLayoutItem ColSpanMd="12">
+            <Template>
+                <EjsProgressButton Content="Spin Left" IsPrimary="true" Duration="10000000" @onclick="Click" @ref="progressBtn">
+                    <ProgressButtonEvents OnBegin="ProgressBegin"></ProgressButtonEvents>
+                </EjsProgressButton>
+            </Template>
+        </DxFormLayoutItem>
     </DxFormLayout>
 </EditForm>
 
 
 @code {
     int currentCount = 0;
+    private string CustomClass = "";
+
+    EjsProgressButton progressBtn;
 
     void IncrementCount()
     {
         currentCount++;
     }
 
+    private void ProgressBegin()
+    {
+        this.CustomClass = "e-custom-class";
+    }
 
     private Starship starship = new Starship();
 
@@ -73,6 +101,19 @@
     private void HandleInvalidSubmit()
     {
         Console.WriteLine("OnInvalidSubmit");
+    }
+
+
+
+
+    private async Task Click()
+    {
+        if(string.IsNullOrWhiteSpace(this.CustomClass)) return;
+
+        await Task.Delay(3000);
+        Console.WriteLine("Button Clicked @ {0}",DateTime.Now);
+        await progressBtn.ProgressComplete();
+        this.CustomClass = "";  
     }
 
     public class Starship

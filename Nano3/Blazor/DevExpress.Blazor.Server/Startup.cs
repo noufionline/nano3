@@ -21,9 +21,12 @@ namespace DevExpress.Blazor.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _environment;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -33,14 +36,14 @@ namespace DevExpress.Blazor.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AbsCoreContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AbsCore")));
-            
-        
+
+
             services.AddMvc().AddNewtonsoftJson().AddDefaultReportingControllers();
 
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => options.DetailedErrors = true);
 
-           services.AddDevExpressControls();
+            services.AddDevExpressControls();
 
             services.AddAuthentication(options =>
             {
@@ -50,20 +53,28 @@ namespace DevExpress.Blazor.Server
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
-                    options.Authority="https://localhost:44311";
-                    
-                    options.ClientId="abscoreblazor";
-                    options.ClientSecret="5651841c-9615-4d1e-bf79-81a382faac81";
-                    
-                    options.ResponseType="code id_token";
-                    
+
+                    if (_environment.IsDevelopment())
+                    {
+                        options.Authority = "https://localhost:44311";
+                    }
+                    else
+                    {
+                        options.Authority = "https://abs.cicononline.com/idp";
+                    }
+
+                    options.ClientId = "abscoreblazor";
+                    options.ClientSecret = "5651841c-9615-4d1e-bf79-81a382faac81";
+
+                    options.ResponseType = "code id_token";
+
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("email");
                     options.Scope.Add("abscoreapi");
 
-                    options.SaveTokens=true;
-                    options.GetClaimsFromUserInfoEndpoint=true;
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
                 });
 
 
