@@ -11,6 +11,7 @@ using IdentityServer4.Stores;
 using is4aspid.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace IdentityServer4.Quickstart.UI
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly NavigationManager _navigationManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IEventService _events;
@@ -32,6 +34,7 @@ namespace IdentityServer4.Quickstart.UI
         public ExternalController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            NavigationManager navigationManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
@@ -39,6 +42,7 @@ namespace IdentityServer4.Quickstart.UI
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _navigationManager = navigationManager;
             _interaction = interaction;
             _clientStore = clientStore;
             _events = events;
@@ -112,49 +116,79 @@ namespace IdentityServer4.Quickstart.UI
                 user = await AutoProvisionUserAsync(provider, providerUserId, claims);
             }
 
-            // this allows us to collect any additonal claims or properties
-            // for the specific prtotocols used and store them in the local auth cookie.
-            // this is typically used to store data needed for signout from those protocols.
-            var additionalLocalClaims = new List<Claim>();
-            var localSignInProps = new AuthenticationProperties();
-            ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
-            ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
-            ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
 
-
-           
-
-
-
-            // issue authentication cookie for user
-            // we must issue the cookie maually, and can't use the SignInManager because
-            // it doesn't expose an API to issue additional claims from the login workflow
-            var principal = await _signInManager.CreateUserPrincipalAsync(user);
-            additionalLocalClaims.AddRange(principal.Claims);
-            var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;
-            await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray());
-
-            // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            // retrieve return URL
-            var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
-
-            // check if external login is in the context of an OIDC request
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name, true, context?.ClientId));
-
-            if (context != null)
+            if (user == null)
             {
-                if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+                var item = await _interaction.GetAuthorizationContextAsync(result.Properties.Items["returnUrl"]);
+                var email = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+                var viewModel = new ErrorPageViewModel
                 {
-                    // if the client is PKCE then we assume it's native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });
+                    ReturnUrl = item.RedirectUri.Replace("signin-oidc", ""),
+                    Email = email,
+                    ChallengeUrl=result.Properties.Items["returnUrl"] ?? "~/"
+                };
+                var showErrorPageUrl = Url.Action("ErrorPage", "Account", viewModel);
+
+                return Redirect(showErrorPageUrl);
+
+                //  return Redirect(item.RedirectUri.Replace("signin-oidc","InvalidLogin"));
+
+                //// return Redirect("https://localhost:44309/InvalidLogin"); 
+
+                //var email = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+
+                //var uri = $"https://localhost:44309/InvalidLogin/?email={email.Replace("@", "%40")}";
+
+                //return Redirect(uri);
+
+            }
+            else
+            {
+                // this allows us to collect any additonal claims or properties
+                // for the specific prtotocols used and store them in the local auth cookie.
+                // this is typically used to store data needed for signout from those protocols.
+                var additionalLocalClaims = new List<Claim>();
+
+                var localSignInProps = new AuthenticationProperties();
+
+                ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
+                ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
+                ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
+
+
+                // issue authentication cookie for user
+                // we must issue the cookie maually, and can't use the SignInManager because
+                // it doesn't expose an API to issue additional claims from the login workflow
+                var principal = await _signInManager.CreateUserPrincipalAsync(user);
+                additionalLocalClaims.AddRange(principal.Claims);
+                var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;
+                await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray());
+
+                // delete temporary cookie used during external authentication
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+                // retrieve return URL
+                var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
+
+                // check if external login is in the context of an OIDC request
+                var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+                await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, name, true, context?.ClientId));
+
+                if (context != null)
+                {
+                    if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                    {
+                        // if the client is PKCE then we assume it's native, so this change in how to
+                        // return the response is for better UX for the end user.
+                        return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });
+                    }
                 }
+
+                return Redirect(returnUrl);
             }
 
-            return Redirect(returnUrl);
         }
 
         private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl)
@@ -269,23 +303,36 @@ namespace IdentityServer4.Quickstart.UI
                 filtered.Add(new Claim(JwtClaimTypes.Email, email));
             }
 
-            var user = new ApplicationUser
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
             {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            var identityResult = await _userManager.CreateAsync(user);
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-
-            if (filtered.Any())
-            {
-                identityResult = await _userManager.AddClaimsAsync(user, filtered);
-                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+                var login = await _userManager.FindByLoginAsync(provider, providerUserId);
+                if (login == null)
+                {
+                    var identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+                    if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+                }
             }
 
-            identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-
             return user;
+
+            //var user = new ApplicationUser
+            //{
+            //    UserName = Guid.NewGuid().ToString(),
+            //};
+            //var identityResult = await _userManager.CreateAsync(user);
+            //if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+
+            //if (filtered.Any())
+            //{
+            //    identityResult = await _userManager.AddClaimsAsync(user, filtered);
+            //    if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            //}
+
+            //identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+            //if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+
+            //return user;
         }
 
 

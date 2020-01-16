@@ -79,6 +79,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jasmine.IDP", "IS4\Jasmine.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jasmine.Blazor.Server", "Blazor\Jasmine.Blazor.Server\Jasmine.Blazor.Server.csproj", "{9D01FF06-0DA8-4E67-A03D-B8BDC557DBBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest", "aspnetcore\IdentityTest\IdentityTest.csproj", "{2477FB2C-29E4-42EE-86A9-959538E47991}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -377,6 +379,18 @@ Global
 		{9D01FF06-0DA8-4E67-A03D-B8BDC557DBBB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9D01FF06-0DA8-4E67-A03D-B8BDC557DBBB}.Release|x64.ActiveCfg = Release|Any CPU
 		{9D01FF06-0DA8-4E67-A03D-B8BDC557DBBB}.Release|x64.Build.0 = Release|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Debug|x64.Build.0 = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Publish|x64.ActiveCfg = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Publish|x64.Build.0 = Debug|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Release|x64.ActiveCfg = Release|Any CPU
+		{2477FB2C-29E4-42EE-86A9-959538E47991}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -411,6 +425,7 @@ Global
 		{C8E866D4-A7E6-46C6-B6EA-E5E366D2AAA0} = {3ACC1725-8F3A-4CA0-8689-F739A71C33B4}
 		{E32D1738-5A92-4AFB-944D-FEE25A5199D0} = {C8E866D4-A7E6-46C6-B6EA-E5E366D2AAA0}
 		{9D01FF06-0DA8-4E67-A03D-B8BDC557DBBB} = {6CB6A089-CAD9-4C1B-9DBB-7D94D191F152}
+		{2477FB2C-29E4-42EE-86A9-959538E47991} = {775BB75C-9D16-4B02-AFFE-D18C40B0D44F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {266E5B5E-EE4A-4C65-BF16-1828102A7E9E}

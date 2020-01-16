@@ -9,4 +9,10 @@ namespace IdentityServer4.Quickstart.UI
     {
         public string RedirectUrl { get; set; }
     }
+
+
+    public class InvalidLoginViewModel
+    {
+        public string RedirectUrl { get; set; }
+    }
 }

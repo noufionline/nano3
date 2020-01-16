@@ -8,4 +8,11 @@ namespace IdentityServer4.Quickstart.UI
     {
         public string LogoutId { get; set; }
     }
+
+    public class ErrorPageViewModel
+    {
+        public string ReturnUrl {get;set;}
+        public string ChallengeUrl{get;set;}
+        public string Email {get;set;}
+    }
 }

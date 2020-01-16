@@ -1,0 +1,24 @@
+﻿@page "/invalidlogin"
+@*<div class="alert-danger">User must be a CICON Employee with an email address ends with cicon.net</div>*@
+
+
+<div id="notfound">
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>Oops!</h1>
+            <h2>@Email is not registered with ABS Enterprise Core....</h2>
+        </div>
+        <a href="LoginIDP">Sign in Again</a>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Email { get; set; }
+
+    
+}
+@*<div>
+        <a class="alert-primary" href="LoginIDP">Sign in to Cicon Email</a>
+    </div>*@

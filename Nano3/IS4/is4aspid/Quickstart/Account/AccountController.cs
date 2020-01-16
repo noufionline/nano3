@@ -209,6 +209,11 @@ namespace IdentityServer4.Quickstart.UI
         }
 
 
+        public IActionResult ErrorPage(ErrorPageViewModel errorPageViewModel)
+        {
+            return View(errorPageViewModel);
+        }
+
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
@@ -341,5 +346,8 @@ namespace IdentityServer4.Quickstart.UI
 
             return vm;
         }
+
+
+       
     }
 }
