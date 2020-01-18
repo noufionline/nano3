@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using is4aspid.Models;
 using Microsoft.CodeAnalysis.Options;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace is4aspid.Data
 {
@@ -24,5 +25,32 @@ namespace is4aspid.Data
         {
             optionsBuilder.UseSqlServer("Data Source=192.168.30.31; Initial Catalog=AbsCoreDevelopment; User Id=sa;pwd=fkt");
         }
+    }
+
+    public class HrContext : DbContext
+    {
+        public HrContext(DbContextOptions<HrContext> options):base(options)
+        {
+
+        }
+
+        public DbSet<Employee> Employees{get;set;}
+
+       
+
+    }
+
+    [Table(name:"Employees",Schema ="hrm")]
+    public class Employee
+    {
+        public int Id { get;  set; }
+        public string Name {get;set;}
+        public bool IsStaff {get;set;}
+        public bool IsWorking {get;set;}
+    }
+
+    public class Division
+    {
+
     }
 }

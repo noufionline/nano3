@@ -113,15 +113,35 @@ namespace IdentityServer4.Quickstart.UI
                 // simply auto-provisions new external user
                 user = await AutoProvisionUserAsync(provider, providerUserId, claims);
             }
+
             if (user == null)
             {
-                //  Redirect("AccessDeniedByCicon");
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-                // var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
-                // return View("InvalidLoginView", new InvalidLoginViewModel { RedirectUrl = returnUrl });
 
-                var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value;
-                return Redirect(_urlHelper.RouteUrl($"https://abs.cicononline.com/kpi/InvalidLogin?Email={email}"));
+                var item = await _interaction.GetAuthorizationContextAsync(result.Properties.Items["returnUrl"]);
+                var email = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+                var name = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value;
+                var viewModel = new ErrorPageViewModel
+                {
+                    ReturnUrl = item.RedirectUri.Replace("signin-oidc", ""),
+                    Email = email,
+                    Name = name,
+                    ChallengeUrl = result.Properties.Items["returnUrl"] ?? "~/"
+                };
+                var showErrorPageUrl = Url.Action("ErrorPage", "Account", viewModel);
+
+                return Redirect(showErrorPageUrl);
+
+                //  return Redirect(item.RedirectUri.Replace("signin-oidc","InvalidLogin"));
+
+                //// return Redirect("https://localhost:44309/InvalidLogin"); 
+
+                //var email = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+
+                //var uri = $"https://localhost:44309/InvalidLogin/?email={email.Replace("@", "%40")}";
+
+                //return Redirect(uri);
+
             }
             else
             {
@@ -129,14 +149,12 @@ namespace IdentityServer4.Quickstart.UI
                 // for the specific prtotocols used and store them in the local auth cookie.
                 // this is typically used to store data needed for signout from those protocols.
                 var additionalLocalClaims = new List<Claim>();
+
                 var localSignInProps = new AuthenticationProperties();
+
                 ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
                 ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
                 ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
-
-
-
-
 
 
                 // issue authentication cookie for user

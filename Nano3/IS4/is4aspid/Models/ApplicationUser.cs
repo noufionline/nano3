@@ -14,4 +14,6 @@ namespace is4aspid.Models
         public int DivisionId { get; set; }
         public byte[] Photo { get; set; }
     }
+
+    
 }

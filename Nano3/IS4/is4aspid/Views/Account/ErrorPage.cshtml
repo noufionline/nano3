@@ -4,7 +4,14 @@
         <h1>Access Denied</h1>
     </div>
 
-    <h1>This email (@Model.Email) is not registerd with ABS Enterprise Core</h1>
-    <a class="btn btn-primary btn-lg active" role="button" href="@Model.ReturnUrl">Go Back</a>
-    <a class="btn btn-danger btn-lg active" role="button" href="@Model.ChallengeUrl">Try Again</a>
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Unauthorized User</h4>
+        <p>@Model.Name <strong>(@Model.Email)</strong> is not registerd with ABS Enterprise Core</p>
+        <hr>
+        <a class="btn btn-primary btn-lg active" role="button" href="@Model.ReturnUrl">Go Back</a>
+        <a class="btn btn-danger btn-lg active" role="button" href="@Model.ChallengeUrl">Try Again</a>
+    </div>
+
+    
+    
 </div>

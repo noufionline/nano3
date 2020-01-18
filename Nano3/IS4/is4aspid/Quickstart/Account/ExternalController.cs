@@ -123,10 +123,12 @@ namespace IdentityServer4.Quickstart.UI
 
                 var item = await _interaction.GetAuthorizationContextAsync(result.Properties.Items["returnUrl"]);
                 var email = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+                var name = claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value;
                 var viewModel = new ErrorPageViewModel
                 {
-                    ReturnUrl = item.RedirectUri.Replace("signin-oidc", ""),
+                    ReturnUrl =item.RedirectUri.Replace("signin-oidc", ""),
                     Email = email,
+                    Name= name,
                     ChallengeUrl=result.Properties.Items["returnUrl"] ?? "~/"
                 };
                 var showErrorPageUrl = Url.Action("ErrorPage", "Account", viewModel);

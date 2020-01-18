@@ -14,5 +14,6 @@ namespace IdentityServer4.Quickstart.UI
         public string ReturnUrl {get;set;}
         public string ChallengeUrl{get;set;}
         public string Email {get;set;}
+        public string Name { get;  set; }
     }
 }

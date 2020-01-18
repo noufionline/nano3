@@ -94,9 +94,12 @@ namespace is4aspid
                     RedirectUris={"https://localhost:44309/signin-oidc"},
                     FrontChannelLogoutUri="https://localhost:44309/signout-oidc",
                     PostLogoutRedirectUris={"https://localhost:44309/signout-callback-oidc"},
+                    
                     //RedirectUris={"https://abs.cicononline.com/kpi/signin-oidc"},
                     //FrontChannelLogoutUri="https://abs.cicononline.com/kpi/signout-oidc",
                     //PostLogoutRedirectUris={"https://abs.cicononline.com/kpi/signout-callback-oidc"},
+                 
+                    
                     EnableLocalLogin=false,
                     AllowOfflineAccess=true,
                     RequireConsent=false,

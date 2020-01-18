@@ -1,0 +1,131 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register Cicon User";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm())
+        {
+            <h4>Create a new account.</h4>
+            <hr />
+            @using (Html.DevExtreme().ValidationGroup())
+            {
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.DivisionId">Division</label>
+                    @(Html.DevExtreme().LookupFor(m=> m.Input.DivisionId)
+                       .DataSource(Model.Divisions)
+                       .DisplayExpr("Name")
+                       .ValueExpr("Id")
+                       .ShowPopupTitle(false)
+                    )
+                    <span asp-validation-for="Input.DivisionId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.EmployeeName"></label>
+                    @(Html.DevExtreme().LookupFor(m=> m.Input.EmployeeName)
+                       .DataSource(Model.Employees)
+                       .DisplayExpr("Name")
+                       .ValueExpr("Id")
+                       .OnValueChanged("employee_valueChanged")
+                       .ShowPopupTitle(false)
+                    )
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.EmployeeId"></label>
+                    @(Html.DevExtreme().TextBoxFor(m=> m.Input.EmployeeId).ID("empId").ReadOnly(true)
+                    )
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.DisplayName">Display Name</label>
+                    @Html.DevExtreme().TextBoxFor(m=> m.Input.DisplayName)
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.Email)
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.Password)
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.ConfirmPassword)
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="dx-fieldset">
+                    @(Html.DevExtreme().ValidationSummary()
+                        .ID("summary")
+                    )
+
+                    @(Html.DevExtreme().Button()
+                        .ID("button")
+                        .Text("Register")
+                        .Type(ButtonType.Success)
+                        .UseSubmitBehavior(true)
+                    )
+                </div>
+            }
+        }
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4>Use another service to register.</h4>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                            for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+</div>
+
+
+<script>
+    function employee_valueChanged(e) {
+
+        $("#empId")
+            .dxTextBox("instance")
+            .option("value", e.value);
+
+    }
+
+    function lookup_displayExpr(item) {
+        if (!item) {
+            return "";
+        }
+
+        return item.FirstName + " " + item.LastName;
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
