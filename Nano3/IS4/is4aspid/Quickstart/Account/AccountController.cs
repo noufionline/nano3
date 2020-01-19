@@ -139,7 +139,7 @@ namespace IdentityServer4.Quickstart.UI
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -148,7 +148,7 @@ namespace IdentityServer4.Quickstart.UI
             return View(vm);
         }
 
-        
+
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -209,6 +209,14 @@ namespace IdentityServer4.Quickstart.UI
         }
 
 
+        [HttpPost]
+        public JsonResult CheckEmailAddress(string email)
+        {   
+            bool isValid = string.Equals(email, "noufal@cicon.net", StringComparison.OrdinalIgnoreCase);
+            return Json(isValid);
+        }
+
+
         public IActionResult ErrorPage(ErrorPageViewModel errorPageViewModel)
         {
             return View(errorPageViewModel);
@@ -251,7 +259,7 @@ namespace IdentityServer4.Quickstart.UI
                     DisplayName = x.DisplayName,
                     AuthenticationScheme = x.Name
                 }).ToList();
-            
+
             var allowLocal = true;
             if (context?.ClientId != null)
             {
@@ -348,6 +356,6 @@ namespace IdentityServer4.Quickstart.UI
         }
 
 
-       
+
     }
 }

@@ -160,7 +160,7 @@ namespace Jasmine.Abs.Api
             {
                 if (_env.IsProduction())
                 {
-                    options.Authority = "https://abs.cicononline.com/zeon";
+                    options.Authority = "https://abs.cicononline.com/idp";
                     options.RequireHttpsMetadata = true;
                 }
                 else

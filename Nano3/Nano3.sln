@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityTest", "aspnetcore\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevExpress", "DevExpress", "{9AF26DB3-85A5-48EB-BF09-D3B2D6124301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevExtremeAspNetCoreApp2", "DevExpress\DevExtremeAspNetCoreApp2\DevExtremeAspNetCoreApp2.csproj", "{7D1EFBAB-CCCF-450F-AEF0-57CDB726AFE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevExtremeAspNetCoreApp2", "DevExpress\DevExtremeAspNetCoreApp2\DevExtremeAspNetCoreApp2.csproj", "{7D1EFBAB-CCCF-450F-AEF0-57CDB726AFE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

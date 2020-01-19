@@ -7,24 +7,20 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using is4aspid.Models;
+using Jasmine.IDP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using is4aspid.Data;
-using Microsoft.EntityFrameworkCore;
 
-namespace is4aspid.Areas.Identity.Pages.Account
+namespace Jasmine.IDP.Areas.Identity.Pages.Account
 {
-    [Authorize(Policy ="RequireAdministratorRole")]
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly HrContext _hrContext;
-        private readonly NetSqlAzmanContext _azmanContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
@@ -32,22 +28,14 @@ namespace is4aspid.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            HrContext hrContext,
-            NetSqlAzmanContext azmanContext,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _hrContext = hrContext;
-            _azmanContext = azmanContext;
             _logger = logger;
             _emailSender = emailSender;
         }
-
-        public IList<LookupItem> Divisions{get;set;}
-
-        public IList<LookupItem> Employees{get;set;}
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -58,26 +46,9 @@ namespace is4aspid.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage ="Division is required")]
-            [Display(Name = "Division")]
-            public int DivisionId { get; set; }
-
-            [Required(ErrorMessage ="Select an Employee to get Employee ID")]
-            [Display(Name = "Employee ID")]
-            public int EmployeeId { get; set; }
-
-
-            [Required(ErrorMessage ="Please select an Employee to get Employee ID")]
-            [Display(Name = "Employee Name")]
-            public string EmployeeName { get; set; }
-
-             [Required(ErrorMessage ="Display Name is required")]
-            [Display(Name = "Display Name")]
-            public string DisplayName { get; set; }
-
             [Required]
-            [RegularExpression(@"^[\d\w\._\-]+@([\d\w\._\-]+\.)+[\w]+$", ErrorMessage = "Email is invalid")]
-            //[Remote("CheckEmailAddress","Account",ErrorMessage ="Email is already registered",HttpMethod ="POST")]
+            [EmailAddress]
+            [Display(Name = "Email")]
             public string Email { get; set; }
 
             [Required]
@@ -96,20 +67,6 @@ namespace is4aspid.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //Divisions = new List<LookupItem>
-            //{
-            //    new LookupItem{Id=1,Name="Musaffah Store"},    
-            //    new LookupItem{Id=2,Name="Dubai Store"}
-            //};
-
-            Divisions=await _azmanContext
-                .Divisions
-                .Where(x=> x.ApplicationType=="ABS")
-                .Select(x=> new LookupItem{Id=x.Id,Name=x.Name}).ToListAsync();
-
-            Employees = await _hrContext.Employees
-                .Where(x=> x.IsStaff && x.IsWorking)
-                .Select(x=> new LookupItem {Id=x.Id,Name=x.Name}).ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -118,15 +75,7 @@ namespace is4aspid.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser
-                {
-                    DivisionId=Input.DivisionId,
-                    EmployeeId=Input.EmployeeId,
-                    EmployeeName=Input.DisplayName,
-                    UserName = Input.Email,
-                    Email = Input.Email
-                };
-
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -155,7 +104,7 @@ namespace is4aspid.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(error.Code, error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
@@ -164,4 +113,3 @@ namespace is4aspid.Areas.Identity.Pages.Account
         }
     }
 }
-

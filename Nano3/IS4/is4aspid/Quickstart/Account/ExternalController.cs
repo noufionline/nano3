@@ -164,7 +164,17 @@ namespace IdentityServer4.Quickstart.UI
                 // we must issue the cookie maually, and can't use the SignInManager because
                 // it doesn't expose an API to issue additional claims from the login workflow
                 var principal = await _signInManager.CreateUserPrincipalAsync(user);
+
+                var roles= await _userManager.GetRolesAsync(user);
+
+                foreach (var role in roles)
+                {
+                    additionalLocalClaims.Add(new Claim(JwtClaimTypes.Role,role));
+                }
+
                 additionalLocalClaims.AddRange(principal.Claims);
+
+                
                 var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;
                 await HttpContext.SignInAsync(user.Id, name, provider, localSignInProps, additionalLocalClaims.ToArray());
 

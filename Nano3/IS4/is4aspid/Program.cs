@@ -73,6 +73,10 @@ namespace is4aspid
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration((context, builder) =>
+                    {
+                        builder.AddJsonFile("LogifyAlert.json", optional: false, reloadOnChange: false);
+                    });
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                 });

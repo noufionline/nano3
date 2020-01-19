@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using Jasmine.Abs.Api.Dto.AccountReceivables;
 using Jasmine.Abs.Api.Repositories.Exceptions;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Jasmine.Abs.Api.Controllers.AccountReceivables
 {
@@ -148,7 +149,7 @@ namespace Jasmine.Abs.Api.Controllers.AccountReceivables
                 return NotFound();
             }
 
-            patchDoc.ApplyTo(group, ModelState);
+            patchDoc.ApplyTo(group,ModelState);
 
 
             if (group.CommercialInvoices.Any())

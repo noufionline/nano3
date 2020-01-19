@@ -10,8 +10,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        @using (Html.BeginForm())
-        {
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
             <hr />
             @using (Html.DevExtreme().ValidationGroup())
@@ -19,61 +18,68 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.DivisionId">Division</label>
-                    @(Html.DevExtreme().LookupFor(m=> m.Input.DivisionId)
+                    @(Html.DevExtreme().SelectBoxFor(m => m.Input.DivisionId)
                        .DataSource(Model.Divisions)
                        .DisplayExpr("Name")
-                       .ValueExpr("Id")
-                       .ShowPopupTitle(false)
+                       .ValueExpr("Id").SearchEnabled(true)
                     )
                     <span asp-validation-for="Input.DivisionId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.EmployeeName"></label>
-                    @(Html.DevExtreme().LookupFor(m=> m.Input.EmployeeName)
+                    @(Html.DevExtreme().SelectBoxFor(m => m.Input.EmployeeName)
                        .DataSource(Model.Employees)
                        .DisplayExpr("Name")
                        .ValueExpr("Id")
-                       .OnValueChanged("employee_valueChanged")
-                       .ShowPopupTitle(false)
+                       .OnValueChanged("employee_valueChanged").SearchEnabled(true)
                     )
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.EmployeeId"></label>
-                    @(Html.DevExtreme().TextBoxFor(m=> m.Input.EmployeeId).ID("empId").ReadOnly(true)
+                    @(Html.DevExtreme().TextBoxFor(m => m.Input.EmployeeId).ID("empId").ReadOnly(true)
                     )
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.DisplayName">Display Name</label>
-                    @Html.DevExtreme().TextBoxFor(m=> m.Input.DisplayName)
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.DisplayName)
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
-                    @Html.DevExtreme().TextBoxFor(m => m.Input.Email)
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.Email).Mode(TextBoxMode.Email)
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.Password"></label>
-                    @Html.DevExtreme().TextBoxFor(m => m.Input.Password)
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.Password).Mode(TextBoxMode.Password)
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.ConfirmPassword"></label>
-                    @Html.DevExtreme().TextBoxFor(m => m.Input.ConfirmPassword)
+                    @Html.DevExtreme().TextBoxFor(m => m.Input.ConfirmPassword).Mode(TextBoxMode.Password)
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                 </div>
+
+                @*<div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Errors</h4>
+                        <hr>
+
+                    </div>*@
+
                 <div class="dx-fieldset">
                     @(Html.DevExtreme().ValidationSummary()
-                        .ID("summary")
+                   .ID("summary")
                     )
+                </div>
+                <div class="dx-fieldset">
 
                     @(Html.DevExtreme().Button()
-                        .ID("button")
-                        .Text("Register")
-                        .Type(ButtonType.Success)
-                        .UseSubmitBehavior(true)
+                         .ID("button")
+                         .Text("Register")
+                         .Type(ButtonType.Success)
+                         .UseSubmitBehavior(true)
                     )
                 </div>
             }
-        }
+        </form>
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>

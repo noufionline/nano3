@@ -11,6 +11,7 @@ namespace is4aspid.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -20,37 +21,46 @@ namespace is4aspid.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=192.168.30.31; Initial Catalog=AbsCoreDevelopment; User Id=sa;pwd=fkt");
-        }
     }
 
     public class HrContext : DbContext
     {
-        public HrContext(DbContextOptions<HrContext> options):base(options)
+        public HrContext(DbContextOptions<HrContext> options) : base(options)
         {
 
         }
 
-        public DbSet<Employee> Employees{get;set;}
+        public DbSet<Employee> Employees { get; set; }
 
-       
+
 
     }
 
-    [Table(name:"Employees",Schema ="hrm")]
+    public class NetSqlAzmanContext : DbContext
+    {
+        public NetSqlAzmanContext(DbContextOptions<NetSqlAzmanContext> options) : base(options)
+        {
+
+        }
+
+        public DbSet<Division> Divisions {get;set; }
+    }
+
+
+
+    [Table(name: "Employees", Schema = "hrm")]
     public class Employee
     {
-        public int Id { get;  set; }
-        public string Name {get;set;}
-        public bool IsStaff {get;set;}
-        public bool IsWorking {get;set;}
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsStaff { get; set; }
+        public bool IsWorking { get; set; }
     }
-
+    [Table(name:"AbsDivisions")]
     public class Division
     {
-
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ApplicationType { get; set; }
     }
 }

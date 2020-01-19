@@ -13,56 +13,56 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.ValidateModel" Version="1.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="DevExpress.Data" Version="19.2.2-beta" />
-    <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5039" />
+    <PackageReference Include="DevExpress.Data" Version="19.2.5" />
+    <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5043" />
     <PackageReference Include="FluentDateTime" Version="2.0.0" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="8.5.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
     <PackageReference Include="GraphQL" Version="3.0.0-preview-1352" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.5.0-alpha0027" />
     <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="3.5.0-alpha0027" />
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="3.5.0-alpha0027" />
     <PackageReference Include="Humanizer" Version="2.7.9" />
-    <PackageReference Include="IdentityModel" Version="4.0.0" />
-    <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="4.0.2" />
-    <PackageReference Include="Logify.Alert.Serilog" Version="1.0.51">
+    <PackageReference Include="IdentityModel" Version="4.1.1" />
+    <PackageReference Include="Logify.Alert.Serilog" Version="1.0.52">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Logify.Alert.Web" Version="1.0.51">
+    <PackageReference Include="Logify.Alert.Web" Version="1.0.52">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
     
       <PackageReference Include="PolicyServer.Local" Version="2.0.0" />
-    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.4.3" />
-    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.4.3" />
+    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.4.5" />
+    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.4.5" />
     <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="3.4.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServerCore" Version="1.1.1" />
     
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="2.0.0-preview1-final" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
     <PackageReference Include="Slapper.AutoMapper" Version="2.0.0.9-beta" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc4" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     
       <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.6.0" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.6.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.6.0" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.6.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.7.0" />
     <PackageReference Include="TrackableEntities.Common.Core" Version="3.0.0" />
     <PackageReference Include="TrackableEntities.EF.Core" Version="3.0.0" />
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.10" />
-    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.15" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.37" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.32" />
   </ItemGroup>
 
   <ItemGroup>
