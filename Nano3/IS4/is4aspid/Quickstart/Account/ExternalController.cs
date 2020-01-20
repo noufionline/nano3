@@ -172,7 +172,12 @@ namespace IdentityServer4.Quickstart.UI
                     additionalLocalClaims.Add(new Claim(JwtClaimTypes.Role,role));
                 }
 
-                additionalLocalClaims.AddRange(principal.Claims);
+
+                foreach (var item in principal.Claims)
+                {
+                    additionalLocalClaims.Add(item);
+                }
+                
 
                 
                 var name = principal.FindFirst(JwtClaimTypes.Name)?.Value ?? user.Id;

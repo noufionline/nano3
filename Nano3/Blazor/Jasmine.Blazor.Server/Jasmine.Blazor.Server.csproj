@@ -1,13 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="19.2.5" />
+    <PackageReference Include="DevExpress.Blazor" Version="19.1.10" />
+    <PackageReference Include="DevExpress.Document.Processor" Version="19.2.5" />
+    <PackageReference Include="DevExpress.Win.Reporting" Version="19.2.5" />
+    
+    <PackageReference Include="IdentityModel.AspNetCore" Version="1.0.0-rc.2" />
+    
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
+    
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
+    
     <PackageReference Include="Radzen.Blazor" Version="2.0.13" />
+    
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.0" />
-
+     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.0" />
+    <PackageReference Include="Logify.Alert.Serilog" Version="1.0.52">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="Logify.Alert.Web" Version="1.0.52">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

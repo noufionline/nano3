@@ -17,7 +17,7 @@ namespace is4aspid.Services
     /// This implementation sources all claims from the current subject (e.g. the cookie) + divisionId from the request.
     /// </summary>
     /// <seealso cref="IdentityServer4.Services.IProfileService" />
-    public class JasmineProfileService :IProfileService
+    public class JasmineProfileService : IProfileService
     {
         private const string DivisionId = "DivisionId";
         private readonly ILogger _logger;
@@ -50,13 +50,18 @@ namespace is4aspid.Services
 
             ApplicationUser user = await _userManager.FindByIdAsync(context.Subject.GetSubjectId());
 
-            Microsoft.Extensions.Primitives.StringValues divisionId = _httpContextAccessor.HttpContext.Request.Form[DivisionId];
 
-            string[] claimTypes={"EmployeeId","EmployeeName",DivisionId,"Email"};
+            string[] claimTypes = { "EmployeeId", "EmployeeName", DivisionId, "Email" };
 
             claims.RemoveAll(claim => claimTypes.Contains(claim.Type));
 
-            claims.Add(new Claim(DivisionId, divisionId.ToString()));
+            if (_httpContextAccessor.HttpContext.Request.HasFormContentType)
+            {
+                Microsoft.Extensions.Primitives.StringValues divisionId = _httpContextAccessor.HttpContext.Request.Form[DivisionId];
+                claims.Add(new Claim(DivisionId, divisionId.ToString()));
+            }
+
+
             claims.Add(new Claim("EmployeeId", user.EmployeeId.ToString()));
             claims.Add(new Claim("name", user.EmployeeName));
             claims.Add(new Claim("EmployeeName", user.EmployeeName));

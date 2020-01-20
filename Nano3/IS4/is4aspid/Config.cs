@@ -84,9 +84,9 @@ namespace is4aspid
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     ClientSecrets={new Secret("5651841c-9615-4d1e-bf79-81a382faac81".Sha256())},
 
-                    //RedirectUris={"https://localhost:44309/signin-oidc"},
-                    //FrontChannelLogoutUri="https://localhost:44309/signout-oidc",
-                    //PostLogoutRedirectUris={"https://localhost:44309/signout-callback-oidc"},
+                    RedirectUris={"https://localhost:44309/signin-oidc"},
+                    FrontChannelLogoutUri="https://localhost:44309/signout-oidc",
+                    PostLogoutRedirectUris={"https://localhost:44309/signout-callback-oidc"},
                     
                     //RedirectUris={"https://abs.cicononline.com/kpi/signin-oidc"},
                     //FrontChannelLogoutUri="https://abs.cicononline.com/kpi/signout-oidc",

@@ -51,8 +51,6 @@ namespace Jasmine.Abs.Api
                 {
                     webBuilder
                     .UseUrls("http://localhost:5050", "https://localhost:5051")
-                .ConfigureAppConfiguration((context, builder) =>
-                    builder.AddJsonFile("LogifyAlert.json", optional: true, reloadOnChange: false))
                 .ConfigureLogging(logging =>
                 {
                     logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);

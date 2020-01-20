@@ -1,17 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Jasmine.Blazor.Server.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using DevExpress.Logify.Web;
+using DevExpress.AspNetCore;
+using Polly;
+using System.Net.Http.Headers;
 
 namespace Jasmine.Blazor.Server
 {
@@ -19,7 +18,7 @@ namespace Jasmine.Blazor.Server
     {
         private readonly IWebHostEnvironment _env;
 
-        public Startup(IConfiguration configuration,IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             _env = env;
@@ -31,9 +30,16 @@ namespace Jasmine.Blazor.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor(options => options.DetailedErrors = true);
+            services.AddDevExpressControls();
+
+
+            services.AddHttpContextAccessor();
+
             services.AddSingleton<WeatherForecastService>();
+
 
             services.AddAuthentication(options =>
           {
@@ -43,16 +49,9 @@ namespace Jasmine.Blazor.Server
               .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
               .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
               {
-                  
-                  if(_env.IsDevelopment())
-                  {
-                      options.Authority = "https://localhost:44311";
-                  }
-                  else
-                  {
-                      options.Authority = "https://abs.cicononline.com/idp";
-                  }
-                  
+
+                  options.Authority = _env.IsDevelopment() ? "https://localhost:44311" : "https://abs.cicononline.com/idp";
+
 
                   options.ClientId = "abscoreblazor";
                   options.ClientSecret = "5651841c-9615-4d1e-bf79-81a382faac81";
@@ -63,10 +62,37 @@ namespace Jasmine.Blazor.Server
                   options.Scope.Add("profile");
                   options.Scope.Add("email");
                   options.Scope.Add("abscoreapi");
-
+                  
                   options.SaveTokens = true;
                   options.GetClaimsFromUserInfoEndpoint = true;
               });
+
+
+            // adds user and client access token management
+            services.AddAccessTokenManagement(options =>
+                {
+                    // client config is inferred from OpenID Connect settings
+                    // if you want to specify scopes explicitly, do it here, otherwise the scope parameter will not be sent
+                    options.Client.Scope = "abscoreapi";
+                })
+                .ConfigureBackchannelHttpClient()
+                    .AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(new[]
+                    {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(2),
+                        TimeSpan.FromSeconds(3)
+                    }));
+
+
+
+
+             services.AddHttpClient<ILcDocumentService, LcDocumentService>(client =>
+             {
+                 client.BaseAddress = _env.IsDevelopment() ? 
+                 new Uri("https://localhost:5051/api/")  : new Uri("https://abs.cicononline.com/abscoreapi/api/");
+             }).AddUserAccessTokenHandler();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +109,9 @@ namespace Jasmine.Blazor.Server
                 app.UseHsts();
             }
 
+            app.UseLogifyAlert(Configuration.GetSection("LogifyAlert"));
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -90,6 +119,8 @@ namespace Jasmine.Blazor.Server
             app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

@@ -106,21 +106,21 @@ namespace Jasmine.Abs.Api
 
                 options.ReturnHttpNotAcceptable = true;
 
-                if (_env.IsDevelopment())
-                {
-                    var policy = new AuthorizationPolicyBuilder()
-                        .RequireAssertion(_ => true)
-                        .Build();
+                //if (_env.IsDevelopment())
+                //{
+                //    var policy = new AuthorizationPolicyBuilder()
+                //        .RequireAssertion(_ => true)
+                //        .Build();
 
-                    options.Filters.Add(new AuthorizeFilter(policy));
+                //    options.Filters.Add(new AuthorizeFilter(policy));
 
-                    services.AddTestAuthorization()
-                        .AddAuthorizationPermissionPolicies();
+                //    services.AddTestAuthorization()
+                //        .AddAuthorizationPermissionPolicies();
 
 
-                }
-                else
-                {
+                //}
+                //else
+                //{
                     var policy = new AuthorizationPolicyBuilder()
                         .RequireAuthenticatedUser()
                         .Build();
@@ -128,7 +128,7 @@ namespace Jasmine.Abs.Api
 
                     services.AddAbsAuthorization()
                        .AddAuthorizationPermissionPolicies();
-                }
+                //}
 
             });
 
@@ -165,7 +165,7 @@ namespace Jasmine.Abs.Api
                 }
                 else
                 {
-                    options.Authority = "https://localhost:5001";
+                    options.Authority = "https://localhost:44311";
                     options.RequireHttpsMetadata = true;
                 }
 
@@ -199,9 +199,9 @@ namespace Jasmine.Abs.Api
 #endif
 
 
-           // services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
+            // services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<AbsCustomerSchema>();
-            
+
             services.AddGraphQL(o =>
             {
                 o.ExposeExceptions = true;
@@ -255,12 +255,6 @@ namespace Jasmine.Abs.Api
             app.UseHttpsRedirection();
 
 
-            app.UseRouting();
-
-
-
-
-            app.UseAuthorization();
 
 #if DEBUG
             app.UseSwagger();
@@ -286,8 +280,16 @@ namespace Jasmine.Abs.Api
             });
 #endif
 
+
+            app.UseRouting();
+
+
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseGraphQL<AbsCustomerSchema>("/graphql");
-             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions
             {
                 Path = "/ui/playground"
             });
@@ -297,7 +299,7 @@ namespace Jasmine.Abs.Api
                 Path = "/ui/graphiql",
                 GraphQLEndPoint = "/graphql",
             });
-;
+            ;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

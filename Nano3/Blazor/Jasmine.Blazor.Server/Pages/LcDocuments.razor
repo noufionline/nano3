@@ -1,0 +1,24 @@
+﻿@page "/lc-documents"
+<h3>LcDocuments</h3>
+
+@inherits LcDocumentsBase
+
+@*@if (Documents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{*@
+    @*<DxDataGrid Data="@Documents"
+                PageSize="10">
+        <DxDataGridCommandColumn Width="150px"></DxDataGridCommandColumn>
+        <DxDataGridColumn Field="@nameof(LcDocumentList.ClientBankName)" Caption="Client Bank" TextAlignment="@DataGridTextAlign.Left" />
+        <DxDataGridColumn Field="@nameof(LcDocumentList.ClientLcNo)" Caption="Client LC" TextAlignment="@DataGridTextAlign.Left" />
+        <DxDataGridColumn Field="@nameof(LcDocumentList.Name)" Caption="Out LC" TextAlignment="@DataGridTextAlign.Left" />
+    </DxDataGrid>*@
+
+    <p>Access Token</p>
+    <hr />
+    <p>@AccessToken</p>
+
+@*}*@

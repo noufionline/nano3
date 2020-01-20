@@ -54,7 +54,7 @@ namespace is4aspid
             });
 
 
-
+            services.AddHttpContextAccessor();
 
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -66,7 +66,9 @@ namespace is4aspid
                 var connectionString = configuration.GetConnectionString("CICONABS");
                 var builder = new SqlConnectionStringBuilder(connectionString) { InitialCatalog = "NetSqlAzmanStorage", DataSource = "192.168.30.31" };
                 connectionString = builder.ToString();
-                options.UseSqlServer(connectionString);
+                options
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                .UseSqlServer(connectionString);
             });
 
             services.AddDbContext<HrContext>((provider, options) =>
@@ -79,7 +81,9 @@ namespace is4aspid
                     DataSource = "192.168.30.26"
                 };
                 connectionString = builder.ToString();
-                options.UseSqlServer(connectionString);
+                options
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                .UseSqlServer(connectionString);
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -142,7 +146,7 @@ namespace is4aspid
 
         public void Configure(IApplicationBuilder app)
         {
-            //InitializeDatabase(app);
+           // InitializeDatabase(app);
 
             if (Environment.IsDevelopment())
             {
