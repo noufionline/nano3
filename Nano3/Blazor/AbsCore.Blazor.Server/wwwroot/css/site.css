@@ -41,16 +41,10 @@ app {
             margin-left: 1.5rem;
         }
 
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-#logo {
-    margin: 20px;
-    width: 60%;
-}
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 .sidebar {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
@@ -135,12 +129,12 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
@@ -187,3 +181,24 @@ app {
         display: block;
     }
 }
+
+.user-info {
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+    .user-info img {
+        margin-right: 0.7rem;
+        width: 2.6rem;
+    }
+
+    .user-info .username {
+        color: #ff6e00;
+        display: block;
+        font-weight: 700;
+        line-height: 0.7rem;
+        margin-top: 0.5rem;
+    }

@@ -20,6 +20,8 @@ using System.Linq;
 using System.Reflection;
 using is4aspid.Services;
 using DevExpress.Logify.Web;
+using System.Security.Cryptography.X509Certificates;
+using System.IO;
 
 namespace is4aspid
 {
@@ -115,14 +117,15 @@ namespace is4aspid
                     b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
-                }).AddResourceOwnerValidator<ResourceOwnerPasswordValidator<ApplicationUser>>()
+                })
+                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator<ApplicationUser>>()
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<JasmineProfileService>()
                 .AddExtensionGrantValidator<JasmineGrantValidator>()
                 .AddExtensionGrantValidator<DelegationGrantValidator>();
 
-            // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+            var cert = new X509Certificate2(Path.Combine(Environment.ContentRootPath, "Titan.pfx"), "MtpsF42");
+            builder.AddSigningCredential(cert);
 
             services.AddAuthentication()
                 .AddGoogle(options =>

@@ -1,5 +1,6 @@
 ﻿using Jasmine.Blazor.Server.Pages;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Jasmine.Blazor.Server
@@ -8,5 +9,7 @@ namespace Jasmine.Blazor.Server
     {
         Task<List<LcDocumentList>> GetDocumentsAsync();
         Task<string> GetAccessTokenAsync();
+
+        List<Claim> GetClaims();
     }
 }

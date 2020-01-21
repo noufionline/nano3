@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace AbsCore.Blazor.Server
+namespace Jasmine.Blazor.Server.Pages
 {
     public class LoginIDPModel : PageModel
     {

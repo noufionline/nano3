@@ -30,15 +30,13 @@ namespace Jasmine.Blazor.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+
             services.AddRazorPages();
-            services.AddServerSideBlazor(options => options.DetailedErrors = true);
+            services.AddServerSideBlazor().AddCircuitOptions(cfg => cfg.DetailedErrors = true);
             services.AddDevExpressControls();
 
-
-            services.AddHttpContextAccessor();
-
             services.AddSingleton<WeatherForecastService>();
+
 
 
             services.AddAuthentication(options =>
@@ -62,7 +60,9 @@ namespace Jasmine.Blazor.Server
                   options.Scope.Add("profile");
                   options.Scope.Add("email");
                   options.Scope.Add("abscoreapi");
-                  
+                  options.Scope.Add("offline_access");
+
+
                   options.SaveTokens = true;
                   options.GetClaimsFromUserInfoEndpoint = true;
               });
@@ -86,11 +86,12 @@ namespace Jasmine.Blazor.Server
 
 
 
-             services.AddHttpClient<ILcDocumentService, LcDocumentService>(client =>
-             {
-                 client.BaseAddress = _env.IsDevelopment() ? 
-                 new Uri("https://localhost:5051/api/")  : new Uri("https://abs.cicononline.com/abscoreapi/api/");
-             }).AddUserAccessTokenHandler();
+            services.AddHttpClient<ILcDocumentService, LcDocumentService>(client =>
+               {
+                   client.BaseAddress = _env.IsDevelopment() ?
+                   new Uri("https://localhost:5051/api/") : new Uri("https://abs.cicononline.com/abscoreapi/api/");
+               }).AddUserAccessTokenHandler();
+
 
 
         }
@@ -116,11 +117,13 @@ namespace Jasmine.Blazor.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseAuthentication();
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

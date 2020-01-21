@@ -7,12 +7,18 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-namespace Jasmine.Blazor.Server
+using Microsoft.Extensions.Configuration;
+using DevExpress.Logify.Web;
+using System.Security.Claims;
+using System.Linq;
+
+namespace AbsCore.Blazor.Server.Data
 {
     public class LcDocumentService : ILcDocumentService
     {
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public LcDocumentService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
@@ -20,20 +26,13 @@ namespace Jasmine.Blazor.Server
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<LcDocumentList>> GetDocumentsAsync()
+        public async Task<IEnumerable<LcDocumentList>> GetDocumentsAsync()
         {
-            //var access_token = await _httpContextAccessor.HttpContext.GetUserAccessTokenAsync();
-            //_httpClient.SetBearerToken(access_token);
-
             var items = await JsonSerializer.DeserializeAsync<List<LcDocumentList>>
                (await _httpClient.GetStreamAsync("lc-documents"), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return items;
         }
 
-        public async Task<string> GetAccessTokenAsync()
-        {
-            var access_token = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token"); //_httpContextAccessor.HttpContext.GetUserAccessTokenAsync();
-            return access_token;
-        }
+    
     }
 }
