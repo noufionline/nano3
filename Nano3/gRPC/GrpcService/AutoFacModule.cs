@@ -20,8 +20,10 @@ namespace GrpcService
                var httpContextAccessor = context.Resolve<IHttpContextAccessor>();
                if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("db", out var db))
                {
-                   var cs = context.Resolve<IConfiguration>()
-                  .GetConnectionString("CICONABS");
+                  // var cs = context.Resolve<IConfiguration>()
+                  //.GetConnectionString("CICONABS");
+
+                   var cs="Data Source=192.168.30.26; Initial Catalog=ABS_CBF2; User Id=sa;pwd=fkt";
 
                    var connectionString = new SqlConnectionStringBuilder(cs) { InitialCatalog = db }.ToString();
 

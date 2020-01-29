@@ -25,7 +25,7 @@ namespace Jasmine.Blazor.Server.Pages
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             var prop = new AuthenticationProperties()
             {
-                RedirectUri = _environment.IsDevelopment() ? "https://localhost:44309" : "https://abs.cicononline.com/kpi"
+                RedirectUri = _environment.IsDevelopment() ? "https://localhost:44306" : "https://abs.cicononline.com/kpi"
             };
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, prop);
         }

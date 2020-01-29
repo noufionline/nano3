@@ -17,7 +17,7 @@ using SqlConnection = System.Data.SqlClient.SqlConnection;
 
 namespace GrpcService
 {
-    [Authorize]
+   // [Authorize]
     public class GreeterService : Greeter.GreeterBase
     {
         private readonly ILogger<GreeterService> _logger;

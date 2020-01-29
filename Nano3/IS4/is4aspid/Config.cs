@@ -97,6 +97,7 @@ namespace is4aspid
                     AllowOfflineAccess=true,
                     RequireConsent=false,
                     AllowedScopes={"openid","profile","email","abscoreapi","offline_access"}
+                    
                 }
             };
     }

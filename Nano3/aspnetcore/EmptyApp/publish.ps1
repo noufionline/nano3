@@ -1,0 +1,1 @@
+﻿dotnet publish --configuration Release --self-contained -r win10-x64 -o "C:\Program Files (x86)\AbsCoreGrpc\webasservice" --force

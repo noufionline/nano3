@@ -1,0 +1,44 @@
+﻿<nav id="sidebar" class="@SideBarButton">
+    <div class="sidebar-header">
+        <h3>Bootstrap Sidebar</h3>
+    </div>
+
+    <ul class="list-unstyled components">
+        <p>Dummy Heading</p>
+        <li>
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </li>
+        <li>
+            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Reports</a>
+            <ul class="collapse list-unstyled" id="pageSubmenu">
+                <NavLink class="nav-link" href="#">
+                    <span class="oi oi-home" aria-hidden="true"></span> Aging Report
+                </NavLink>
+                <NavLink class="nav-link" href="#">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Daily Sales Summary
+                </NavLink>
+            </ul>
+        </li>
+       
+    </ul>
+
+  
+</nav>
+
+
+@code {
+    [Parameter]
+    public string SideBarButton{get;set;}
+}

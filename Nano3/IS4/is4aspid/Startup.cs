@@ -102,22 +102,23 @@ namespace is4aspid
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
+                    
                 })
-                //.AddInMemoryIdentityResources(Config.Ids)
-                //.AddInMemoryApiResources(Config.Apis)
-                //.AddInMemoryClients(Config.Clients)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext =
-                        b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext =
-                    b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
-                })
+                .AddInMemoryIdentityResources(Config.Ids)
+                .AddInMemoryApiResources(Config.Apis)
+                .AddInMemoryClients(Config.Clients)
+                //.AddConfigurationStore(options =>
+                //{
+                //    options.ConfigureDbContext =
+                //        b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                //})
+                //.AddOperationalStore(options =>
+                //{
+                //    options.ConfigureDbContext =
+                //    b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                //    options.EnableTokenCleanup = true;
+                //    options.TokenCleanupInterval = 30;
+                //})
                 .AddResourceOwnerValidator<ResourceOwnerPasswordValidator<ApplicationUser>>()
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<JasmineProfileService>()

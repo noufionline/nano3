@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
@@ -41,7 +42,7 @@ namespace GrpcService
         {
 
 
-            //services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
 
             //services.AddAuthorization(options =>
             //{
@@ -51,35 +52,35 @@ namespace GrpcService
             //    });
             //});
 
-            //services.AddAbsAuthorization()
-            //  .AddAuthorizationPermissionPolicies();
+            services.AddAbsAuthorization()
+              .AddAuthorizationPermissionPolicies();
 
-            ////  services.AddAuthorizationPolicyEvaluator();
+            //  services.AddAuthorizationPolicyEvaluator();
 
             //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //    .AddIdentityServerAuthentication(options =>
+            //     .AddIdentityServerAuthentication(options =>
             //    {
-            //        if (_environment.IsProduction())
-            //        {
+            //        //if (_environment.IsProduction())
+            //        //{
             //            options.Authority = "https://abs.cicononline.com/zeon";
             //            options.RequireHttpsMetadata = true;
-            //        }
-            //        else
-            //        {
-            //            options.Authority = "https://localhost:5001";
-            //            options.RequireHttpsMetadata = true;
-            //        }
-                    
+            //        //}
+            //        //else
+            //        //{
+            //        //    options.Authority = "https://localhost:5001";
+            //        //    options.RequireHttpsMetadata = true;
+            //        //}
+
             //        options.ApiName = "abscoreapi";
-            //        options.SaveToken=true;
+            //        options.SaveToken = true;
             //    });
 
 
             //if (_environment.IsDevelopment())
             //{
-            //    services.AddTestAuthorization()
-            //        .AddAuthorizationPermissionPolicies();
-            //    // services.For<IAuthorizationService>().Use<TestAuthorizationService>();
+                services.AddTestAuthorization()
+                    .AddAuthorizationPermissionPolicies();
+                // services.For<IAuthorizationService>().Use<TestAuthorizationService>();
 
             //}
             //else
@@ -107,17 +108,18 @@ namespace GrpcService
 
             }, typeof(Startup).GetTypeInfo().Assembly);
 
-
+           //Configuration.GetConnectionString("CICONIDP")
+            var ciconIDPcs="Data Source=192.168.30.31; Initial Catalog=ZEON; User Id=sa;pwd=fkt";
             services.AddDbContext<ZeonContext>(builder =>
-                builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
-
-            
+                builder.UseSqlServer(ciconIDPcs), ServiceLifetime.Transient);
+            //Configuration.GetConnectionString("NetSqlAzman")
+            var netSqlAzmanCs="Data Source=192.168.30.31; Initial Catalog=NetSqlAzmanStorage; User Id=sa;pwd=fkt";
             services.AddDbContext<NetSqlAzmanContext>(builder =>
-                builder.UseSqlServer(Configuration.GetConnectionString("NetSqlAzman")), ServiceLifetime.Transient);
+                builder.UseSqlServer(netSqlAzmanCs), ServiceLifetime.Transient);
 
         }
 
-     
+
 
         // ConfigureContainer is where you can register things directly
         // with Autofac. This runs after ConfigureServices so the things

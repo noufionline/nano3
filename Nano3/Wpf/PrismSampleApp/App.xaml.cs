@@ -14,8 +14,11 @@ using System;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Security;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using Unity;
@@ -34,6 +37,11 @@ namespace PrismSampleApp
         public App()
         {
             ApplicationThemeHelper.ApplicationThemeName = "VS2017Dark";
+
+
+            ServicePointManager.ServerCertificateValidationCallback =
+   delegate(object sender, X509Certificate certificate, X509Chain chain,
+       SslPolicyErrors sslPolicyErrors) { return true; };
         }
         protected override Window CreateShell()
         {
@@ -65,7 +73,11 @@ namespace PrismSampleApp
             {
                 Authenticator= new HttpBasicAuthenticator("admin", "MtpsF42@Alfresco")
             });
-            services.AddHttpClient("zeon", c => c.BaseAddress = new Uri("https://localhost:5001"));
+            services.AddHttpClient("zeon", c => 
+            {
+            //    c.BaseAddress = new Uri("https://localhost:5001");
+                c.BaseAddress = new Uri("https://abs.cicononline.com/zeon");
+             });
             //  services.AddAutoMapper
             services.AddAutoMapper(options =>
             {
@@ -79,7 +91,9 @@ namespace PrismSampleApp
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
-                o.Address = new Uri("https://localhost:5002");
+               // o.Address = new Uri("https://localhost:5002");
+               o.Address = new Uri("https://grpc.cicononline.com:8443");
+              
             }).AddHttpMessageHandler<AbsRefreshTokenHandler>();
 
             services.AddTransient<ICustomerService, CustomerService>();

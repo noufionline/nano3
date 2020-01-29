@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Polly;
 using DevExpress.Logify.Web;
+using Syncfusion.EJ2.Blazor;
+using AbsCore.Blazor.PolicyServer;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
 
 namespace AbsCore.Blazor.Server
 {
@@ -33,9 +37,18 @@ namespace AbsCore.Blazor.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(cfg => cfg.DetailedErrors = true); ;
-            
+            services.AddSyncfusionBlazor();
+
+
+
+
+            services.AddAbsAuthorization()
+               .AddAuthorizationPermissionPolicies();
 
             services.AddAuthentication(options =>
             {
@@ -63,9 +76,16 @@ namespace AbsCore.Blazor.Server
 
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "role",
+                };
+
             });
 
-              // adds user and client access token management
+            // adds user and client access token management
             services.AddAccessTokenManagement(options =>
                 {
                     // client config is inferred from OpenID Connect settings
@@ -95,6 +115,9 @@ namespace AbsCore.Blazor.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTkyNzY0QDMxMzcyZTM0MmUzMFlYMmV6czlKUkc1V2JnM3NLMGFtbWRjeE5XNm9OcGV0ZUdkVHViT3BmZ289");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
