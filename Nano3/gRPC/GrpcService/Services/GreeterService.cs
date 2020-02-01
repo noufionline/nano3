@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Dapper;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using GrpcService.Contracts;
 using GrpcService.Dto;
+using GrpcService.Reports;
 using Jasmine.Abs.Entities.Models.Abs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +20,7 @@ using SqlConnection = System.Data.SqlClient.SqlConnection;
 
 namespace GrpcService
 {
-   // [Authorize]
+    [Authorize]
     public class GreeterService : Greeter.GreeterBase
     {
         private readonly ILogger<GreeterService> _logger;
@@ -57,7 +60,8 @@ namespace GrpcService
 
             if (!result.Succeeded)
             {
-                throw new RpcException(Status.DefaultCancelled);
+                var status = new Status(StatusCode.Unauthenticated, "Not Authorized");
+                throw new RpcException(status);
             }
 
             var customers = await _context.Customers
@@ -154,6 +158,36 @@ namespace GrpcService
 
         }
 
+
+        public override async Task DownloadReportFile(ReportRequest request, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
+        {
+            //var path = Path.Combine(AppContext.BaseDirectory, "Test.pdf");
+            //var fileStream = await File.ReadAllBytesAsync(path);
+            //var data = new DataChunk();
+            //data.Data = ByteString.CopyFrom(fileStream);
+            //await responseStream.WriteAsync(data);
+
+
+            var rpt = new TestReport();
+            rpt.DataSource = Reports.Customer.GetCustomers();
+
+            await new TaskFactory().StartNew(async () =>
+         {
+             rpt.CreateDocument();
+             using (MemoryStream ms = new MemoryStream())
+             {
+
+                 rpt.ExportToPdf(ms);
+
+                 byte[] exportedFileBytes = ms.ToArray();
+                 var data = new DataChunk();
+                 data.Data = ByteString.CopyFrom(exportedFileBytes);
+                 await responseStream.WriteAsync(data);
+             }
+         });
+
+
+        }
 
         //public override async Task GetCustomersAsStreamAsync(IServerStreamWriter<Customer> responseStream, ServerCallContext context)
         //{

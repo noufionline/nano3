@@ -13,17 +13,14 @@ namespace GrpcService
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AbsConnectionStringProvider>().As<IAbsConnectionStringProvider>();
             builder.Register(context =>
            {
 
                var httpContextAccessor = context.Resolve<IHttpContextAccessor>();
                if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("db", out var db))
                {
-                  // var cs = context.Resolve<IConfiguration>()
-                  //.GetConnectionString("CICONABS");
-
-                   var cs="Data Source=192.168.30.26; Initial Catalog=ABS_CBF2; User Id=sa;pwd=fkt";
+                   var cs = context.Resolve<IConfiguration>()
+                  .GetConnectionString("CICONABS");
 
                    var connectionString = new SqlConnectionStringBuilder(cs) { InitialCatalog = db }.ToString();
 
@@ -40,9 +37,10 @@ namespace GrpcService
 
            }).InstancePerLifetimeScope();
 
+            builder.RegisterType<AbsConnectionStringProvider>().As<IAbsConnectionStringProvider>();
 
-            
-            
+
+
         }
     }
 }

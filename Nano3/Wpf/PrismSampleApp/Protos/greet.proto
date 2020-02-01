@@ -16,6 +16,7 @@ service Greeter {
   rpc GetCustomers (CustomersRequest) returns (CustomersResponse);
   rpc GetDeliveryNoteDetailsReportData (SteelDeliveryNoteDetailReportCriteriaRequest) returns (stream SteelDeliveryNoteDetailReportDataResponse);
   rpc GetCustomersAsStreamAsync (.google.protobuf.Empty) returns (stream Customer);
+  rpc DownloadReportFile(ReportRequest) returns(stream DataChunk);
 }
 
 message SteelDeliveryNoteDetailReportCriteriaRequest{
@@ -74,6 +75,8 @@ message SteelDeliveryNoteDetailReportDataResponse{
 }
 
 
+
+
 // The request message containing the user's name.
 message HelloRequest {
   string name = 1;
@@ -92,6 +95,14 @@ message CustomersResponse{
 	repeated Customer Customers =1;
 }
 
+message ReportRequest{
+	int32 id=1;
+}
+
+message DataChunk {
+   bytes data = 1;
+}
+
 
 message DecimalValue {
 
@@ -106,6 +117,10 @@ message DecimalValue {
   // For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
   int32 nanos = 2;
 }
+
+
+
+
 
 message Customer {
     int32 id = 1;

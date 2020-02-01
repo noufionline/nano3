@@ -91,9 +91,9 @@ namespace PrismSampleApp
             services
                 .AddGrpcClient<GreeterClient>(o =>
             {
-               // o.Address = new Uri("https://localhost:5002");
-               o.Address = new Uri("https://grpc.cicononline.com:8443");
-              
+               //  o.Address = new Uri("https://localhost:8443");
+                o.Address = new Uri("https://grpc.cicononline.com:8443");
+
             }).AddHttpMessageHandler<AbsRefreshTokenHandler>();
 
             services.AddTransient<ICustomerService, CustomerService>();

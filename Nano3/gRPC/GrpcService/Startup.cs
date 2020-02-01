@@ -57,29 +57,29 @@ namespace GrpcService
 
             //  services.AddAuthorizationPolicyEvaluator();
 
-            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //     .AddIdentityServerAuthentication(options =>
-            //    {
-            //        //if (_environment.IsProduction())
-            //        //{
-            //            options.Authority = "https://abs.cicononline.com/zeon";
-            //            options.RequireHttpsMetadata = true;
-            //        //}
-            //        //else
-            //        //{
-            //        //    options.Authority = "https://localhost:5001";
-            //        //    options.RequireHttpsMetadata = true;
-            //        //}
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                 .AddIdentityServerAuthentication(options =>
+                {
+                    //if (_environment.IsProduction())
+                    //{
+                    options.Authority = "https://abs.cicononline.com/zeon";
+                    options.RequireHttpsMetadata = true;
+                    //}
+                    //else
+                    //{
+                    //    options.Authority = "https://localhost:5001";
+                    //    options.RequireHttpsMetadata = true;
+                    //}
 
-            //        options.ApiName = "abscoreapi";
-            //        options.SaveToken = true;
-            //    });
+                    options.ApiName = "abscoreapi";
+                    options.SaveToken = true;
+                });
 
 
             //if (_environment.IsDevelopment())
             //{
-                services.AddTestAuthorization()
-                    .AddAuthorizationPermissionPolicies();
+            //services.AddTestAuthorization()
+            //        .AddAuthorizationPermissionPolicies();
                 // services.For<IAuthorizationService>().Use<TestAuthorizationService>();
 
             //}
@@ -108,14 +108,11 @@ namespace GrpcService
 
             }, typeof(Startup).GetTypeInfo().Assembly);
 
-           //Configuration.GetConnectionString("CICONIDP")
-            var ciconIDPcs="Data Source=192.168.30.31; Initial Catalog=ZEON; User Id=sa;pwd=fkt";
             services.AddDbContext<ZeonContext>(builder =>
-                builder.UseSqlServer(ciconIDPcs), ServiceLifetime.Transient);
-            //Configuration.GetConnectionString("NetSqlAzman")
-            var netSqlAzmanCs="Data Source=192.168.30.31; Initial Catalog=NetSqlAzmanStorage; User Id=sa;pwd=fkt";
+                builder.UseSqlServer(Configuration.GetConnectionString("CICONIDP")), ServiceLifetime.Transient);
+            
             services.AddDbContext<NetSqlAzmanContext>(builder =>
-                builder.UseSqlServer(netSqlAzmanCs), ServiceLifetime.Transient);
+                builder.UseSqlServer(Configuration.GetConnectionString("NetSqlAzman")), ServiceLifetime.Transient);
 
         }
 
@@ -140,8 +137,8 @@ namespace GrpcService
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

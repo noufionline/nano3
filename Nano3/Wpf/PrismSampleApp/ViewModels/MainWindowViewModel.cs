@@ -7,6 +7,7 @@ using PrismSampleApp.Mapper;
 using PrismSampleApp.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -98,7 +99,12 @@ namespace PrismSampleApp.ViewModels
             //// await _alfrescoClient.OpenFileAsync("8a4c343e-af89-4c84-94d8-cc431426be7a");
             // await _alfrescoClient.OpenFileAsync(result.id);
 
-            var items= await _service.GetDeliveryDetailsReportDataAsync(new SteelDeliveryNoteDetailReportCriteriaRequest{ DbName=db });
+           // var items= await _service.GetDeliveryDetailsReportDataAsync(new SteelDeliveryNoteDetailReportCriteriaRequest{ DbName=db });
+
+            var path=@"C:\Users\Noufal\Downloads\test.pdf";
+            var sm=await _service.GetFileAsync();
+           
+            await File.WriteAllBytesAsync(path,sm);
         }
 
         #endregion

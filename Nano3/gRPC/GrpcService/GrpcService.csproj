@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="19.2.6" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.26.0" />
      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
      <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
@@ -39,7 +40,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Reports\TestReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Reports\TestReport.Designer.cs">
+      <DependentUpon>TestReport.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Reports\TestReport.resx">
+      <DependentUpon>TestReport.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="grpc.cicononline.com.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Test.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

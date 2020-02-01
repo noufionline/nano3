@@ -93,7 +93,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcServiceTest", "Grpc\Grp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsServiceHost", "aspnetcore\WindowsServiceHost\WindowsServiceHost.csproj", "{51580B8D-89F9-4A51-8BA7-654F34C414DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmptyApp", "aspnetcore\EmptyApp\EmptyApp.csproj", "{71EBCAD6-256C-42E8-A267-DA6E7447DEDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmptyApp", "aspnetcore\EmptyApp\EmptyApp.csproj", "{71EBCAD6-256C-42E8-A267-DA6E7447DEDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlankApp2", "BlankApp2\BlankApp2.csproj", "{6797B09A-11DA-49D3-A354-3BC364C8EFC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -477,6 +479,18 @@ Global
 		{71EBCAD6-256C-42E8-A267-DA6E7447DEDE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71EBCAD6-256C-42E8-A267-DA6E7447DEDE}.Release|x64.ActiveCfg = Release|Any CPU
 		{71EBCAD6-256C-42E8-A267-DA6E7447DEDE}.Release|x64.Build.0 = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Publish|x64.ActiveCfg = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Publish|x64.Build.0 = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -518,6 +532,7 @@ Global
 		{3B27E767-3B76-4974-B04C-3ECF350DBDFC} = {E9CA4168-75D8-4600-A152-A6DE72B5AB42}
 		{51580B8D-89F9-4A51-8BA7-654F34C414DE} = {775BB75C-9D16-4B02-AFFE-D18C40B0D44F}
 		{71EBCAD6-256C-42E8-A267-DA6E7447DEDE} = {775BB75C-9D16-4B02-AFFE-D18C40B0D44F}
+		{6797B09A-11DA-49D3-A354-3BC364C8EFC8} = {393DC331-0AA6-4B5D-B672-8A4A31C985F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {266E5B5E-EE4A-4C65-BF16-1828102A7E9E}

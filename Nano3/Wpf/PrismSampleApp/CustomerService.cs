@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using static GrpcService.Greeter;
 using System;
 using PrismSampleApp.Dto;
+using Google.Protobuf;
+using System.IO;
+using System.Windows.Forms;
 
 namespace PrismSampleApp
 {
@@ -17,7 +20,7 @@ namespace PrismSampleApp
         private readonly GreeterClient _client;
         private readonly IMapper _mapper;
 
-        public CustomerService(GreeterClient client,IMapper mapper)
+        public CustomerService(GreeterClient client, IMapper mapper)
         {
             _client = client;
             _mapper = mapper;
@@ -27,10 +30,10 @@ namespace PrismSampleApp
 
             var customers = new List<CustomerList>();
 
-            
+
 
             var headers = new Metadata() { { "db", dbName } };
-            
+
             var response = await _client.GetCustomersAsync(new CustomersRequest { Id = 1 }, headers);
 
             customers.AddRange(_mapper.Map<List<CustomerList>>(response.Customers));
@@ -57,15 +60,15 @@ namespace PrismSampleApp
         {
             var items = new List<SteelDeliveryNoteDetailReportData>();
 
-            
 
-            var headers = new Metadata() { { "db", criteria.DbName} };
+
+            var headers = new Metadata() { { "db", criteria.DbName } };
             using (var call = _client.GetDeliveryNoteDetailsReportData(new SteelDeliveryNoteDetailReportCriteriaRequest
             {
-                FromDate=Timestamp.FromDateTimeOffset(DateTime.Today),
-                ToDate=Timestamp.FromDateTimeOffset(DateTime.Today) ,
-                DbName=criteria.DbName
-            },headers))
+                FromDate = Timestamp.FromDateTimeOffset(DateTime.Today),
+                ToDate = Timestamp.FromDateTimeOffset(DateTime.Today),
+                DbName = criteria.DbName
+            }, headers))
             {
                 await foreach (var item in call.ResponseStream.ReadAllAsync())
                 {
@@ -76,5 +79,18 @@ namespace PrismSampleApp
             return items;
         }
 
+        public async Task<byte[]> GetFileAsync()
+        {
+             var headers = new Metadata() { { "db", "ABS_CBF2" } };
+            using (var call = _client.DownloadReportFile(new ReportRequest { Id = 1 },headers))
+            {
+                await foreach (var item in call.ResponseStream.ReadAllAsync())
+                {
+                    var fileStream = item.ToByteArray();
+                    return fileStream;
+                }
+                return null;
+            }
+        }
     }
 }

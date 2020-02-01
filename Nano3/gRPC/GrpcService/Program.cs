@@ -50,7 +50,7 @@ namespace GrpcService
                 {
                     var certifcatePath = Path.Combine(AppContext.BaseDirectory, "grpc.cicononline.com.pfx");
                     var cert = new X509Certificate2(certifcatePath, "MtpsF42");
-                    webBuilder.UseStartup<Startup>();
+
                     webBuilder.ConfigureKestrel(kestrelServerOptions =>
                     {
                         kestrelServerOptions.ConfigureHttpsDefaults(opt =>
@@ -58,11 +58,12 @@ namespace GrpcService
                             opt.ClientCertificateMode = ClientCertificateMode.AllowCertificate;
                             opt.CheckCertificateRevocation = true;
                             opt.ServerCertificate = cert;
-                        // Verify that client certificate was issued by same CA as server certificate
-                        opt.ClientCertificateValidation = (certificate, chain, errors) =>
-                                certificate.Issuer == cert.Issuer;
+                            // Verify that client certificate was issued by same CA as server certificate
+                            opt.ClientCertificateValidation = (certificate, chain, errors) =>
+                                    certificate.Issuer == cert.Issuer;
                         });
                     });
+                    webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls("https://*:8443");
                     //webBuilder.UseIISIntegration();
                 });

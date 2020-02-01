@@ -11,5 +11,6 @@ namespace PrismSampleApp
         Task<List<CustomerList>> GetAllAsync(string dbName);
         Task<List<Customer>> GetCustomersAsync();
         Task<List<SteelDeliveryNoteDetailReportData>> GetDeliveryDetailsReportDataAsync(SteelDeliveryNoteDetailReportCriteriaRequest criteria);
+        Task<byte[]> GetFileAsync();
     }
 }

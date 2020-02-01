@@ -37,11 +37,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto">
-      <GrpcServices>Client</GrpcServices>
-    </Protobuf>
+    <Folder Include="Reports\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Reports\" />
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 </Project>
