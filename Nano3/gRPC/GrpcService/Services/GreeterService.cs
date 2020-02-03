@@ -161,30 +161,30 @@ namespace GrpcService
 
         public override async Task DownloadReportFile(ReportRequest request, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
         {
-            //var path = Path.Combine(AppContext.BaseDirectory, "Test.pdf");
-            //var fileStream = await File.ReadAllBytesAsync(path);
-            //var data = new DataChunk();
-            //data.Data = ByteString.CopyFrom(fileStream);
-            //await responseStream.WriteAsync(data);
+            var path = Path.Combine(AppContext.BaseDirectory, "Test.pdf");
+            var fileStream = await File.ReadAllBytesAsync(path);
+            var data = new DataChunk();
+            data.Data = ByteString.CopyFrom(fileStream);
+            await responseStream.WriteAsync(data);
 
 
-            var rpt = new TestReport();
-            rpt.DataSource = Reports.Customer.GetCustomers();
+            //   var rpt = new TestReport();
+            //   rpt.DataSource = Reports.Customer.GetCustomers();
 
-            await new TaskFactory().StartNew(async () =>
-         {
-             rpt.CreateDocument();
-             using (MemoryStream ms = new MemoryStream())
-             {
+            //   await new TaskFactory().StartNew(async () =>
+            //{
+            //    rpt.CreateDocument();
+            //    using (MemoryStream ms = new MemoryStream())
+            //    {
 
-                 rpt.ExportToPdf(ms);
+            //        rpt.ExportToPdf(ms);
 
-                 byte[] exportedFileBytes = ms.ToArray();
-                 var data = new DataChunk();
-                 data.Data = ByteString.CopyFrom(exportedFileBytes);
-                 await responseStream.WriteAsync(data);
-             }
-         });
+            //        byte[] exportedFileBytes = ms.ToArray();
+            //        var data = new DataChunk();
+            //        data.Data = ByteString.CopyFrom(exportedFileBytes);
+            //        await responseStream.WriteAsync(data);
+            //    }
+            //});
 
 
         }

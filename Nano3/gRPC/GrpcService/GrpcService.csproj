@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Reports\TestReport.cs" />
+    <Compile Remove="Reports\TestReport.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Reports\TestReport.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
   </ItemGroup>
 
@@ -37,21 +46,6 @@
 
   <ItemGroup>
     <Folder Include="NewFolder\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Reports\TestReport.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Reports\TestReport.Designer.cs">
-      <DependentUpon>TestReport.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Reports\TestReport.resx">
-      <DependentUpon>TestReport.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
