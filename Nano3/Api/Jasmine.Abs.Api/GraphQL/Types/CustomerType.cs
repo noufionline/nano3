@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jasmine.Abs.Api.Dto.Abs;
 
+
 namespace Jasmine.Abs.Api.GraphQL.Types
 {
     public class CustomerType:ObjectGraphType<CustomerDto>
@@ -19,4 +20,7 @@ namespace Jasmine.Abs.Api.GraphQL.Types
             Field(t=> t.NameOnTradeLicense);
         }
     }
+
+
+   
 }
