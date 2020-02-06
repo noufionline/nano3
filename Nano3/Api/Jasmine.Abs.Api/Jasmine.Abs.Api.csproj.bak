@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.ValidateModel" Version="1.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="DevExpress.Data" Version="19.2.6" />
+    <PackageReference Include="DevExpress.Data" Version="19.2.5" />
     <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5043" />
     <PackageReference Include="FluentDateTime" Version="2.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />

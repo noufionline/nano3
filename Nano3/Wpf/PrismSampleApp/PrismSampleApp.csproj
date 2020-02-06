@@ -12,8 +12,8 @@
     <None Remove="Protos\greet.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="19.2.3" />
-    <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="19.2.3" />
+    <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="19.2.6" />
+    <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="19.2.6" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.24.0" />
     <PackageReference Include="Marvin.StreamExtensions" Version="1.1.0" />
     <PackageReference Include="MediaTypeMap" Version="2.1.0" />
