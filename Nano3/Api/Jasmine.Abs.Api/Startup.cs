@@ -31,6 +31,9 @@ using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Z.EntityFramework.Extensions;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using IAuthorizationEvaluator = GraphQL.Authorization.IAuthorizationEvaluator;
+using GraphQL.Validation;
+using GraphQL.Authorization;
 
 namespace Jasmine.Abs.Api
 {
@@ -91,6 +94,10 @@ namespace Jasmine.Abs.Api
 
             services.AddHttpContextAccessor();
 
+            services.AddSingleton<IAuthorizationEvaluator, AbsAuthorizationEvaluator>();
+            services.AddTransient<IValidationRule, AuthorizationValidationRule>();
+
+
             services.AddControllers(options =>
             {
                 options.Filters.Add(
@@ -121,16 +128,18 @@ namespace Jasmine.Abs.Api
                 //}
                 //else
                 //{
-                    var policy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
-                    options.Filters.Add(new AuthorizeFilter(policy));
+                var policy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
 
-                    services.AddAbsAuthorization()
-                       .AddAuthorizationPermissionPolicies();
+               
                 //}
 
             });
+
+            services.AddAbsAuthorization()
+                  .AddAuthorizationPermissionPolicies();
 
 
             services.Configure<ApiBehaviorOptions>(options =>
@@ -205,7 +214,7 @@ namespace Jasmine.Abs.Api
             services.AddGraphQL(o =>
             {
                 o.ExposeExceptions = true;
-            }) // .AddUserContextBuilder(httpContext => httpContext.User)
+            }).AddUserContextBuilder(x => new GraphQlUserContext(x.User))
                 .AddGraphTypes(ServiceLifetime.Scoped);
         }
 
