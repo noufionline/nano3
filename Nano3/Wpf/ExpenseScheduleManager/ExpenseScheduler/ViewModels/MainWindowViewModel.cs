@@ -54,8 +54,7 @@ namespace ExpenseScheduler.ViewModels
         private void ExecuteProcess()
         {
             var items = ExpenseSchedule.ProcessExpenseSchedules(Criteria.Date.Year,Criteria.Date.Month, FilePath,Criteria.SelectedDivision);
-            CreateExpenseScheduleWorkbook(items, Criteria.Date.Year, Criteria.Date.Month, Criteria.Database,
-                Criteria.SelectedDivision);
+            CreateExpenseScheduleWorkbook(items, Criteria);
         }
 
         public Criteria Criteria { get; set; } = new Criteria(){Date = DateTime.Today};
@@ -64,7 +63,7 @@ namespace ExpenseScheduler.ViewModels
 
 
 
-        public void CreateExpenseScheduleWorkbook(List<ExpenseSchedule> items, int year, int month, string database,DivisionInfo division)
+        public void CreateExpenseScheduleWorkbook(List<ExpenseSchedule> items, Criteria criteria)
         {
             var outputPath = @"C:\Users\Noufal\Downloads\ExpenseScheduleSample.xlsx";
 
@@ -112,7 +111,7 @@ namespace ExpenseScheduler.ViewModels
 
             worksheet.Cells.Font.Name = "Calibri";
 
-            worksheet.Cells["A1"].SetValue("CUT & BEND MUSSAFFAH");
+            worksheet.Cells["A1"].SetValue(Criteria.SelectedDivision.Name);
             worksheet.Cells["A1"].Font.Size = 20;
             worksheet.Cells["A1"].Font.Bold = true;
             worksheet.Cells["A1"].Font.Color = Color.Red;
@@ -136,7 +135,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.Columns[0].WidthInPixels = 400;
             for (int i = 1; i <= 12; i++)
             {
-                var monthName = new DateTime(year, i, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
+                var monthName = new DateTime(Criteria.Date.Year, i, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
                 worksheet.Rows[2].RowHeight = 30;
                 worksheet.Rows[2][i].SetValue(monthName);
                 worksheet.Rows[3][i].SetValue("AED");
@@ -158,7 +157,7 @@ namespace ExpenseScheduler.ViewModels
 
 
             int currentRow = 4;
-            var summary = GetSummary(items.Where(i => division.Divisions.Contains(i.DivisionId) && i.Database == database));
+            var summary = GetSummary(items.Where(i => Criteria.SelectedDivision.Divisions.Contains(i.DivisionId) && i.Database == criteria.Database));
             for (int i = 0; i < summary.Count; i++)
             {
                 worksheet.Rows[currentRow].RowHeight = 30;
@@ -209,7 +208,7 @@ namespace ExpenseScheduler.ViewModels
 
 
 
-            PrepareDetailedWorksheet(expenseSheet, items, year, month, database,division);
+            PrepareDetailedWorksheet(expenseSheet, items, Criteria);
 
 
             for (int i = 1; i <= 13; i++)
@@ -227,7 +226,7 @@ namespace ExpenseScheduler.ViewModels
         }
 
 
-        private void PrepareDetailedWorksheet(Worksheet worksheet, IEnumerable<ExpenseSchedule> items, int year, int month,string database, DivisionInfo division)
+        private void PrepareDetailedWorksheet(Worksheet worksheet, IEnumerable<ExpenseSchedule> items, Criteria criteria)
         {
             // Access the first worksheet in the workbook.
 
@@ -265,7 +264,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.ActiveView.ShowGridlines = false;
             worksheet.Cells.Font.Name = "Calibri";
 
-            worksheet.Cells["B1"].SetValue(division.Name);
+            worksheet.Cells["B1"].SetValue(Criteria.SelectedDivision.Name);
             worksheet.Cells["B1"].Font.Size = 20;
             worksheet.Cells["B1"].Font.Bold = true;
             worksheet.Cells["B1"].Font.Color = Color.Red;
@@ -287,7 +286,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.Cells["M2"].SetValue("Processed For:");
             worksheet.Range["M2:N2"].Merge();
 
-            worksheet.Cells["O2"].SetValue(new DateTime(year, month, 1));
+            worksheet.Cells["O2"].SetValue(new DateTime(Criteria.Date.Year, criteria.Date.Month, 1));
             worksheet.Cells["O2"].NumberFormat = "MMM-yyyy";
 
 
@@ -305,7 +304,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.Columns[1].WidthInPixels = 400;
             for (int i = 2; i <= 13; i++)
             {
-                var monthName = new DateTime(year, i - 1, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
+                var monthName = new DateTime(criteria.Date.Year, i - 1, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
                 worksheet.Rows[2].RowHeight = 30;
                 worksheet.Rows[2][i].SetValue(monthName);
                 worksheet.Rows[3][i].SetValue("AED");
@@ -325,7 +324,7 @@ namespace ExpenseScheduler.ViewModels
             headerRange.Font.Bold = true;
             headerRange.Borders.SetAllBorders(Color.DarkGray, BorderLineStyle.Thin);
 
-
+            int month = Criteria.Date.Month;
             var currentMonthColumn = string.Empty;
             switch (month)
             {
@@ -347,7 +346,7 @@ namespace ExpenseScheduler.ViewModels
 
             var currentRow = 4;
             var categories = items
-            .Where(i => division.Divisions.Contains(i.DivisionId) && i.Database ==database)
+            .Where(i => Criteria.SelectedDivision.Divisions.Contains(i.DivisionId) && i.Database ==Criteria.Database)
             .GroupBy(x => new { x.CatSeq, x.Category })
             .OrderBy(x => x.Key.CatSeq)
             .Select(x => new { Name = x.Key.Category, Items = x.ToList() }).ToList();
