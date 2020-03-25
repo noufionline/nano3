@@ -1,0 +1,75 @@
+﻿<Window xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"  xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" FontSize="14" FontWeight="DemiBold"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:dxp="http://schemas.devexpress.com/winfx/2008/xaml/printing"  xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        x:Class="ExpenseScheduler.Views.MainWindow"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}" Height="350" Width="525">
+    <Window.Resources>
+        <Style TargetType="dxlc:LayoutItem">
+            <Setter Property="AddColonToLabel" Value="True"/>
+            <Setter Property="LabelPosition" Value="Top"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <dxlc:LayoutControl>
+            <dxlc:LayoutGroup Orientation="Vertical">
+                <dxlc:LayoutItem Label="Browse File">
+                    <dxe:ButtonEdit EditValue="{Binding FilePath}" AllowDefaultButton="False" AllowNullInput="True" NullValueButtonPlacement="EditBox">
+                        <dxe:ButtonEdit.Buttons>
+                            <dxe:ButtonInfo GlyphKind="Search" Command="{Binding LoadFileCommand}"></dxe:ButtonInfo>
+                        </dxe:ButtonEdit.Buttons>
+                    </dxe:ButtonEdit>
+                </dxlc:LayoutItem>
+                <dxlc:LayoutGroup Orientation="Vertical">
+           <dxlc:LayoutGroup>
+              
+               <dxlc:LayoutItem Label="Month">
+                   <dxe:DateEdit MaskType="DateTimeAdvancingCaret" Mask="y" MaskUseAsDisplayFormat="True" EditValue="{Binding Criteria.Date}">
+                       <dxe:DateEdit.StyleSettings>
+                           <dxe:DateEditPickerStyleSettings/>
+                       </dxe:DateEdit.StyleSettings>
+                   </dxe:DateEdit>
+               </dxlc:LayoutItem>
+               <dxlc:LayoutItem Label="Database">
+                   <dxe:ComboBoxEdit EditValue="{Binding Criteria.Database}">
+                       <dxe:ComboBoxEditItem Content="CES"/>
+                       <dxe:ComboBoxEditItem Content="CSF"/>
+                       <dxe:ComboBoxEditItem Content="MAX"/>
+                   </dxe:ComboBoxEdit>
+               </dxlc:LayoutItem>
+           </dxlc:LayoutGroup>
+                    <dxlc:LayoutItem Label="Division">
+                       <dxg:LookUpEdit ItemsSource="{Binding Divisions}" 
+                                       AutoPopulateColumns="False"
+                                       SelectedItem="{Binding Criteria.SelectedDivision}"
+                                       DisplayMember="Name">
+                         <dxg:LookUpEdit.PopupContentTemplate>
+                             <ControlTemplate>
+                                 <dxg:GridControl Name="PART_GridControl">
+                                     <dxg:GridControl.Columns>
+                                         <dxg:GridColumn FieldName="Name"></dxg:GridColumn>
+                                     </dxg:GridControl.Columns>
+                                     <dxg:GridControl.View>
+                                         <dxg:TableView AutoWidth="True" ShowGroupPanel="False" IncrementalSearchMode="Default" ></dxg:TableView>
+                                     </dxg:GridControl.View>
+                                 </dxg:GridControl>
+                             </ControlTemplate>
+                         </dxg:LookUpEdit.PopupContentTemplate>
+                       </dxg:LookUpEdit>
+                    </dxlc:LayoutItem>
+                  
+                </dxlc:LayoutGroup>
+                <dxlc:LayoutItem>
+                    <dx:SimpleButton 
+                        Command="{Binding ProcessCommand}"
+                        Glyph="{dx:DXImage SvgImages/HybridDemoIcons/Tiles/HybridDemo_Automation.svg}">Process</dx:SimpleButton>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutControl>
+
+        <!--<ContentControl prism:RegionManager.RegionName="ContentRegion" />-->
+    </Grid>
+</Window>

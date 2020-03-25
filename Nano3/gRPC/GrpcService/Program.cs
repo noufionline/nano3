@@ -48,8 +48,8 @@ namespace GrpcService
                 .UseWindowsService() // Enable running as a Windows service
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var certifcatePath = Path.Combine(AppContext.BaseDirectory, "grpc.cicononline.com.pfx");
-                    var cert = new X509Certificate2(certifcatePath, "MtpsF42");
+                    var certificatePath = Path.Combine(AppContext.BaseDirectory, "grpc.cicononline.com.pfx");
+                    var cert = new X509Certificate2(certificatePath, "MtpsF42");
 
                     webBuilder.ConfigureKestrel(kestrelServerOptions =>
                     {

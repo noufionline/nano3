@@ -13,6 +13,7 @@ namespace Jasmine.Abs.Api.GraphQL
         public AbsCustomerSchema(IServiceProvider provider):base(provider)
         {
             Query=provider.GetRequiredService<AbsCustomerQuery>();
+            Mutation = provider.GetRequiredService<AbsCustomerMutation>();
         }
     }
 

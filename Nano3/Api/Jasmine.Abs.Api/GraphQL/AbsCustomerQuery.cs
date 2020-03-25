@@ -1,4 +1,6 @@
-﻿using GraphQL.Types;
+﻿using GraphQL.Authorization;
+using GraphQL.Types;
+using Jasmine.Abs.Api.Dto.Abs;
 using Jasmine.Abs.Api.GraphQL.Types;
 using Jasmine.Abs.Api.Repositories.Abs;
 using System;
@@ -15,4 +17,20 @@ namespace Jasmine.Abs.Api.GraphQL
             Field<ListGraphType<CustomerType>>("customers",resolve: context => repository.GetCustomersAsync());
         }
     }
+
+    public class AbsCustomerMutation : ObjectGraphType
+    {
+        public AbsCustomerMutation()
+        {
+            FieldAsync<CustomerType>("createCustomer", arguments: new QueryArguments(
+                 new QueryArgument<NonNullGraphType<CustomerInputType>> { Name = "customer" }),
+             resolve: async context =>
+             {
+                 this.AuthorizeWith("CanImportFromSunSystem");
+                 return await context.TryAsyncResolve(
+                async c => await Task.FromResult(new CustomerDto { CustomerId = 1, CustomerName = "Test" }));
+             });
+        }
+    }
+       
 }

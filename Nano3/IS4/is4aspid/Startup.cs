@@ -30,10 +30,16 @@ namespace is4aspid
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
+        private readonly string _ciconAbsConnectionString;
+
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
             Configuration = configuration;
+
+            var builder = new SqlConnectionStringBuilder(
+                Configuration.GetConnectionString("CICONABS")) {Password = Configuration["DbPassword"]};
+            _ciconAbsConnectionString = builder.ConnectionString;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -60,12 +66,15 @@ namespace is4aspid
 
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CICONABS")));
+            {
+                var password=
+                options.UseSqlServer(_ciconAbsConnectionString);
+            });
 
             services.AddDbContext<NetSqlAzmanContext>((provider, options) =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString("CICONABS");
+                var connectionString = _ciconAbsConnectionString;
                 var builder = new SqlConnectionStringBuilder(connectionString) { InitialCatalog = "NetSqlAzmanStorage", DataSource = "192.168.30.31" };
                 connectionString = builder.ToString();
                 options
@@ -76,7 +85,7 @@ namespace is4aspid
             services.AddDbContext<HrContext>((provider, options) =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString("CICONABS");
+                var connectionString = _ciconAbsConnectionString;
                 var builder = new SqlConnectionStringBuilder(connectionString)
                 {
                     InitialCatalog = "CERP",
@@ -94,7 +103,7 @@ namespace is4aspid
 
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            var connectionString = Configuration.GetConnectionString("CICONABS");
+            var connectionString = _ciconAbsConnectionString;
 
             var builder = services.AddIdentityServer(options =>
                 {

@@ -12,11 +12,11 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.ValidateModel" Version="1.0.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="DevExpress.Data" Version="19.2.6" />
-    <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5043" />
+    <PackageReference Include="EntityFrameworkProfiler" Version="5.0.5044" />
     <PackageReference Include="FluentDateTime" Version="2.0.0" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
     <PackageReference Include="GraphQL" Version="3.0.0-preview-1352" />
     <PackageReference Include="GraphQL.Authorization" Version="3.0.39-preview-39" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.5.0-alpha0027" />
@@ -24,17 +24,17 @@
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="3.5.0-alpha0027" />
     <PackageReference Include="Humanizer" Version="2.7.9" />
     <PackageReference Include="IdentityModel" Version="4.1.1" />
-    <PackageReference Include="Logify.Alert.Serilog" Version="1.0.52">
+    <PackageReference Include="Logify.Alert.Serilog" Version="1.0.53">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Logify.Alert.Web" Version="1.0.52">
+    <PackageReference Include="Logify.Alert.Web" Version="1.0.53">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     
       <PackageReference Include="PolicyServer.Local" Version="2.0.0" />
-    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.4.5" />
-    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.4.5" />
+    <PackageReference Include="PostSharp.Patterns.Caching" Version="6.4.8" />
+    <PackageReference Include="PostSharp.Patterns.Caching.Redis" Version="6.4.8" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
@@ -42,14 +42,14 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="3.4.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServerCore" Version="1.1.1" />
     
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="2.0.0-preview1-final" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
     <PackageReference Include="Slapper.AutoMapper" Version="2.0.0.9-beta" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
     
       <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
@@ -62,8 +62,8 @@
     <PackageReference Include="System.ServiceModel.Security" Version="4.7.0" />
     <PackageReference Include="TrackableEntities.Common.Core" Version="3.0.0" />
     <PackageReference Include="TrackableEntities.EF.Core" Version="3.0.0" />
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.37" />
-    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.32" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="3.0.54" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.0.40" />
   </ItemGroup>
 
   <ItemGroup>

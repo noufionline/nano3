@@ -96,10 +96,10 @@ namespace PrismSampleApp.ViewModels
             //        //MimeType = "application/pdf",
             //        Overwrite = true
             //    });
-            //// await _alfrescoClient.OpenFileAsync("8a4c343e-af89-4c84-94d8-cc431426be7a");
-            // await _alfrescoClient.OpenFileAsync(result.id);
+            //await _alfrescoClient.OpenFileAsync("8a4c343e-af89-4c84-94d8-cc431426be7a");
+            //await _alfrescoClient.OpenFileAsync(result.id);
 
-           // var items= await _service.GetDeliveryDetailsReportDataAsync(new SteelDeliveryNoteDetailReportCriteriaRequest{ DbName=db });
+            // var items= await _service.GetDeliveryDetailsReportDataAsync(new SteelDeliveryNoteDetailReportCriteriaRequest{ DbName=db });
 
             var path=@"C:\Users\Noufal\Downloads\test.pdf";
             var sm=await _service.GetFileAsync();
