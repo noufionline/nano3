@@ -5,10 +5,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using DevExpress.ClipboardSource.SpreadsheetML;
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 using DevExpress.Spreadsheet;
 using ExcelDataReader;
 using PostSharp.Patterns.Model;
@@ -28,33 +31,41 @@ namespace ExpenseScheduler.ViewModels
         {
             Divisions = new List<DivisionInfo>()
             {
-                new DivisionInfo {Id=1,Name="Cut & Bend Mussaffah",Divisions=new[]{101}},
-                new DivisionInfo {Id=2,Name="Coupler  Mussaffah",Divisions=new[]{102}},
-                new DivisionInfo {Id=3,Name="Epoxy",Divisions=new[]{120}},
-                new DivisionInfo {Id=4,Name="Wire Mesh",Divisions=new[]{110}},
-                new DivisionInfo {Id=5,Name="Cage",Divisions=new[]{111}},
-                new DivisionInfo {Id=6,Name="Melting",Divisions=new[]{112}},
-                new DivisionInfo {Id=7,Name="Sign & Metal",Divisions=new[]{125,126,127}},
-                new DivisionInfo {Id=8,Name="Fabrication",Divisions=new[]{130}},
-                new DivisionInfo {Id=9,Name="Cut & Bend F4",Divisions=new[]{100}},
-                new DivisionInfo {Id=10,Name="Coupler F4",Divisions=new[]{101}},
-                new DivisionInfo {Id=11,Name="Cut & Bend UAQ",Divisions=new[]{102}},
-                new DivisionInfo {Id=12,Name="Coupler UAQ",Divisions=new[]{103}},
-                new DivisionInfo {Id=13,Name="Cut & Bend Maxsteel",Divisions=new[]{104,320600}},
-                new DivisionInfo {Id=14,Name="Coupler Maxsteel",Divisions=new[]{105,320601}},
+                new DivisionInfo {Database = "CES",Id=1,Name="Cut & Bend Musaffah",Codes=new[]{101}}, 
+                new DivisionInfo {Database = "CES",Id=2,Name="Coupler  Musaffah",Codes=new[]{102}}, 
+                new DivisionInfo {Database = "CES",Id=3,Name="Epoxy",Codes=new[]{120}}, 
+                new DivisionInfo {Database = "CES",Id=4,Name="Wire Mesh",Codes=new[]{110}}, 
+                new DivisionInfo {Database = "CES",Id=5,Name="Cage",Codes=new[]{111}}, 
+                new DivisionInfo {Database = "CES",Id=6,Name="Melting",Codes=new[]{112}}, 
+                new DivisionInfo {Database = "CES",Id=7,Name="Sign & Metal",Codes=new[]{125,126,127}}, 
+                new DivisionInfo {Database = "CES",Id=8,Name="Fabrication",Codes=new[]{130}}, 
+                new DivisionInfo {Database = "CSF",Id=9,Name="Cut & Bend F4",Codes=new[]{100}}, 
+                new DivisionInfo {Database = "CSF",Id=10,Name="Coupler F4",Codes=new[]{101}}, 
+                new DivisionInfo {Database = "CSF",Id=11,Name="Cut & Bend UAQ",Codes=new[]{102}}, 
+                new DivisionInfo {Database = "CSF",Id=12,Name="Coupler UAQ",Codes=new[]{103}}, 
+                new DivisionInfo {Database = "MAX",Id=13,Name="Cut & Bend Maxsteel",Codes=new[]{104,320600}}, 
+                new DivisionInfo {Database = "MAX",Id=14,Name="Coupler Maxsteel",Codes=new[]{105,320601}}, 
+
             };
+
+
+            ProcessCommand=new AsyncCommand(ExecuteProcess);
         }
+
+        private List<OpeningStock> _openingStocks=new List<OpeningStock>();
 
         public string FilePath { get; set; } = @"C:\Users\Noufal\Downloads\VisionReportData.xlsx";
 
         public List<DivisionInfo> Divisions { get; set; }
-        [Command]
-        public ICommand ProcessCommand { get; set; }
+        
+        public AsyncCommand ProcessCommand { get; set; }
 
-        private void ExecuteProcess()
+        private async Task ExecuteProcess()
         {
-            var items = ExpenseSchedule.ProcessExpenseSchedules(Criteria.Date.Year,Criteria.Date.Month, FilePath,Criteria.SelectedDivision);
-            CreateExpenseScheduleWorkbook(items, Criteria);
+
+            _openingStocks = OpeningStock.GetOpeningStock(FilePath, Divisions);
+            var items = ExpenseSchedule.ProcessExpenseSchedules(FilePath,Criteria.Date);
+            await CreateExpenseScheduleWorkbook(items);
         }
 
         public Criteria Criteria { get; set; } = new Criteria(){Date = DateTime.Today};
@@ -63,7 +74,7 @@ namespace ExpenseScheduler.ViewModels
 
 
 
-        public void CreateExpenseScheduleWorkbook(List<ExpenseSchedule> items, Criteria criteria)
+        public async Task CreateExpenseScheduleWorkbook(List<ExpenseSchedule> items)
         {
             var outputPath = @"C:\Users\Noufal\Downloads\ExpenseScheduleSample.xlsx";
 
@@ -94,24 +105,50 @@ namespace ExpenseScheduler.ViewModels
 
             var path = GetExportPath($"ExpenseSchedule-{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
 
-            // Create a new workbook.
-            Workbook workbook = new Workbook
+            await  Task.Factory.StartNew(() =>
             {
-                Unit = DevExpress.Office.DocumentUnit.Point
-            };
+                // Create a new workbook.
+                Workbook workbook = new Workbook
+                {
+                    Unit = DevExpress.Office.DocumentUnit.Point
+                };
 
-            // Access the first worksheet in the workbook.
-            Worksheet worksheet = workbook.Worksheets[0];
+                // Access the first worksheet in the workbook.
+                Worksheet worksheet = workbook.Worksheets[0];
+
+
+                foreach (var division in Divisions)
+                {
+
+                    var closingStockDic =_openingStocks
+                        .Where(x=> x.DivisionId==division.Id)
+                        .Select(x=> new { x.TransactionDate,x.Amount }).ToDictionary(k=> Convert.ToInt32(k.TransactionDate.AddMonths(-1).ToString("yyyyMM")),v=> v.Amount);
+
+                    PrepareSummaryWorksheetByDivision(workbook.Worksheets.Add(),Criteria.Date,division,items,_openingStocks);
+
+                    PrepareDetailedWorksheet(workbook.Worksheets.Add(),items,Criteria.Date,division,closingStockDic);
+                }
+
+
+                workbook.SaveDocument(outputPath, DocumentFormat.OpenXml);
+            });
+
+           
+
+            Process.Start(outputPath, @"/r");
+
+        }
 
 
 
-
-            worksheet.ActiveView.ShowGridlines = false;
-            worksheet.Name = "Summary";
+        private void PrepareSummaryWorksheetByDivision(Worksheet worksheet,DateTime date,DivisionInfo division,List<ExpenseSchedule> items,List<OpeningStock> openingStock)
+        {
+             worksheet.ActiveView.ShowGridlines = false;
+            worksheet.Name = $"{division.Name}(Summary)";
 
             worksheet.Cells.Font.Name = "Calibri";
 
-            worksheet.Cells["A1"].SetValue(Criteria.SelectedDivision.Name);
+            worksheet.Cells["A1"].SetValue(division.Name);
             worksheet.Cells["A1"].Font.Size = 20;
             worksheet.Cells["A1"].Font.Bold = true;
             worksheet.Cells["A1"].Font.Color = Color.Red;
@@ -155,9 +192,20 @@ namespace ExpenseScheduler.ViewModels
             headerRange.Font.Bold = true;
             headerRange.Borders.SetAllBorders(Color.DarkGray, BorderLineStyle.Thin);
 
+            int year = date.Year;
 
             int currentRow = 4;
-            var summary = GetSummary(items.Where(i => Criteria.SelectedDivision.Divisions.Contains(i.DivisionId) && i.Database == criteria.Database));
+            var details = items.Where(i => division.Codes.Contains(i.DivisionId) && i.Database == division.Database).ToList();
+
+            var dic = new Dictionary<string, (int Year, int Month)>();
+            for (int i = 1; i <= 12; i++)
+            {
+                dic.Add($"{year}/{i:000}", (year, i));
+            }
+
+            var summary = GetSummary(details);
+
+          
             for (int i = 0; i < summary.Count; i++)
             {
                 worksheet.Rows[currentRow].RowHeight = 30;
@@ -166,6 +214,7 @@ namespace ExpenseScheduler.ViewModels
                     worksheet.Rows[currentRow][0].SetValue(summary[i].Category?.ToUpper());
                     worksheet.Rows[currentRow][0].Font.Bold = true;
                 }
+
                 worksheet.Rows[currentRow][1].SetValue(summary[i].Jan);
                 worksheet.Rows[currentRow][2].SetValue(summary[i].Feb);
                 worksheet.Rows[currentRow][3].SetValue(summary[i].Mar);
@@ -178,14 +227,11 @@ namespace ExpenseScheduler.ViewModels
                 worksheet.Rows[currentRow][10].SetValue(summary[i].Oct);
                 worksheet.Rows[currentRow][11].SetValue(summary[i].Nov);
                 worksheet.Rows[currentRow][12].SetValue(summary[i].Dec);
+
                 worksheet.Rows[currentRow][13].Formula = $"=SUM(B{currentRow + 1}:M{currentRow + 1})";
                 worksheet.Rows[currentRow][13].Font.Bold = true;
-                //		worksheet.Rows[currentRow][15].SetValue(summary[i].DivisionId);
-                //		worksheet.Rows[currentRow][16].SetValue(summary[i].Division);
                 currentRow++;
             }
-
-
 
             worksheet.Rows[currentRow].RowHeight = 30;
 
@@ -200,40 +246,14 @@ namespace ExpenseScheduler.ViewModels
             worksheet.PrintOptions.FitToHeight = 1;
 
             worksheet.ActiveView.Orientation = PageOrientation.Landscape;
-
-
-            // Detailed Expenses
-
-            var expenseSheet = workbook.Worksheets.Add();
-
-
-
-            PrepareDetailedWorksheet(expenseSheet, items, Criteria);
-
-
-            for (int i = 1; i <= 13; i++)
-            {
-                worksheet.Columns[i].AutoFit();
-            }
-
-            worksheet.Rows[currentRow].RowHeight = 30;
-
-
-            workbook.SaveDocument(outputPath, DocumentFormat.OpenXml);
-
-            Process.Start(outputPath, @"/r");
-
         }
 
-
-        private void PrepareDetailedWorksheet(Worksheet worksheet, IEnumerable<ExpenseSchedule> items, Criteria criteria)
+     
+        private void PrepareDetailedWorksheet(Worksheet worksheet, IEnumerable<ExpenseSchedule> items,DateTime date,DivisionInfo division,Dictionary<int,decimal> closingStockDic)
         {
             // Access the first worksheet in the workbook.
 
-            var closingStockDic = new Dictionary<int, decimal>();
-            closingStockDic.Add(201912, 141456.27m);
-            closingStockDic.Add(202001, 218537.34m);
-            closingStockDic.Add(202002, 188883.93m);
+    
 
             var printOptions = worksheet.PrintOptions;
             printOptions.PrintTitles.SetRows(0, 3);
@@ -260,11 +280,11 @@ namespace ExpenseScheduler.ViewModels
             options.EvenFooter.Right = $"Page {"&P"} of {"&N"}";
 
 
-            worksheet.Name = "Detailed Expenses Format";
+            worksheet.Name = $"{division.Name}(Detailed)";
             worksheet.ActiveView.ShowGridlines = false;
             worksheet.Cells.Font.Name = "Calibri";
 
-            worksheet.Cells["B1"].SetValue(Criteria.SelectedDivision.Name);
+            worksheet.Cells["B1"].SetValue(division.Name);
             worksheet.Cells["B1"].Font.Size = 20;
             worksheet.Cells["B1"].Font.Bold = true;
             worksheet.Cells["B1"].Font.Color = Color.Red;
@@ -286,7 +306,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.Cells["M2"].SetValue("Processed For:");
             worksheet.Range["M2:N2"].Merge();
 
-            worksheet.Cells["O2"].SetValue(new DateTime(Criteria.Date.Year, criteria.Date.Month, 1));
+            worksheet.Cells["O2"].SetValue(new DateTime(Criteria.Date.Year, Criteria.Date.Month, 1));
             worksheet.Cells["O2"].NumberFormat = "MMM-yyyy";
 
 
@@ -304,7 +324,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.Columns[1].WidthInPixels = 400;
             for (int i = 2; i <= 13; i++)
             {
-                var monthName = new DateTime(criteria.Date.Year, i - 1, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
+                var monthName = new DateTime(Criteria.Date.Year, i - 1, 1).ToString("MMM-yy", CultureInfo.InvariantCulture);
                 worksheet.Rows[2].RowHeight = 30;
                 worksheet.Rows[2][i].SetValue(monthName);
                 worksheet.Rows[3][i].SetValue("AED");
@@ -346,7 +366,7 @@ namespace ExpenseScheduler.ViewModels
 
             var currentRow = 4;
             var categories = items
-            .Where(i => Criteria.SelectedDivision.Divisions.Contains(i.DivisionId) && i.Database ==Criteria.Database)
+            .Where(i => division.Codes.Contains(i.DivisionId) && i.Database == division.Database)
             .GroupBy(x => new { x.CatSeq, x.Category })
             .OrderBy(x => x.Key.CatSeq)
             .Select(x => new { Name = x.Key.Category, Items = x.ToList() }).ToList();
@@ -406,7 +426,7 @@ namespace ExpenseScheduler.ViewModels
                     {
                         worksheet.Rows[currentRow][1].SetValue("Opening Stock");
                         worksheet.Rows[currentRow][1].Font.Bold = true;
-                        worksheet.Rows[currentRow][2].SetValue(GetClosingStock(closingStockDic, 12, 2019));
+                        worksheet.Rows[currentRow][2].SetValue(GetClosingStock(closingStockDic, 12, date.Year-1));
 
 
                         if (month > 1) worksheet.Rows[currentRow][3].Formula = $"=C{closingStockRow} * -1";
@@ -511,6 +531,7 @@ namespace ExpenseScheduler.ViewModels
 
 
                         worksheet.Rows[currentRow][2].Formula = $"=SUM(C{categoryStartingRow}:C{currentRow})";
+
                         worksheet.Rows[currentRow][3].Formula = $"=SUM(D{categoryStartingRow}:D{currentRow})";
                         worksheet.Rows[currentRow][4].Formula = $"=SUM(E{categoryStartingRow}:E{currentRow})";
                         worksheet.Rows[currentRow][5].Formula = $"=SUM(F{categoryStartingRow}:F{currentRow})";
@@ -826,8 +847,11 @@ namespace ExpenseScheduler.ViewModels
         public class ExpenseSchedule
         {
             public ExpenseSchedule() { }
-            public static List<ExpenseSchedule> ProcessExpenseSchedules(int year, int currentMonth, string path,DivisionInfo division)
+            public static List<ExpenseSchedule> ProcessExpenseSchedules(string path,DateTime date)
             {
+                int year = date.Year;
+                int currentMonth = date.Month;
+
                 var dic = new Dictionary<string, (int Year, int Month)>();
                 for (int i = 1; i <= 12; i++)
                 {
@@ -994,7 +1018,7 @@ namespace ExpenseScheduler.ViewModels
                             }
 
 
-                            record.Division = division.Name;
+                        //    record.Division = divisionName;
 
                             //var div = divisions.SingleOrDefault(x => x.Database == record.Database && x.DivisionId == record.DivisionId);
                             //if (div != null)
@@ -1181,17 +1205,66 @@ namespace ExpenseScheduler.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int[] Divisions { get; set; }
+        public string Database { get; set; }
+        public int[] Codes { get; set; }
 
     }
 
     [NotifyPropertyChanged]
     public class Criteria
     {
-        public DivisionInfo SelectedDivision { get; set; }
+      //  public DivisionInfo SelectedDivision { get; set; }
 
-        public string Database { get; set; }
+      //  public string Database { get; set; }
 
         public DateTime Date { get; set; }
+    }
+
+
+
+    public class OpeningStock
+    {
+        public int DivisionId { get; set; }
+        public string DivisionName{get;set;}
+        public DateTime TransactionDate { get; set; }
+        public decimal Amount { get; set; }
+
+
+        public static List<OpeningStock> GetOpeningStock(string path,List<DivisionInfo> divisions)
+        {
+            int row=0;
+            var list=new List<OpeningStock>();
+		
+            using (FileStream stream = new FileStream(path, FileMode.Open))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.NextResult();
+                    reader.Read();
+                    while (reader.Read() && reader.GetValue(0)!=null)
+                    { 
+                        var name=reader.GetValue(1)?.ToString();
+                        var id=divisions.SingleOrDefault(d => d.Name==name)?.Id ?? 0;
+                        for (int i = 1; i < 12; i++)
+                        {
+                            var amount = Convert.ToDecimal(reader.GetValue(i + 1) ?? 0);
+                            if (amount > 0)
+                            {
+                                list.Add(new OpeningStock{DivisionId = id,DivisionName=name, TransactionDate=new DateTime(2020,i,1), Amount=amount});		
+                            }
+                        }
+                    }
+                }
+            }
+		
+            return list;
+        }
+
     }
 }
