@@ -57,13 +57,12 @@ namespace ExpenseScheduler.ViewModels
 
         private async Task ExecuteProcess()
         {
-
             _openingStocks = OpeningStock.GetOpeningStock(FilePath, Divisions);
             var items = ExpenseSchedule.ProcessExpenseSchedules(FilePath,Criteria.Date);
             await CreateExpenseScheduleWorkbook(items);
         }
 
-        public Criteria Criteria { get; set; } = new Criteria(){Date = DateTime.Today};
+        public Criteria Criteria { get; set; } = new Criteria {Date = DateTime.Today};
 
 
 
@@ -109,7 +108,7 @@ namespace ExpenseScheduler.ViewModels
                 };
 
                 // Access the first worksheet in the workbook.
-                Worksheet worksheet = workbook.Worksheets[0];
+                //Worksheet worksheet = workbook.Worksheets[0];
 
 
                 foreach (var division in Divisions)
@@ -117,14 +116,28 @@ namespace ExpenseScheduler.ViewModels
 
                     var closingStockDic =_openingStocks
                         .Where(x=> x.DivisionId==division.Id)
-                        .Select(x=> new { x.TransactionDate,x.Amount }).ToDictionary(k=> Convert.ToInt32(k.TransactionDate.AddMonths(-1).ToString("yyyyMM")),v=> v.Amount);
+                        .Select(x=> new { x.TransactionDate,x.Amount })
+                        .ToDictionary(k=> Convert.ToInt32(k.TransactionDate.AddMonths(-1)
+                            .ToString("yyyyMM")),v=> v.Amount);
 
-                    var stock = ViewModels.OpeningStock.GetStockInfo(Criteria.Date.Year,division.Id,FilePath,_openingStocks);
+
+                    for (int m= 1; m <= 12; m++)
+                    {   
+                        var key =Convert.ToInt32(new DateTime(Criteria.Date.Year, m,1).ToString("yyyyMM"));
+                        if (!closingStockDic.ContainsKey(key))
+                        {
+                            closingStockDic.Add(key,0);
+                        }
+                    }
+
+                    var stock = OpeningStock.GetStockInfo(Criteria.Date,division.Id,_openingStocks);
+
                     PrepareSummaryWorksheetByDivision(workbook.Worksheets.Add(),Criteria.Date,division,items,stock);
 
                     PrepareDetailedWorksheet(workbook.Worksheets.Add(),items,Criteria.Date,division,closingStockDic);
                 }
 
+                workbook.Worksheets.RemoveAt(0);
 
                 workbook.SaveDocument(outputPath, DocumentFormat.OpenXml);
             });
@@ -207,24 +220,33 @@ namespace ExpenseScheduler.ViewModels
                 worksheet.Rows[currentRow].RowHeight = 30;
                 if (summary.Count > 1)
                 {
-                    worksheet.Rows[currentRow][0].SetValue(summary[i].Category?.ToUpper());
-                    worksheet.Rows[currentRow][0].Font.Bold = true;
+                    var category = summary[i].Category;
+                    if (!string.IsNullOrWhiteSpace(category) && category.ToLower().StartsWith("cost of steel"))
+                    {
+                        worksheet.Rows[currentRow][0].SetValue("Cost of Raw Materials & Consumables".ToUpper());
+                    }
+                    else
+                    {
+                        worksheet.Rows[currentRow][0].SetValue(summary[i].Category?.ToUpper() ?? "N/A");
+                    }
+
+                   
                 }
 
                 if (i == 0 && summary[i].CatSeq==1)
                 {
-                    if(stock.ContainsKey("Jan")) worksheet.Rows[currentRow][1].SetValue(summary[i].Jan + stock["Jan"]);
-                    if(stock.ContainsKey("Feb")) worksheet.Rows[currentRow][2].SetValue(summary[i].Feb + stock["Feb"]);
-                    if(stock.ContainsKey("Mar")) worksheet.Rows[currentRow][3].SetValue(summary[i].Mar + stock["Mar"]);
-                    if(stock.ContainsKey("Apr")) worksheet.Rows[currentRow][4].SetValue(summary[i].Apr + stock["Apr"]);
-                    if(stock.ContainsKey("May")) worksheet.Rows[currentRow][5].SetValue(summary[i].May + stock["May"]);
-                    if(stock.ContainsKey("Jun")) worksheet.Rows[currentRow][6].SetValue(summary[i].Jun + stock["Jun"]);
-                    if(stock.ContainsKey("Jul")) worksheet.Rows[currentRow][7].SetValue(summary[i].Jul + stock["Jul"]);
-                    if(stock.ContainsKey("Aug")) worksheet.Rows[currentRow][8].SetValue(summary[i].Aug + stock["Aug"]);
-                    if(stock.ContainsKey("Sep")) worksheet.Rows[currentRow][9].SetValue(summary[i].Sep + stock["Sep"]);
-                    if(stock.ContainsKey("Oct")) worksheet.Rows[currentRow][10].SetValue(summary[i].Oct + stock["Oct"]);
-                    if(stock.ContainsKey("Nov")) worksheet.Rows[currentRow][11].SetValue(summary[i].Nov + stock["Nov"]);
-                    if(stock.ContainsKey("Dec")) worksheet.Rows[currentRow][12].SetValue(summary[i].Dec + stock["Dec"]);
+                    worksheet.Rows[currentRow][1].SetValue(summary[i].Jan + stock["Jan"]);
+                    worksheet.Rows[currentRow][2].SetValue(summary[i].Feb + stock["Feb"]);
+                    worksheet.Rows[currentRow][3].SetValue(summary[i].Mar + stock["Mar"]);
+                    worksheet.Rows[currentRow][4].SetValue(summary[i].Apr + stock["Apr"]);
+                    worksheet.Rows[currentRow][5].SetValue(summary[i].May + stock["May"]);
+                    worksheet.Rows[currentRow][6].SetValue(summary[i].Jun + stock["Jun"]);
+                    worksheet.Rows[currentRow][7].SetValue(summary[i].Jul + stock["Jul"]);
+                    worksheet.Rows[currentRow][8].SetValue(summary[i].Aug + stock["Aug"]);
+                    worksheet.Rows[currentRow][9].SetValue(summary[i].Sep + stock["Sep"]);
+                    worksheet.Rows[currentRow][10].SetValue(summary[i].Oct + stock["Oct"]);
+                    worksheet.Rows[currentRow][11].SetValue(summary[i].Nov + stock["Nov"]);
+                    worksheet.Rows[currentRow][12].SetValue(summary[i].Dec + stock["Dec"]);
                 }
                 else
                 {
@@ -260,6 +282,7 @@ namespace ExpenseScheduler.ViewModels
             worksheet.PrintOptions.FitToHeight = 1;
 
             worksheet.ActiveView.Orientation = PageOrientation.Landscape;
+            worksheet.Columns.AutoFit(1,13);
         }
 
      
@@ -789,15 +812,24 @@ namespace ExpenseScheduler.ViewModels
 
         public List<ExpenseSchedule> GetSummary(IEnumerable<ExpenseSchedule> items)
         {
-            var summary = items.OrderBy(x => x.CatSeq).GroupBy(r => new { r.Database, r.Division, r.DivisionId, r.CatSeq, r.Category, r.Year })
+            var summary = items
+                .OrderBy(x => x.CatSeq).GroupBy(r => new
+                {
+                    //r.Database,
+                    //r.Division, 
+                    //r.DivisionId, 
+                    r.CatSeq,
+                    r.Category, 
+                    //r.Year
+                })
                     .Select(x => new ExpenseSchedule
                     {
-                        DivisionId = x.Key.DivisionId,
-                        Division = x.Key.Division,
-                        Database = x.Key.Database,
+                        //DivisionId = x.Key.DivisionId,
+                        //Division = x.Key.Division,
+                        //Database = x.Key.Database,
                         Category = x.Key.Category,
                         CatSeq = x.Key.CatSeq,
-                        Year = x.Key.Year,
+                        //Year = x.Key.Year,
                         Jan = x.Sum(r => r.Jan),
                         Feb = x.Sum(r => r.Feb),
                         Mar = x.Sum(r => r.Mar),
@@ -886,11 +918,13 @@ namespace ExpenseScheduler.ViewModels
                             row++;
                             if (row >= headerRow + 1 && reader.GetString(0) != null)
                             {
-                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth, Convert.ToDecimal(reader.GetValue(4)), dic);
-                                item.Database = reader.Name;
-                                item.AccountCode = reader.GetString(1);
-                                item.DivisionId = Convert.ToInt32(reader.GetValue(2));
-                                item.SubCategoryId = Convert.ToInt32(reader.GetValue(3));
+                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth, Convert.ToDecimal(reader.GetValue(4)), dic)
+                                {
+                                    Database = reader.Name,
+                                    AccountCode = reader.GetString(1),
+                                    DivisionId = Convert.ToInt32(reader.GetValue(2)),
+                                    SubCategoryId = Convert.ToInt32(reader.GetValue(3))
+                                };
                                 records.Add(item);
                             }
                         }
@@ -902,9 +936,11 @@ namespace ExpenseScheduler.ViewModels
                             row++;
                             if (row >= headerRow + 1 && reader.GetString(0) != null)
                             {
-                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth, Convert.ToDecimal(reader.GetValue(4)), dic);
-                                item.Database = reader.Name;
-                                item.AccountCode = reader.GetString(1);
+                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth,
+                                    Convert.ToDecimal(reader.GetValue(4)), dic)
+                                {
+                                    Database = reader.Name, AccountCode = reader.GetString(1)
+                                };
 
 
                                 if (int.TryParse(reader.GetValue(2).ToString(), out int divisionId))
@@ -925,12 +961,15 @@ namespace ExpenseScheduler.ViewModels
                             row++;
                             if (row >= headerRow + 1 && reader.GetString(0) != null)
                             {
-                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth, Convert.ToDecimal(reader.GetValue(5)), dic);
-                                item.Database = reader.Name;
-                                item.AccountCode = reader.GetString(1);
-                                item.DivisionId = Convert.ToInt32(reader.GetValue(2));
-                                item.T8Code = Convert.ToInt32(reader.GetValue(3));
-                                item.SubCategoryId = Convert.ToInt32(reader.GetValue(4));
+                                var item = new ExpenseSchedule(reader.GetString(0), currentMonth,
+                                    Convert.ToDecimal(reader.GetValue(5)), dic)
+                                {
+                                    Database = reader.Name,
+                                    AccountCode = reader.GetString(1),
+                                    DivisionId = Convert.ToInt32(reader.GetValue(2)),
+                                    T8Code = Convert.ToInt32(reader.GetValue(3)),
+                                    SubCategoryId = Convert.ToInt32(reader.GetValue(4))
+                                };
                                 records.Add(item);
                             }
                         }
@@ -1253,24 +1292,37 @@ namespace ExpenseScheduler.ViewModels
         public decimal Amount { get; set; }
 
 
-        public static Dictionary<string,decimal> GetStockInfo(int year,int divisionId, string path,List<OpeningStock> openingStock)
+        public static Dictionary<string,decimal> GetStockInfo(DateTime date,int divisionId, List<OpeningStock> openingStock)
         {
+            var year = date.Year;
             var os=openingStock
-                .Where(s => s.DivisionId == divisionId && s.TransactionDate.Year == year)
+                .Where(s => s.DivisionId == divisionId && s.TransactionDate.Year == year && s.TransactionDate.Month<=date.Month)
                 .GroupBy(s => new { Month = s.TransactionDate.ToString("MMM") })
-                .Select(s => new  {Month=s.Key.Month,Amount=s.Sum(i=> i.Amount)}).ToList();
+                .Select(s => new  {s.Key.Month,Amount=s.Sum(i=> i.Amount)}).ToList();
 
             var cs=openingStock
-                .Where(s => s.DivisionId == divisionId && s.TransactionDate.Month > 1)
+                .Where(s => s.DivisionId == divisionId && s.TransactionDate.Year==year &&
+                            (s.TransactionDate.Month > 1 && s.TransactionDate.Month<=date.Month))
                 .GroupBy(s => new { Month = s.TransactionDate.AddMonths(-1).ToString("MMM") })
-                .Select(s => new  { Month = s.Key.Month, Amount = s.Sum(i => i.Amount*-1) }).ToList();
+                .Select(s => new  { s.Key.Month, Amount = s.Sum(i => i.Amount*-1) }).ToList();
 
             os.AddRange(cs);
 
-           return  os
+           var result=  os
                .GroupBy(x => x.Month)
                .Select(x => new  {Month = x.Key, Amount=x.Sum(i => i.Amount)})
                .ToDictionary(k=> k.Month,v=> v.Amount);
+
+           for (int m= 1; m <= 12; m++)
+           {   
+               var key = new DateTime(year, m,1).ToString("MMM");
+               if (!result.ContainsKey(key))
+               {
+                   result.Add(key,0);
+               }
+           }
+
+           return result;
         }
 
         public static List<OpeningStock> GetOpeningStock(string path,List<DivisionInfo> divisions)
