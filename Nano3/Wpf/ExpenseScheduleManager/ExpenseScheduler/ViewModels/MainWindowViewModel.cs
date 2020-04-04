@@ -421,6 +421,10 @@ namespace ExpenseScheduler.ViewModels
                 else
                 {
                     worksheet.Rows[currentRow][1].SetValue(category.Name ?? "N/A");
+                    //if(category.Name== "Direct Costs - Man Power" || category.Name== "Gen. & Admin. - Man Power")
+                    //{
+                    //    worksheet.HorizontalPageBreaks.Add(currentRow);
+                    //}
                 }
 
                 worksheet.Rows[currentRow][1].Font.Size = 16;
@@ -810,7 +814,7 @@ namespace ExpenseScheduler.ViewModels
         }
         // Define other methods, classes and namespaces here
 
-        public List<ExpenseSchedule> GetSummary(IEnumerable<ExpenseSchedule> items)
+        public static List<ExpenseSchedule> GetSummary(IEnumerable<ExpenseSchedule> items)
         {
             var summary = items
                 .OrderBy(x => x.CatSeq).GroupBy(r => new
@@ -1092,15 +1096,14 @@ namespace ExpenseScheduler.ViewModels
 
 
 
-            public ExpenseSchedule(string period, int currentMonth, decimal amount, Dictionary<string, (int Year, int Month)> periodDictionary)
+            public ExpenseSchedule(string period, int currentMonth, decimal amount, IReadOnlyDictionary<string, (int Year, int Month)> periodDictionary)
             {
                 Period = period;
-                (int Year, int Month) yearInfo;
                 int year = 0;
                 int month = 0;
                 if (periodDictionary != null)
                 {
-                    if (periodDictionary.TryGetValue(period, out yearInfo))
+                    if (periodDictionary.TryGetValue(period, out var yearInfo))
                     {
                         year = yearInfo.Year;
                         month = yearInfo.Month;
@@ -1327,7 +1330,7 @@ namespace ExpenseScheduler.ViewModels
 
         public static List<OpeningStock> GetOpeningStock(string path,List<DivisionInfo> divisions)
         {
-            int row=0;
+           // int row=0;
             var list=new List<OpeningStock>();
 		
             using (FileStream stream = new FileStream(path, FileMode.Open))
