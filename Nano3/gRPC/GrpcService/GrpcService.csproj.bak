@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Dapper.FluentMap" Version="1.8.0" />
-    <PackageReference Include="DevExpress.Reporting.Core" Version="20.1.4" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="20.1.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.26.0" />
      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
      <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />

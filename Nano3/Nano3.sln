@@ -97,6 +97,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlankApp2", "BlankApp2\Blan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseScheduler", "Wpf\ExpenseScheduleManager\ExpenseScheduler\ExpenseScheduler.csproj", "{F15561B4-9FD9-4C2A-98A4-B189658DED55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgingGridViewTest", "AgingGridViewTest\AgingGridViewTest.csproj", "{2F493424-B324-4E99-AEAC-2C840D63001B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -491,6 +493,18 @@ Global
 		{F15561B4-9FD9-4C2A-98A4-B189658DED55}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F15561B4-9FD9-4C2A-98A4-B189658DED55}.Release|x64.ActiveCfg = Release|Any CPU
 		{F15561B4-9FD9-4C2A-98A4-B189658DED55}.Release|x64.Build.0 = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Publish|x64.ActiveCfg = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Publish|x64.Build.0 = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F493424-B324-4E99-AEAC-2C840D63001B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -533,6 +547,7 @@ Global
 		{71EBCAD6-256C-42E8-A267-DA6E7447DEDE} = {775BB75C-9D16-4B02-AFFE-D18C40B0D44F}
 		{6797B09A-11DA-49D3-A354-3BC364C8EFC8} = {393DC331-0AA6-4B5D-B672-8A4A31C985F2}
 		{F15561B4-9FD9-4C2A-98A4-B189658DED55} = {393DC331-0AA6-4B5D-B672-8A4A31C985F2}
+		{2F493424-B324-4E99-AEAC-2C840D63001B} = {393DC331-0AA6-4B5D-B672-8A4A31C985F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {266E5B5E-EE4A-4C65-BF16-1828102A7E9E}

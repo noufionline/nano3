@@ -1,0 +1,63 @@
+﻿<Window x:Name="Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:dxpg="http://schemas.devexpress.com/winfx/2008/xaml/pivotgrid"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        x:Class="AgingGridViewTest.Views.MainWindow"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}" Height="350" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <dx:SimpleButton Command="{Binding LoadDataCommand}"
+                             >Load Data</dx:SimpleButton>
+            <TextBlock Margin="5" Text="{Binding RecordCount}" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
+            <dx:SimpleButton Content="Collapse All" HorizontalAlignment="Left"
+                             Click="CollapseAllButton_OnClick"
+                             Glyph="{dx:DXImage 'SvgImages/Outlook Inspired/ExpandCollapse.svg'}"></dx:SimpleButton>
+            <dx:SimpleButton Content="Export to Excel" Click="ButtonBase_OnClick"></dx:SimpleButton>
+        </StackPanel>
+        <dxpg:PivotGridControl AllowConditionalFormattingManager="True" AllowConditionalFormattingMenu="True"
+            PrintFilterHeaders="False" PrintRowHeaders="False" PrintColumnHeaders="False"
+            PrintDataHeaders="False"
+            Name="PivotGrid" Grid.Row="1" RowTreeWidth="450" DataSourceChanged="PivotGrid_OnDataSourceChanged"
+                               DataSource="{Binding Items}">
+            <dxpg:PivotGridControl.Fields>
+                <dxpg:PivotGridField FieldName="GroupName" AreaIndex="0" ></dxpg:PivotGridField>
+                <dxpg:PivotGridField Name="PartnerNamePivotGridField" FieldName="PartnerName" Area="RowArea"
+                                     ShowTotals="False"  Width="2500" AreaIndex="1" Caption="Customer"></dxpg:PivotGridField>
+                <dxpg:PivotGridField FieldName="AccountName" ShowTotals="False" AreaIndex="1"></dxpg:PivotGridField>
+                <dxpg:PivotGridField Name="fieldAccountCode" FieldName="AccountCode" Area="RowArea" 
+                                     ShowTotals="False" ExpandedInFieldsGroup="True" AreaIndex="0" Caption="Account Code"></dxpg:PivotGridField>
+                <dxpg:PivotGridField FieldName="MonthName" Area="ColumnArea" ShowTotals="False" SortOrder="Descending" AreaIndex="1">
+                    <!--<dxpg:PivotGridField.ValueTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="3" Text="{Binding Path=DisplayText}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </DataTemplate>
+                    </dxpg:PivotGridField.ValueTemplate>-->
+                </dxpg:PivotGridField>
+                <dxpg:PivotGridField x:Name="LastDay" Area="ColumnArea" Caption="Year" AreaIndex="0"
+                                     
+                                     ShowTotals="False" SortOrder="Descending" 
+                                     GroupInterval="DateMonthYear" ValueFormat="MMM-yyyy" FieldName="LastDayOfTheMonth">
+                    <!--<dxpg:PivotGridField.ValueTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                                Margin="3" Text="{Binding Path=DisplayText}" 
+                                FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </DataTemplate>
+                    </dxpg:PivotGridField.ValueTemplate>-->
+                </dxpg:PivotGridField>
+                <dxpg:PivotGridField FieldName="Amount" AreaIndex="0" Area="DataArea" ExpandedInFieldsGroup="False"></dxpg:PivotGridField>
+
+            </dxpg:PivotGridControl.Fields>
+
+        </dxpg:PivotGridControl>
+    </Grid>
+</Window>

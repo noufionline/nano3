@@ -88,7 +88,7 @@ namespace GrpcService
 
             try
             {
-                var grpcCustomers = _mapper.Map<List<Customer>>(customers);
+                List<Customer> grpcCustomers = _mapper.Map<List<Customer>>(customers);
 
                 response.Customers.AddRange(grpcCustomers);
             }
